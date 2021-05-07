@@ -1,12 +1,17 @@
 /* ============= Base ============= */
 
 body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: $theme-text-color-secondary;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: $theme-text-color-secondary;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	color: $theme-text-color-primary;
 	font-weight: 600;
 }
@@ -20,7 +25,7 @@ a {
 }
 
 hr {
-   background: darken($theme-border-color, 20%);	
+	background: darken($theme-border-color, 20%);
 }
 
 .text-muted {
@@ -32,11 +37,13 @@ hr {
 	color: #fff;
 }
 
-.table-bordered th, .table-bordered td {
+.table-bordered th,
+.table-bordered td {
 	border-color: $theme-border-color;
 }
 
-.table th, .table td {
+.table th,
+.table td {
 	border-color: $theme-border-color;
 }
 
@@ -48,49 +55,52 @@ hr {
 	background-color: $smoky-white;
 }
 
-.table-dark th, .table-dark td, .table-dark thead th {
+.table-dark th,
+.table-dark td,
+.table-dark thead th {
 	border-color: lighten($theme-text-color-primary, 20%);
 }
 
-
 .table-hover > tbody > tr:hover {
 	background-color: lighten(#f5f6fe, 10%);
-
 }
-
 
 .popover {
 	border-color: darken($theme-bg-light, 5%);
 }
-.bs-popover-left>.arrow::before, .bs-popover-auto[x-placement^="left"]>.arrow::before {
+.bs-popover-left > .arrow::before,
+.bs-popover-auto[x-placement^="left"] > .arrow::before {
 	border-left-color: darken($theme-bg-light, 5%);
 }
-.bs-popover-right>.arrow::before, .bs-popover-auto[x-placement^="right"]>.arrow::before {
+.bs-popover-right > .arrow::before,
+.bs-popover-auto[x-placement^="right"] > .arrow::before {
 	border-right-color: darken($theme-bg-light, 5%);
 }
-.bs-popover-top>.arrow::before, .bs-popover-auto[x-placement^="top"]>.arrow::before {
+.bs-popover-top > .arrow::before,
+.bs-popover-auto[x-placement^="top"] > .arrow::before {
 	border-top-color: darken($theme-bg-light, 5%);
 }
-.bs-popover-bottom>.arrow::before, .bs-popover-auto[x-placement^="bottom"]>.arrow::before {
+.bs-popover-bottom > .arrow::before,
+.bs-popover-auto[x-placement^="bottom"] > .arrow::before {
 	border-bottom-color: darken($theme-bg-light, 5%);
 }
 
 a.app-link {
 	color: $theme-text-color-primary;
 	text-decoration: underline;
-    -webkit-text-decoration-color: rgba($theme-text-color-primary,0.3);
-    text-decoration-color: rgba($theme-text-color-primary,0.3);
-    &:hover {
-	    color: $theme-color-primary;
-	    -webkit-text-decoration-color: rgba($theme-color-primary,0.8);
-	        text-decoration-color: rgba($theme-color-primary,0.8);
-    }
+	-webkit-text-decoration-color: rgba($theme-text-color-primary, 0.3);
+	text-decoration-color: rgba($theme-text-color-primary, 0.3);
+	&:hover {
+		color: $theme-color-primary;
+		-webkit-text-decoration-color: rgba($theme-color-primary, 0.8);
+		text-decoration-color: rgba($theme-color-primary, 0.8);
+	}
 }
 
 button.close {
 	&:focus {
 		outline: none;
-	    @include box-shadow(none);
+		@include box-shadow(none);
 	}
 }
 
@@ -99,8 +109,10 @@ button.close {
 	padding: 0.4rem 1rem;
 	font-size: 0.875rem;
 	border: none;
-	&:hover, &:active, &:focus {
-		text-decoration:none;
+	&:hover,
+	&:active,
+	&:focus {
+		text-decoration: none;
 	}
 	.bi {
 		position: relative;
@@ -108,12 +120,13 @@ button.close {
 	}
 }
 
-.btn:focus, .btn.focus {
+.btn:focus,
+.btn.focus {
 	box-shadow: none !important;
 }
 
 .app-btn-primary {
-    background: $theme-color-primary;
+	background: $theme-color-primary;
 	color: #fff;
 	border-color: $theme-color-primary;
 	&:hover {
@@ -143,15 +156,12 @@ button.close {
 	}
 }
 
-
-
-
 .form-control {
 	padding-top: 0.6rem;
 	padding-bottom: 0.6rem;
 	height: 2.5rem;
 	border-color: $theme-border-color;
-    color: $theme-text-color-secondary;
+	color: $theme-text-color-secondary;
 	&:focus {
 		@include box-shadow(none);
 		outline: none;
@@ -166,28 +176,25 @@ button.close {
 
 .dropdown-menu {
 	border-color: $theme-border-color;
-	
+
 	.dropdown-item {
-		padding: 0.5rem 1rem;		
-			
+		padding: 0.5rem 1rem;
+
 		&:hover {
 			color: $theme-text-color-primary;
 		}
-		
 	}
-	
-	.dropdown-item:hover, .dropdown-item:focus {
+
+	.dropdown-item:hover,
+	.dropdown-item:focus {
 		background: mix($theme-bg-light, white, 50%);
 	}
-	
-	.dropdown-item.active, .dropdown-item:active {
+
+	.dropdown-item.active,
+	.dropdown-item:active {
 		background: mix($theme-bg-light, white, 50%);
 	}
 }
-
-
-
-
 
 .dropdown-divider {
 	border-top-color: $theme-border-color;
@@ -199,4 +206,3 @@ button.close {
 		display: none !important;
 	}
 }
-
