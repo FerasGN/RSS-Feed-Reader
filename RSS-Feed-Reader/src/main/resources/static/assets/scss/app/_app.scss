@@ -1,0 +1,184 @@
+.app {
+	min-height: 100vh;
+	height: 100%;
+	width: 100%;
+	background: $theme-bg-light;
+	padding-top: 56px;
+	overflow-x: hidden;
+}
+
+.app-footer {
+	.copyright {
+		font-size: 0.8125rem;
+	}
+}
+
+.app-wrapper {
+	@include transition(all 0.4s ease-in-out);
+}
+
+.app-page-title {
+	font-size: 1.5rem;
+	font-weight: bolder;
+	margin-bottom: 1.5rem;
+}
+
+.app-card {
+	position: relative;
+	background: #fff;
+	@include border-radius(0.25rem);
+
+	&.border-left-decoration {
+		border-left: 3px solid $theme-color-primary;
+	}
+
+	.app-card-link-mask {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		display: block;
+		left: 0;
+		top: 0;
+	}
+
+	.app-card-header {
+		border-bottom: 1px solid $theme-border-color;
+	}
+
+	.app-card-title {
+		font-size: 1.125rem;
+		margin-bottom: 0;
+	}
+
+	.card-header-action {
+		font-size: 0.875rem;
+		a:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.form-select-holder {
+		display: inline-block;
+	}
+
+	.btn-close {
+		padding: 1rem;
+		&:focus {
+			@include box-shadow(none);
+		}
+	}
+}
+
+.app-card {
+	.app-icon-holder {
+		display: inline-block;
+		background: lighten($theme-color-primary, 60%);
+		color: $theme-color-primary;
+		width: 50px;
+		height: 50px;
+		padding-top: 10px;
+		font-size: 1rem;
+		text-align: center;
+		@include border-radius(50%);
+
+		&.icon-holder-mono {
+			background: $theme-bg-light;
+			color: $theme-text-color-light;
+		}
+
+		svg {
+			width: 24px;
+			height: 24px;
+		}
+	}
+	.app-card-body {
+		&.has-card-actions {
+			position: relative;
+			padding-right: 1rem !important;
+		}
+		.app-card-actions {
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			text-align: center;
+			@include border-radius(50%);
+			position: absolute;
+			z-index: 10;
+			right: 0.75rem;
+			top: 0.75rem;
+
+			&:hover {
+				background: $theme-bg-light;
+			}
+
+			.dropdown-menu {
+				font-size: 0.8125rem;
+			}
+		}
+	}
+}
+
+.app-card-feed {
+	.feed-category {
+		.badge {
+			font-size: 0.65rem;
+			text-transform: uppercase;
+		}
+	}
+	.feed-image {
+		width: 60px;
+		height: 60px;
+	}
+	.feed-title {
+		font-size: 1.125rem;
+	}
+
+	.feed-content {
+		font-size: 0.875rem;
+	}
+
+	.feed-meta {
+		font-size: 0.75rem;
+		color: $theme-text-color-light;
+	}
+
+	.action-link {
+		font-size: 0.875rem;
+	}
+
+	.app-card-footer {
+		background: mix($theme-bg-light, white, 50%);
+	}
+}
+
+// tags-input
+.tags-input-wrapper {
+	background: $theme-bg-light;
+	padding: 10px;
+	border-radius: 4px;
+	border: 1px solid $smoky-white;
+
+	.input {
+		border: none;
+		background: transparent;
+		outline: none;
+		width: 150px;
+	}
+
+	.tag {
+		display: inline-block;
+		background-color: $theme-color-primary;
+		color: $theme-bg-light;
+		border-radius: 40px;
+		padding: 2px 3px 0px 7px;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		font-size: 1rem;
+
+		a {
+			margin: 0 7px 3px;
+			display: inline-block;
+			cursor: pointer;
+		}
+	}
+}
