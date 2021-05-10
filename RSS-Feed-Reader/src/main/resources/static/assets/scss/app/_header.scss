@@ -1,0 +1,80 @@
+/* Header */
+.app-header {	
+	@include box-shadow(0 1px 4px 0 rgba(0,0,0,.1));
+	border-bottom: 1px solid $theme-border-color;
+	height: 56px;
+	background: #fff;
+}
+
+.app-header-inner {
+	position: relative;
+}
+
+.app-utility-item {
+	display: inline-block;
+	margin-right: 1.25rem;
+	&:last-child {
+		margin-right: 0;
+	}
+	& > a {
+		color: $theme-text-color-secondary;
+		&:hover {
+			color: $theme-text-color-primary;
+		}
+	}
+	.dropdown-toggle {
+		position: relative;
+	}
+	.dropdown-menu {
+		font-size: 0.875rem;
+		margin: 0;
+	}
+	.dropdown-menu.show {
+		top: 23px !important;
+	}
+	.icon {
+		font-size: 1.25rem;
+		width: 24px;
+		height: 24px;	
+	}
+	.icon-badge {
+		display: inline-block;
+		@include border-radius(50%);
+		position: absolute;
+		right: -0.45rem;
+		top: -0.3rem;
+		width: 20px;
+		height: 20px;
+		font-size: 0.6rem;
+		font-weight: bold;
+		padding-top: 1px;
+		color: #fff;
+		text-align: center;
+		&.icon-badge {
+			background: $theme-color-count;
+			border: 2px solid #fff;
+		}
+	}
+}
+
+
+
+.app-user-dropdown {
+    display: inline-block;
+    a {
+
+    }
+	img {
+		width: 36px;
+		height: 36px;
+	}
+}
+
+
+// X-Large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { 	
+	.app-header-inner {
+		margin-left: 250px; //side panel width;
+	}
+}
+
