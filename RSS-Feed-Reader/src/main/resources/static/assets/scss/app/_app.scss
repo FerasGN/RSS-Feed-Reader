@@ -126,8 +126,10 @@
 		}
 	}
 	.feed-image {
-		width: 60px;
-		height: 60px;
+		width: 120px;
+		height: 120px;
+		border-radius: 0.1rem;
+		@include box-shadow(-0.5px 1px 1px 0px rgba(219, 219, 219, 1));
 	}
 	.feed-title {
 		font-size: 1.125rem;
@@ -182,3 +184,26 @@
 		}
 	}
 }
+
+
+// custom scrollbar 
+::-webkit-scrollbar {
+	z-index:999;
+	width: 20px;
+
+	&-track {
+		background-color: transparent;
+	}
+	
+	&-thumb {
+		background-color: $scrollbar-gray;
+		@include border-radius(2.5rem);
+		border: 6px solid transparent;
+		background-clip: content-box;
+	}
+	
+	&-thumb:hover {
+		background-color: $scrollbar-hover;
+	}
+}
+

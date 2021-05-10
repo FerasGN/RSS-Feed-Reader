@@ -11427,7 +11427,9 @@ button.close:focus {
   padding: 0.5rem 1rem;
   padding-left: 1rem;
   position: relative;
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   margin-bottom: 0;
 }
 
@@ -11453,6 +11455,15 @@ button.close:focus {
 
 .app-nav .submenu-link.active:before {
   background-color: #15a362;
+}
+
+.app-nav .channel-image {
+  height: 16px;
+  width: 16px;
+  margin-top: 2px;
+  margin-right: 6px;
+  -ms-flex-item-align: start;
+      align-self: flex-start;
 }
 
 .app-nav .text-count-arrow .count {
@@ -11636,8 +11647,11 @@ button.close:focus {
 }
 
 .app-card-feed .feed-image {
-  width: 60px;
-  height: 60px;
+  width: 120px;
+  height: 120px;
+  border-radius: 0.1rem;
+  -webkit-box-shadow: -0.5px 1px 1px 0px #dbdbdb;
+  box-shadow: -0.5px 1px 1px 0px #dbdbdb;
 }
 
 .app-card-feed .feed-title {
@@ -11690,6 +11704,28 @@ button.close:focus {
   margin: 0 7px 3px;
   display: inline-block;
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  z-index: 999;
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 2.5rem;
+  -webkit-border-radius: 2.5rem;
+  -moz-border-radius: 2.5rem;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
 }
 
 .app-signup .auth-background-holder {
