@@ -126,8 +126,10 @@
 		}
 	}
 	.feed-image {
-		width: 60px;
-		height: 60px;
+		width: 120px;
+		height: 120px;
+		border-radius: 0.1rem;
+		@include box-shadow(-0.5px 1px 1px 0px rgba(219, 219, 219, 1));
 	}
 	.feed-title {
 		font-size: 1.125rem;
@@ -147,7 +149,13 @@
 	}
 
 	.app-card-footer {
+		width: 100%;
+		display: inline-block;
 		background: mix($theme-bg-light, white, 50%);
+
+		.toolbar {
+			float: right;
+		}
 	}
 }
 
@@ -180,5 +188,82 @@
 			display: inline-block;
 			cursor: pointer;
 		}
+	}
+}
+
+// custom scrollbar
+::-webkit-scrollbar {
+	z-index: 999;
+	width: 20px;
+
+	&-track {
+		background-color: transparent;
+	}
+
+	&-thumb {
+		background-color: $light-gray;
+		@include border-radius(2.5rem);
+		border: 6px solid transparent;
+		background-clip: content-box;
+	}
+
+	&-thumb:hover {
+		background-color: $gray-hover;
+	}
+}
+
+// card icons checkboxes
+.heart {
+	@include on-state-mixin($heart-color, "\f004");
+}
+.star {
+	@include on-state-mixin($star-color, "\f005");
+}
+.bookmark {
+	@include on-state-mixin($bookmark-color, "\f02e");
+}
+.read {
+	@include on-state-mixin(black, "\f00c");
+}
+
+.animated-icon {
+	margin: 20px;
+	display: initial;
+	position: relative;
+	input {
+		display: none;
+	}
+
+	label {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		&:after {
+			left: 0;
+			top: 50%;
+			margin-top: -0.5em;
+			display: block;
+			position: relative;
+			text-align: center;
+			cursor: pointer;
+		}
+	}
+	input:checked + label {
+		&:after {
+			animation: icon 0.3s forwards;
+		}
+	}
+}
+
+@keyframes icon {
+	0% {
+		margin-top: -0.5em;
+		font-size: 1.5em;
+	}
+	100% {
+		font-size: 1em;
+		opacity: 1;
 	}
 }
