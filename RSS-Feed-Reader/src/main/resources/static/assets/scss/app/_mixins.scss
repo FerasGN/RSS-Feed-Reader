@@ -103,3 +103,17 @@
     -o-transition: $args;
     transition: $args;
 }
+
+// icon
+@mixin on-state-mixin($color, $icon) {
+    label:after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: $icon;
+    }
+    input:checked + label {
+        &:after {
+            color: $color;
+        }
+    }
+}

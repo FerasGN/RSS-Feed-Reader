@@ -17,6 +17,7 @@
 
 	<!-- App CSS -->
 	<link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+	<link id="theme-style" rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
 
 </head>
 
@@ -153,6 +154,7 @@
 											d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
 									</svg>
 								</span>
+
 								<span class="nav-link-text">Favorite Channels</span>
 								<span class="count">5</span>
 								<!--//count-->
@@ -236,6 +238,8 @@
 											<ul class="sub-submenu-list list-unstyled">
 												<li class="sub-submenu-item">
 													<a class="submenu-link" href="#">
+														<img alt="" class="channel-image"
+															src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391">
 														<span class="category-item">Spiegel lorem ipsum dolor sit
 															amet</span>
 														<span class="count">10</span>
@@ -244,6 +248,8 @@
 												</li>
 												<li class="sub-submenu-item">
 													<a class="submenu-link" href="#">
+														<img alt="" class="channel-image"
+															src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391">
 														<span class="category-item">ARD</span>
 														<span class="count">2</span>
 														<!--//count-->
@@ -441,8 +447,8 @@
 										<option value="option-2">Most relevant</option>
 										<option value="option-3">Oldest</option>
 										<option value="option-4">Unread</option>
-										<option value="option-4">Sort by channel</option>
-										<option value="option-4">Sort by category</option>
+										<option value="option-5">Sort by channel</option>
+										<option value="option-6">Sort by category</option>
 
 									</select>
 								</div>
@@ -455,6 +461,128 @@
 					<!--//col-auto-->
 				</div>
 				<!--//row-->
+
+				<div class="app-card app-card-feed shadow-sm mb-4">
+					<div class="app-card-header px-4 py-3">
+						<div class="row g-3 align-items-center">
+							<div class="col-12 col-lg-auto text-center text-lg-left">
+								<img class="feed-image" src="assets/images/feed-image.jpg" alt="">
+							</div>
+							<!--//col-->
+							<div class="col-12 col-lg-auto text-center text-lg-left">
+								<div class="feed-category mb-2"><span class="badge bg-success">tech</span></div>
+								<h4 class="feed-title mb-1">Feed title Lorem ipsum dolor sit amet consectetur
+									adipisicing elit.</h4>
+
+								<ul class="feed-meta list-inline mb-0">
+									<li class="list-inline-item">2 hrs ago</li>
+									<li class="list-inline-item">|</li>
+									<li class="list-inline-item">Annette Dittert</li>
+								</ul>
+
+							</div>
+							<!--//col-->
+						</div>
+						<!--//row-->
+					</div>
+					<!--//app-card-header-->
+					<div class="app-card-body p-4">
+						<div class="feed-content">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolore nobis
+							ducimus officiis veniam, quibusdam eum modi quas tempore obcaecati esse mollitia error
+							deleniti minus eius dicta ipsa reprehenderit, possimus tempora.</div>
+					</div>
+					<!--//app-card-body-->
+					<div class="app-card-footer px-4 py-3">
+						<a class="action-link" href="#">Read more<svg width="1em" height="1em" viewBox="0 0 16 16"
+								class="bi bi-arrow-right ml-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+							</svg></a>
+						<div class="toolbar">
+							<div class="animated-icon heart" data-bs-toggle="tooltip" title="like">
+								<input type="checkbox" id="heart-1" />
+								<label for="heart-1"></label>
+							</div>
+							<div class="animated-icon bookmark" data-bs-toggle="tooltip" title="read later">
+								<input type="checkbox" id="bookmark-1" />
+								<label for="bookmark-1"></label>
+							</div>
+							<div class="animated-icon read" data-bs-toggle="tooltip" title="mark as read">
+								<input type="checkbox" id="read-1" />
+								<label for="read-1"></label>
+							</div>
+							<div class="animated-icon star" data-bs-toggle="tooltip" title="favorite">
+								<input type="checkbox" id="star-1" />
+								<label for="star-1"></label>
+							</div>
+						</div>
+						<!--//card-toolbar-->
+					</div>
+					<!--//app-card-footer-->
+				</div>
+				<!--//app-card-->
+
+
+				<div class="app-card app-card-feed shadow-sm mb-4">
+					<div class="app-card-header px-4 py-3">
+						<div class="row g-3 align-items-center">
+							<div class="col-12 col-lg-auto text-center text-lg-left">
+								<img class="feed-image" src="assets/images/feed-image.jpg" alt="">
+							</div>
+							<!--//col-->
+							<div class="col-12 col-lg-auto text-center text-lg-left">
+								<div class="feed-category mb-2"><span class="badge bg-success">tech</span></div>
+								<h4 class="feed-title mb-1">Feed title Lorem ipsum dolor sit amet consectetur
+									adipisicing elit.</h4>
+
+								<ul class="feed-meta list-inline mb-0">
+									<li class="list-inline-item">2 hrs ago</li>
+									<li class="list-inline-item">|</li>
+									<li class="list-inline-item">Annette Dittert</li>
+								</ul>
+
+							</div>
+							<!--//col-->
+						</div>
+						<!--//row-->
+					</div>
+					<!--//app-card-header-->
+					<div class="app-card-body p-4">
+						<div class="feed-content">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolore nobis
+							ducimus officiis veniam, quibusdam eum modi quas tempore obcaecati esse mollitia error
+							deleniti minus eius dicta ipsa reprehenderit, possimus tempora.</div>
+					</div>
+					<!--//app-card-body-->
+					<div class="app-card-footer px-4 py-3">
+						<a class="action-link" href="#">Read more<svg width="1em" height="1em" viewBox="0 0 16 16"
+								class="bi bi-arrow-right ml-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+							</svg></a>
+						<div class="toolbar">
+							<div class="animated-icon heart" data-bs-toggle="tooltip" title="like">
+								<input type="checkbox" id="heart-2" />
+								<label for="heart-2"></label>
+							</div>
+							<div class="animated-icon bookmark" data-bs-toggle="tooltip" title="read later">
+								<input type="checkbox" id="bookmark-2" />
+								<label for="bookmark-2"></label>
+							</div>
+							<div class="animated-icon read" data-bs-toggle="tooltip" title="mark as read">
+								<input type="checkbox" id="read-2" />
+								<label for="read-2"></label>
+							</div>
+							<div class="animated-icon star" data-bs-toggle="tooltip" title="favorite">
+								<input type="checkbox" id="star-2" />
+								<label for="star-2"></label>
+							</div>
+						</div>
+						<!--//card-toolbar-->
+					</div>
+					<!--//app-card-footer-->
+				</div>
+				<!--//app-card-->
+
 
 
 			</div>

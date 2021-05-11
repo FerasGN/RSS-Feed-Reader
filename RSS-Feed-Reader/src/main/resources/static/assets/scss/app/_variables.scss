@@ -10,9 +10,9 @@ $theme-border-color: lighten($theme-text-color-primary, 75%);
 $theme-color-new: #5ab66e;
 $theme-color-count: #ec776c;
 $theme-error: #ec575b;
-$smoky-white: #f5f5f5;  
-$scrollbar-gray: #d6dee1;
-$scrollbar-hover: #a8bbbf;
+$smoky-white: #f5f5f5;
+$light-gray: #d6dee1;
+$gray-hover: #a8bbbf;
 
 $theme-success-color: #5cb377;
 $theme-warning-color: #eebf41;
@@ -26,7 +26,9 @@ $theme-color-excel: #0da95f;
 $theme-color-video: #935dc1;
 $theme-color-zip: #252930;
 
-
+$heart-color: $theme-error;
+$star-color: $theme-color-ppt;
+$bookmark-color: $theme-color-primary;
 /*************************** Variables Section. *****************************/
 // Create variables to override the default value for variables used in the Bootstrap SCSS files.
 
