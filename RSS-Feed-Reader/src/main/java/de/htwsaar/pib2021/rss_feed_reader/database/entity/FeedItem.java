@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -60,10 +61,20 @@ public class FeedItem {
     )
     private Date publish_date;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Channel channel;
+
+    @OneToMany(mappedBy = "FeedItem", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<Feed_item_x_subscriber> feed_item_x_subscriber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category categorys;
+
     public FeedItem(long id, long channel_id,
                     String content, String description,
                     String link, String title,
-                    Date publish_date) {
+                    Date publish_date, Channel channel) {
         this.id = id;
         this.channel_id = channel_id;
         this.content = content;
@@ -71,6 +82,7 @@ public class FeedItem {
         this.link = link;
         this.title = title;
         this.publish_date = publish_date;
+        this.channel = channel;
     }
 
     public FeedItem() {

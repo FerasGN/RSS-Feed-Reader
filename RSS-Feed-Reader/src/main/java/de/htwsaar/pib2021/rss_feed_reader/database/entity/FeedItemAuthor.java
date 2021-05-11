@@ -28,7 +28,7 @@ public class FeedItemAuthor {
             columnDefinition = "TEXT"
     )
     private String name;
-    //TODO Make feed_item_id Foreign key
+    //TODO Many to One oder One to One
     private long feed_item_id;
 
     public FeedItemAuthor(long feed_item_id, String name) {
