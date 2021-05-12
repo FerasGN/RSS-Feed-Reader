@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -59,6 +60,17 @@ public class Channel {
     )
     private String category;
     //TODO image attribut
+
+    @OneToMany(mappedBy = "Channel", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<channel_subscriber> channel_subscriber;
+
+    @OneToMany(mappedBy = "Channel", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<FeedItem> feedItem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category categorys;
 
     public Channel(long id, String description, String name, String url, String category) {
         this.id = id;

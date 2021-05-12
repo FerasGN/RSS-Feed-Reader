@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -69,6 +70,14 @@ public class Subscriber {
             nullable = false
     )
     private int age;
+
+    @OneToMany(mappedBy = "Subscriber", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<channel_subscriber> channel_subscriberSet;
+
+    @OneToMany(mappedBy = "Subscriber", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<Feed_item_x_subscriber> feed_item_x_subscribers;
 
     public Subscriber(long id, String firstName, String lastName,
                       String email, String password, String country,
