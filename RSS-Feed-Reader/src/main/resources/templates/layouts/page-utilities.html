@@ -1,0 +1,46 @@
+<thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="page-utilities"
+    th:remove="tag">
+    <div class="page-utilities">
+        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+            <div class="col-auto">
+                <form class="cards-search-form row gx-1 align-items-center">
+                    <div class="col-auto">
+                        <input type="text" id="search-feeds" name="search-feeds" class="form-control search-feeds"
+                            placeholder="Search">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn app-btn-secondary">Search</button>
+                    </div>
+                </form>
+
+            </div>
+            <!--//col-->
+            <div class="col-auto">
+
+                <select class="form-select w-auto">
+                    <option selected value="option-1">Today</option>
+                    <option value="option-2">This week</option>
+                    <option value="option-3">This month</option>
+                    <option value="option-4">All</option>
+
+                </select>
+            </div>
+            <!--//col-->
+            <div class="col-auto">
+
+                <select class="form-select w-auto">
+                    <option selected value="option-1">Latest</option>
+                    <option value="option-2">Most relevant</option>
+                    <option value="option-3">Oldest</option>
+                    <option value="option-4" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
+                    <option value="option-5" th:if="${url} != 'channel'">Sort by channel</option>
+                    <option value="option-6" th:if="${url} != 'category' and ${url} != 'channel'">Sort by category</option>
+
+                </select>
+            </div>
+            <!--//col-->
+        </div>
+        <!--//row-->
+    </div>
+    <!--//page-utilities-->
+</thymeleaf>

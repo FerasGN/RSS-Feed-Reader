@@ -68,7 +68,7 @@
             <div class="sidepanel-inner d-flex flex-column">
                 <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
                 <div class="app-branding">
-                    <a class="app-logo" href="#"><img class="logo-icon mr-2" src="assets/images/favicon.svg"
+                    <a class="app-logo" href="#"><img class="logo-icon mr-2" th:src="@{/assets/images/favicon.svg}"
                             alt="logo"><span class="logo-text">feedify</span></a>
 
                 </div>
@@ -95,7 +95,7 @@
                         <!--//nav-item-->
                         <li class="nav-item" data-bs-toggle="tooltip" title="Read Later">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" th:href="@{/read-later}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-bookmark" viewBox="0 0 16 16">
@@ -381,6 +381,8 @@
             <!--//sidepanel-inner-->
         </div>
         <!--//app-sidepanel-->
+
+        
     </header>
     <!--//app-header-->
 
