@@ -96,6 +96,7 @@
 		display: block;
 		padding-left: 3rem;
 		border-left: 3px solid transparent;
+		cursor: pointer;
 		&.active {
 			color: $theme-color-primary;
 			background: lighten($theme-color-primary, 60%);

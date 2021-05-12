@@ -11149,6 +11149,96 @@ button.close:focus {
   display: none !important;
 }
 
+.modal {
+  border-radius: 7px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.modal .modal-open {
+  overflow: visible;
+}
+
+.modal .modal-content {
+  background-color: transparent;
+  border: none;
+  border-radius: 7px;
+}
+
+.modal .modal-content .modal-body {
+  border-radius: 7px;
+  overflow: hidden;
+  background-color: #fff;
+  padding-left: 0px;
+  padding-right: 0px;
+  -webkit-box-shadow: 0 10px 50px -10px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 10px 50px -10px rgba(0, 0, 0, 0.9);
+}
+
+.modal .modal-content .modal-body h2, .modal .modal-content .modal-body .h2 {
+  font-size: 18px;
+}
+
+.modal .modal-content .modal-body p {
+  color: #252930;
+  font-size: 14px;
+}
+
+.modal .modal-content .modal-body h3, .modal .modal-content .modal-body .h3 {
+  color: #000;
+  font-size: 22px;
+}
+
+.modal .modal-content .modal-body .close-btn {
+  color: black;
+}
+
+.modal .warp-channel-image {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+  position: relative;
+  background: rgba(21, 163, 98, 0.05);
+  color: #15a362;
+  border-radius: 50%;
+}
+
+.modal .warp-channel-image::after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "";
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+}
+
+.close-btn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 20px;
+}
+
+.close-btn span {
+  color: #d6dee1;
+}
+
+.close-btn span .icon-close::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "";
+}
+
+.close-btn:hover span {
+  color: #000;
+}
+
 /* Header */
 .app-header {
   -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
@@ -11342,6 +11432,7 @@ button.close:focus {
   display: block;
   padding-left: 3rem;
   border-left: 3px solid transparent;
+  cursor: pointer;
 }
 
 .app-nav .nav-link.active {

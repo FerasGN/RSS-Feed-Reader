@@ -105,6 +105,12 @@
 }
 
 // icon
+@mixin icon( $icon) {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: $icon; 
+}
+
 @mixin on-state-mixin($color, $icon) {
     label:after {
         font-family: "Font Awesome 5 Free";

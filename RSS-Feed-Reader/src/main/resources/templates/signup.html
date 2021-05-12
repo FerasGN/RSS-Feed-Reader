@@ -1,23 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>Feedify</title>
-
-	<!-- Meta -->
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<meta name="description" content="Feedify - The best RSS feed reader">
-	<link rel="icon" type="image/svg+xml" href="/assets/images/favicn.svg">
-
-	<!-- FontAwesome JS-->
-	<script defer src="assets/plugins/fontawesome/js/all.min.js"></script>
-
-	<!-- App CSS -->
-	<link id="theme-style" rel="stylesheet" href="assets/css/main.css">
-
+	<thymeleaf th:replace="layouts/head :: head" />
 </head>
 
 <body class="app app-signup p-0">
@@ -32,22 +17,22 @@
 		<div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5 m-sm-auto">
 			<div class="d-flex flex-column align-content-end">
 				<div class="app-auth-body mx-auto">
-					<div class="app-auth-branding mb-4"><a class="app-logo" href="#"><img
-								class="logo-icon mr-2" src="assets/images/logo.svg" alt="logo"></a></div>
+					<div class="app-auth-branding mb-4"><a class="app-logo" href="#"><img class="logo-icon mr-2"
+								src="assets/images/logo.svg" alt="logo"></a></div>
 					<h2 class="auth-heading text-center mb-4">Sign up to feedify</h2>
 
 					<div class="auth-form-container text-left mx-auto">
 						<form class="auth-form auth-signup-form">
 							<div class="email mb-3">
 								<label class="sr-only" for="signup-first-name">Your first name</label>
-								<input id="signup-first-name" name="signup-fisrt-name" type="text" class="form-control signup-name"
-									placeholder="First name" required="required">
+								<input id="signup-first-name" name="signup-fisrt-name" type="text"
+									class="form-control signup-name" placeholder="First name" required="required">
 							</div>
 							<!--//form-group-->
 							<div class="email mb-3">
 								<label class="sr-only" for="signup-last-name">Your last name</label>
-								<input id="signup-last-name" name="signup-last-name" type="text" class="form-control signup-name"
-									placeholder="Last name" required="required">
+								<input id="signup-last-name" name="signup-last-name" type="text"
+									class="form-control signup-name" placeholder="Last name" required="required">
 							</div>
 							<!--//form-group-->
 							<div class="email mb-3">
@@ -88,7 +73,6 @@
 
 	</div>
 	<!--//row-->
-
 
 </body>
 
