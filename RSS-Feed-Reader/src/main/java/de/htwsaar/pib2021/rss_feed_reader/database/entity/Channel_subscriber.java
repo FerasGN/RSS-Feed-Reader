@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(
         name = "channel_subscriber"
 )
-public class channel_subscriber {
+public class Channel_subscriber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,10 +19,11 @@ public class channel_subscriber {
 
     private boolean important_channel;
 
-    @Column(name = "category",
-            columnDefinition = "TEXT"
+    /**@Column(name = "category",
+            //columnDefinition = "TEXT"
     )
     private String  category;
+    **/
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Subscriber  subscriber;
@@ -30,12 +31,11 @@ public class channel_subscriber {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Channel     channel;
 
-    public channel_subscriber(String category, Subscriber subscriber, Channel channel){
-        this.category = category;
+    public Channel_subscriber(Subscriber subscriber, Channel channel){
         this.channel = channel;
         this.subscriber = subscriber;
         important_channel= false;
     }
 
-    public channel_subscriber(){}
+    public Channel_subscriber(){}
 }

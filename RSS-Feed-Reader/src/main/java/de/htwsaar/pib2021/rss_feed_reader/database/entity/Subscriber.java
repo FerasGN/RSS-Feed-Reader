@@ -71,18 +71,20 @@ public class Subscriber {
     )
     private int age;
 
-    @OneToMany(mappedBy = "Subscriber", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "subscriber", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private Set<channel_subscriber> channel_subscriberSet;
+    private Set<Channel_subscriber> channel_subscriberSet;
 
-    @OneToMany(mappedBy = "Subscriber", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "subscriber", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<Feed_item_x_subscriber> feed_item_x_subscribers;
 
-    public Subscriber(long id, String firstName, String lastName,
-                      String email, String password, String country,
-                      String job, int age) {
-        this.id = id;
+
+
+    public Subscriber(String firstName, String lastName, String email,
+                      String password, String country, String job, int age,
+                      Set<Channel_subscriber> channel_subscriberSet,
+                      Set<Feed_item_x_subscriber> feed_item_x_subscribers) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -90,6 +92,8 @@ public class Subscriber {
         this.country = country;
         this.job = job;
         this.age = age;
+        this.channel_subscriberSet = channel_subscriberSet;
+        this.feed_item_x_subscribers = feed_item_x_subscribers;
     }
 
     public Subscriber() {

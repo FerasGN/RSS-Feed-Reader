@@ -64,7 +64,7 @@ public class FeedItem {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Channel channel;
 
-    @OneToMany(mappedBy = "FeedItem", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "feedItem", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<Feed_item_x_subscriber> feed_item_x_subscriber;
 
@@ -83,6 +83,21 @@ public class FeedItem {
         this.title = title;
         this.publish_date = publish_date;
         this.channel = channel;
+    }
+
+    public FeedItem(long channel_id, String content,
+                    String description, String link, String title,
+                    Date publish_date, Channel channel, Set<Feed_item_x_subscriber> feed_item_x_subscriber,
+                    Category categorys) {
+        this.channel_id = channel_id;
+        this.content = content;
+        this.description = description;
+        this.link = link;
+        this.title = title;
+        this.publish_date = publish_date;
+        this.channel = channel;
+        this.feed_item_x_subscriber = feed_item_x_subscriber;
+        this.categorys = categorys;
     }
 
     public FeedItem() {

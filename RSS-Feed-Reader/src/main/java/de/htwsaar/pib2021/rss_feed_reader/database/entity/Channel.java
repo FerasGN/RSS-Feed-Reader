@@ -1,7 +1,6 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
 
-import com.sun.xml.bind.v2.TODO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -61,11 +60,11 @@ public class Channel {
     private String category;
     //TODO image attribut
 
-    @OneToMany(mappedBy = "Channel", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private Set<channel_subscriber> channel_subscriber;
+    private Set<Channel_subscriber> channel_subscriber;
 
-    @OneToMany(mappedBy = "Channel", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<FeedItem> feedItem;
 
@@ -80,6 +79,10 @@ public class Channel {
         this.category = category;
     }
 
-    public Channel() {
+    public Channel(String description, String name, String url, String category) {
+        this.description = description;
+        this.name = name;
+        this.url = url;
+        this.category = category;
     }
 }

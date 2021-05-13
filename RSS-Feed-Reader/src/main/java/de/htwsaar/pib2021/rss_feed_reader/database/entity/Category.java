@@ -41,16 +41,20 @@ public class Category {
     )
     private String name;
 
-    @OneToMany(mappedBy = "Category", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "categorys", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<Channel> channels;
 
-    @OneToMany(mappedBy = "Category", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "categorys", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<FeedItem> feedItems;
 
     public Category(long id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Category(String name) {
         this.name = name;
     }
 
