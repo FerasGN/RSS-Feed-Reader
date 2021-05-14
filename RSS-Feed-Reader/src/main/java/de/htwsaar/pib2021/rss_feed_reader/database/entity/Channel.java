@@ -53,11 +53,6 @@ public class Channel {
             columnDefinition = "TEXT"
     )
     private String url;
-    @Column(name = "category",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String category;
     //TODO image attribut
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY,
@@ -69,9 +64,9 @@ public class Channel {
     private Set<FeedItem> feedItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Category categorys;
+    private Category category;
 
-    public Channel(long id, String description, String name, String url, String category) {
+    public Channel(long id, String description, String name, String url, Category category) {
         this.id = id;
         this.description = description;
         this.name = name;
@@ -79,10 +74,13 @@ public class Channel {
         this.category = category;
     }
 
-    public Channel(String description, String name, String url, String category) {
+    public Channel(String description, String name, String url, Category category) {
         this.description = description;
         this.name = name;
         this.url = url;
         this.category = category;
+    }
+
+    public Channel() {
     }
 }

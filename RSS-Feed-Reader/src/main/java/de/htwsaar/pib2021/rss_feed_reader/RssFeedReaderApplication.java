@@ -1,5 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader;
 
+
+
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.*;
 import org.springframework.boot.CommandLineRunner;
@@ -30,19 +32,23 @@ public class RssFeedReaderApplication {
 			Set<Feed_item_x_subscriber> feed_item_x_subscriberSet = new HashSet<>();
 			Set<Channel_subscriber> channel_subscriberSet = new HashSet<>();
 
+
 			//create subscriber
 			Subscriber subscriber = new Subscriber("rochella", "vofo", "rochelvofo@yahoo.com", "1254",
 					"germany", "student", 21, channel_subscriberSet, feed_item_x_subscriberSet);
 
-			//create channel
-			Channel channel = new Channel("Channel description", " channel name",
-					"facebook.com", "politik");
-
 			//create channel category
 			Category category = new Category("politik");
 
+			//create channel
+			Channel channel = new Channel("Channel description", " channel name",
+					"facebook.com", category);
+			Channel channel2 = new Channel("Channel description", " channel name2",
+					"vinoleed.com", category);
+
+
 			//create feeditem
-			FeedItem feedItem = new FeedItem(channel.getId(), "feed content", "feed description",
+			FeedItem feedItem = new FeedItem( "feed content", "feed description",
 					"feed link", "feed title", new Date(12385), channel,
 					feed_item_x_subscriberSet, category);
 
@@ -50,8 +56,14 @@ public class RssFeedReaderApplication {
 			FeedItemAuthor feedItemAuthor = new FeedItemAuthor(feedItem.getId(), "Garri Zingraff");
 
 			//create channel subscriber
-			Channel_subscriber channel_subscriber = new Channel_subscriber(subscriber, channel);
+			Channel_subscriber channel_subscriber = new Channel_subscriber(
+					true, subscriber, channel
+			);
+			Channel_subscriber channel_subscriber2 = new Channel_subscriber(
+					true, subscriber, channel2
+			);
 			channel_subscriberSet.add(channel_subscriber);
+			channel_subscriberSet.add(channel_subscriber2);
 
 			//create Feed_item_x_subscriber
 			Feed_item_x_subscriber feed_item_x_subscriber = new Feed_item_x_subscriber(
@@ -62,13 +74,14 @@ public class RssFeedReaderApplication {
 
 
 
+
 			//save all in repositories
+			feedItemXSubscriberRepository.save(feed_item_x_subscriber);
 			channelRepository.save(channel);
 			feedItemRepository.save(feedItem);
 			subscriberRepository.save(subscriber);
 			categoryRepository.save(category);
 			feedItemAuthorRepository.save(feedItemAuthor);
-			feedItemXSubscriberRepository.save(feed_item_x_subscriber);
 			channelSubscriberRepository.save(channel_subscriber);
 
 
