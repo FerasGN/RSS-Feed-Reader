@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+//TODO composite key einfügen
 @Getter
 @Setter
 @Entity(name = "channel_subscriber")
@@ -25,9 +26,11 @@ public class Channel_subscriber {
     **/
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "subscriber_id", nullable = false)
     private Subscriber  subscriber;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "channel_id", nullable = false)
     private Channel     channel;
 
     public Channel_subscriber(Subscriber subscriber, Channel channel){

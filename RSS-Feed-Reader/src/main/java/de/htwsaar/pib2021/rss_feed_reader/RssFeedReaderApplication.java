@@ -53,7 +53,7 @@ public class RssFeedReaderApplication {
 					feed_item_x_subscriberSet, category);
 
 			//create feedItemAuthor
-			FeedItemAuthor feedItemAuthor = new FeedItemAuthor(feedItem.getId(), "Garri Zingraff");
+			FeedItemAuthor feedItemAuthor = new FeedItemAuthor(feedItem, "Garri Zingraff"); //Das object Feeditem wird jetzt übergeben
 
 			//create channel subscriber
 			Channel_subscriber channel_subscriber = new Channel_subscriber(

@@ -28,6 +28,7 @@ public class FeedItem {
     )
     private long id;
 
+    private long channel_id;
     @Column(
             name = "content",
             nullable = false,
@@ -60,15 +61,29 @@ public class FeedItem {
     )
     private Date publish_date;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "channel_id", nullable = false)
     private Channel channel;
 
     @OneToMany(mappedBy = "feedItem", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<Feed_item_x_subscriber> feed_item_x_subscriber;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "feed_item_author_feed_item",
+            joinColumns = {
+                @JoinColumn(name = "feed_item_author_id", referencedColumnName = "id", nullable = false, updatable = false)
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "feed_item_id", referencedColumnName = "id", nullable = false, updatable = false)
+            }
+
+    )
+    private Set<FeedItemAuthor> feedItemAuthors;
 
     public FeedItem(long id,
                     String content, String description,
@@ -105,6 +120,7 @@ public class FeedItem {
     public String toString() {
         return "FeedItem{" +
                 "id=" + id +
+                ", channel_id=" + channel_id +
                 ", content='" + content + '\'' +
                 ", description='" + description + '\'' +
                 ", link='" + link + '\'' +

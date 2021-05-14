@@ -64,6 +64,7 @@ public class Channel {
     private Set<FeedItem> feedItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", updatable = false)
     private Category category;
 
     public Channel(long id, String description, String name, String url, Category category) {

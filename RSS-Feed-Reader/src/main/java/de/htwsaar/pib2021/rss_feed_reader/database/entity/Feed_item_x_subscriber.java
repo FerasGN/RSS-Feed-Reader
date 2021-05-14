@@ -21,10 +21,12 @@ public class Feed_item_x_subscriber {
     private int clicks;
     private boolean important_item;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "subscriber_id", nullable = false)
     private Subscriber subscriber;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "feed_item_id", updatable = false)
     private FeedItem feedItem;
 
     public Feed_item_x_subscriber(){

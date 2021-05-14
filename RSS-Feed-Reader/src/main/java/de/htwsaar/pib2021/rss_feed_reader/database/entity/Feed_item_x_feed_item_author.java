@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+//wo für ist diese Klasse?
+//Lucas
 @Getter
 @Setter
 @Entity

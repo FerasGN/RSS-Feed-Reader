@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,11 +29,12 @@ public class FeedItemAuthor {
             columnDefinition = "TEXT"
     )
     private String name;
-    //TODO Many to One oder One to One
-    private long feed_item_id;
 
-    public FeedItemAuthor(long feed_item_id, String name) {
-        this.feed_item_id = feed_item_id;
+    @ManyToMany(mappedBy = "feed_item_author", fetch = FetchType.LAZY)
+    private Set<FeedItem> feed_item;
+
+    public FeedItemAuthor(FeedItem feedItem, String name) {
+        this.feed_item.add(feedItem);
         this.name = name;
     }
 
@@ -44,7 +46,6 @@ public class FeedItemAuthor {
         return "FeedItemAuthor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", feed_item_id=" + feed_item_id +
                 '}';
     }
 }
