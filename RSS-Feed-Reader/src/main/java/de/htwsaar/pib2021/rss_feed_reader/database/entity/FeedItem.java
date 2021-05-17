@@ -28,7 +28,6 @@ public class FeedItem {
     )
     private long id;
 
-    private long channel_id;
     @Column(
             name = "content",
             nullable = false,
@@ -62,7 +61,7 @@ public class FeedItem {
     private Date publish_date;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "channel_id", nullable = false)
+    @JoinColumn(name = "channel_id", updatable = false, insertable = false)
     private Channel channel;
 
     @OneToMany(mappedBy = "feedItem", fetch = FetchType.LAZY,
@@ -85,18 +84,6 @@ public class FeedItem {
     )
     private Set<FeedItemAuthor> feedItemAuthors;
 
-    public FeedItem(long id,
-                    String content, String description,
-                    String link, String title,
-                    Date publish_date, Channel channel) {
-        this.id = id;
-        this.content = content;
-        this.description = description;
-        this.link = link;
-        this.title = title;
-        this.publish_date = publish_date;
-        this.channel = channel;
-    }
 
     public FeedItem(String content,
                     String description, String link, String title,
@@ -120,7 +107,6 @@ public class FeedItem {
     public String toString() {
         return "FeedItem{" +
                 "id=" + id +
-                ", channel_id=" + channel_id +
                 ", content='" + content + '\'' +
                 ", description='" + description + '\'' +
                 ", link='" + link + '\'' +

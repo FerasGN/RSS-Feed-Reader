@@ -36,7 +36,6 @@ public class Channel {
             name = "id",
             updatable = false
     )
-
     private long id;
     @Column(name = "description",
             nullable = false,
@@ -67,13 +66,6 @@ public class Channel {
     @JoinColumn(name = "category_id", updatable = false)
     private Category category;
 
-    public Channel(long id, String description, String name, String url, Category category) {
-        this.id = id;
-        this.description = description;
-        this.name = name;
-        this.url = url;
-        this.category = category;
-    }
 
     public Channel(String description, String name, String url, Category category) {
         this.description = description;

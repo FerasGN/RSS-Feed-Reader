@@ -30,11 +30,10 @@ public class FeedItemAuthor {
     )
     private String name;
 
-    @ManyToMany(mappedBy = "feed_item_author", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "feedItemAuthors", fetch = FetchType.LAZY)
     private Set<FeedItem> feed_item;
 
-    public FeedItemAuthor(FeedItem feedItem, String name) {
-        this.feed_item.add(feedItem);
+    public FeedItemAuthor( String name) {
         this.name = name;
     }
 

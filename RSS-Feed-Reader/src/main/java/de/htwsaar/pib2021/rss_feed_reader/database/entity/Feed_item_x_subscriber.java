@@ -26,7 +26,7 @@ public class Feed_item_x_subscriber {
     private Subscriber subscriber;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "feed_item_id", updatable = false)
+    @JoinColumn(name = "feed_item_id", nullable = false)
     private FeedItem feedItem;
 
     public Feed_item_x_subscriber(){
