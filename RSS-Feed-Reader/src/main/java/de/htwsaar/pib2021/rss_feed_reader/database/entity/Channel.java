@@ -1,79 +1,34 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Getter
-@Setter
-@Entity(name = "Channel")
-@Table(
-        name = "channel",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "unique_channel_name",
-                        columnNames = "name"),
-                @UniqueConstraint(name = "unique_url_channel",
-                        columnNames = "url")
-        }
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Entity
+@Table(name = "channel", uniqueConstraints = { @UniqueConstraint(name = "unique_channel_name", columnNames = "name"),
+		@UniqueConstraint(name = "unique_url_channel", columnNames = "url") }
 
 )
-public class Channel {
+public class Channel extends BaseEntity {
 
-    @Id
-    @SequenceGenerator(
-            name = "channel_sequence",
-            sequenceName = "channel_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "channel_sequence"
-    )
-    @Column(
-            name = "id",
-            updatable = false
-    )
-    private long id;
-    @Column(name = "description",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String description;
-    @Column(name = "name",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String name;
-    @Column(name = "url",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String url;
-    //TODO image attribut
+	@Column(name = "name", nullable = false, columnDefinition = "TEXT")
+	private String name;
+	@Column(name = "url", nullable = false, columnDefinition = "TEXT")
+	private String url;
+	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
+	private String description;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private Set<Channel_subscriber> channel_subscriber;
+	// @Lob
+	// private Byte[] image;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private Set<FeedItem> feedItem;
+	@OneToMany(mappedBy = "channel", cascade = CascadeType.REMOVE)
+	private Set<FeedItem> feedItems;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", updatable = false)
-    private Category category;
+	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<ChannelUser> users;
 
-
-    public Channel(String description, String name, String url, Category category) {
-        this.description = description;
-        this.name = name;
-        this.url = url;
-        this.category = category;
-    }
-
-    public Channel() {
-    }
 }
