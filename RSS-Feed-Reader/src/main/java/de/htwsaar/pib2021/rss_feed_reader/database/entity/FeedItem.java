@@ -26,6 +26,7 @@ public class FeedItem extends BaseEntity {
 	@Column(name = "publish_date", nullable = false)
 	private ZonedDateTime publishDate;
 
+
 	@ElementCollection
 	@CollectionTable(name = "feedItem_x_authorName", joinColumns = @JoinColumn(name = "feed_item_id", referencedColumnName = "id"))
 	@Column(name = "author_name")

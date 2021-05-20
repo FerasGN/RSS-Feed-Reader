@@ -39,7 +39,6 @@ class UserTest {
 	@Test
 	public void findUserTest() {
 		User user = userRepo.findById(1l).get();
-
 		assertNotEquals(user, null);
 	}
 
@@ -55,7 +54,6 @@ class UserTest {
 	@Test
 	public void findAllUsersTest() {
 		List<User> users = userRepo.findAll();
-
 		assertSame(users.size(), 1);
 	}
 
