@@ -1,6 +1,9 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -8,19 +11,22 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.ChannelUs
 
 @Data
 @Entity
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChannelUser {
 
 	@EmbeddedId
-	private ChannelUserId id;
+	private ChannelUserId id = new ChannelUserId();
 	private String category;
-	private Boolean favorite;
+	private boolean favorite;
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("channelId")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Channel channel;
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("userId")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
 }

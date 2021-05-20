@@ -2,9 +2,12 @@ package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -25,10 +28,17 @@ public class Channel extends BaseEntity {
 	// @Lob
 	// private Byte[] image;
 
+	@ToString.Exclude
 	@OneToMany(mappedBy = "channel", cascade = CascadeType.REMOVE)
-	private Set<FeedItem> feedItems;
+	private List<FeedItem> feedItems = new ArrayList<FeedItem>();
 
-	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ChannelUser> users;
+	@ToString.Exclude
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ChannelUser> users = new ArrayList<ChannelUser>();
+
+	public void addFeedItem(FeedItem feedItem) {
+		feedItem.setChannel(this);
+		this.feedItems.add(feedItem);
+	}
 
 }

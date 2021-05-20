@@ -2,11 +2,13 @@ package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 import java.time.ZonedDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,11 +29,34 @@ public class FeedItem extends BaseEntity {
 	@ElementCollection
 	@CollectionTable(name = "feedItem_x_authorName", joinColumns = @JoinColumn(name = "feed_item_id", referencedColumnName = "id"))
 	@Column(name = "author_name")
-	private Set<String> authorsNames;
+	private List<String> authorsNames = new ArrayList<String>();
 
+	@ToString.Exclude
 	@ManyToOne
 	@JoinColumn(name = "channel_id")
 	private Channel channel;
+
+	@ToString.Exclude
 	@ManyToMany(mappedBy = "feedItems")
-	private Set<Category> categories;
+	private List<Category> categories = new ArrayList<Category>();
+
+	@ToString.Exclude
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<FeedItemUser> users = new ArrayList<FeedItemUser>();
+
+	public void addAuthorName(String name) {
+		authorsNames.add(name);
+	}
+
+	public void addCategory(Category category) {
+		this.categories.add(category);
+		category.getFeedItems().add(this);
+
+	}
+
+	public void add(Channel channel) {
+		this.setChannel(channel);
+		channel.getFeedItems().add(this);
+
+	}
 }

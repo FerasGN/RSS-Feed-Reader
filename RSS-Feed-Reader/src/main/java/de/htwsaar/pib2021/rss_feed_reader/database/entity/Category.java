@@ -1,9 +1,12 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,9 +17,10 @@ public class Category extends BaseEntity {
 
         private String name;
 
+        @ToString.Exclude
         @ManyToMany
         @JoinTable(name = "feedItem_x_category", joinColumns = {
                         @JoinColumn(name = "category_id") }, inverseJoinColumns = { @JoinColumn(name = "feedItem_id") })
-        private Set<FeedItem> feedItems;
+        private List<FeedItem> feedItems = new ArrayList<FeedItem>();
 
 }

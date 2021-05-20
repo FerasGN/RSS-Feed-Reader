@@ -1,6 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
@@ -41,7 +42,12 @@ public class User extends BaseEntity {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ChannelUser> channels;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChannelUser> channels = new ArrayList<ChannelUser>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "feedItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedItemUser> feedItems = new ArrayList<FeedItemUser>();
 
 }

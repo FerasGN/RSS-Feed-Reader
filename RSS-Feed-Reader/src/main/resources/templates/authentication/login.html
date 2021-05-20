@@ -38,7 +38,7 @@
 									<!--//col-6-->
 									<div class="col-6">
 										<div class="forgot-password text-right">
-											<a href="reset-password.html">Forgot password?</a>
+											<a th:href="@{reset-password}">Forgot password?</a>
 										</div>
 									</div>
 									<!--//col-6-->
@@ -47,13 +47,13 @@
 							</div>
 							<!--//form-group-->
 							<div class="text-center">
-								<button type="submit" class="btn app-btn-primary btn-block theme-btn mx-auto">Log
-									In</button>
+								<a type="submit" th:href="@{/complete-profile}" class="btn app-btn-primary btn-block theme-btn mx-auto">Log
+									In</a>
 							</div>
 						</form>
 
 						<div class="auth-option text-center pt-5">No Account? Sign up <a class="text-link"
-								href="signup.html">here</a>.</div>
+								th:href="@{/signup}">here</a>.</div>
 					</div>
 					<!--//auth-form-container-->
 

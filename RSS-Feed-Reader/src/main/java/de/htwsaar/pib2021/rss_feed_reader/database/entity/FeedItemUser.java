@@ -12,10 +12,10 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.FeedItemU
 public class FeedItemUser {
 
 	@EmbeddedId
-	private FeedItemUserId id;
-	private Boolean liked;
-	private Boolean read;
-	private Boolean readLater;
+	private FeedItemUserId id = new FeedItemUserId();
+	private boolean liked;
+	private boolean read;
+	private boolean readLater;
 	private Integer clicks;
 
 	@ManyToOne(fetch = FetchType.LAZY)
