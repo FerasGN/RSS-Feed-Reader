@@ -11,4 +11,5 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
+
 }
