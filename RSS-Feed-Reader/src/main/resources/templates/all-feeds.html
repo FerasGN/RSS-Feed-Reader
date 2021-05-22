@@ -24,7 +24,7 @@
 				</div>
 				<!--//row-->
 
-				<thymeleaf th:replace="layouts/feeds-cards :: feeds-cards" />
+				<thymeleaf id="cards-container" class="cards" th:replace="layouts/feeds-cards :: feeds-cards" />
 			</div>
 			<!--//container-fluid-->
 		</div>
@@ -35,7 +35,10 @@
 	<!--//app-wrapper-->
 
 	<thymeleaf th:replace="layouts/scripts :: scripts" />
+	<script>
+		
 
+	</script>
 </body>
 
 </html>

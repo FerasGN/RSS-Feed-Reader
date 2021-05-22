@@ -17,25 +17,24 @@
             <!--//col-->
             <div class="col-auto">
 
-                <select class="form-select w-auto">
-                    <option selected value="option-1">Today</option>
-                    <option value="option-2">This week</option>
-                    <option value="option-3">This month</option>
-                    <option value="option-4">All</option>
+                <select id="period-select" class="form-select w-auto">
+                    <option selected value="today">Today</option>
+                    <option value="this-week">This week</option>
+                    <option value="this-month">This month</option>
+                    <option value="all">All</option>
 
                 </select>
             </div>
             <!--//col-->
             <div class="col-auto">
-
-                <select class="form-select w-auto">
-                    <option selected value="option-1">Latest</option>
-                    <option value="option-2">Most relevant</option>
-                    <option value="option-3">Oldest</option>
-                    <option value="option-4" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
-                    <option value="option-5" th:if="${url} != 'channel'">Sort by channel</option>
-                    <option value="option-6" th:if="${url} != 'category' and ${url} != 'channel'">Sort by category</option>
-
+                <select id="order-select" class="form-select w-auto">
+                    <option selected value="latest">Latest</option>
+                    <option value="most-relevant">Most relevant</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="unread" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
+                    <option value="sort-by-channel" th:if="${url} != 'channel'">Sort by channel</option>
+                    <option value="sort-by-category" th:if="${url} != 'category' and ${url} != 'channel'">Sort by
+                        category</option>
                 </select>
             </div>
             <!--//col-->
