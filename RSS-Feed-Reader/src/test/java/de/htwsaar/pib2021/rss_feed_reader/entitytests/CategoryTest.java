@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 import java.util.List;
 
@@ -17,29 +18,26 @@ public class CategoryTest {
     @Autowired
     private CategoryRepository categoryRepo;
 
-    @Test
-    @Rollback(false)
-    public void saveCategoryTest(){
+    @BeforeTransaction
+    public void init(){
         Category category = new Category();
         category.setName("Politik");
-        category.setId(1L);
-
-        category = categoryRepo.save(category);
-        assertEquals(category.getId(), 1);
+        category.setId(1l);
+        categoryRepo.save(category);
     }
 
     @Test
     public void findCategoryTest(){
-        Category category = categoryRepo.findById(1L).get();
-        assertEquals(category.getId(), 1L);
+        Category category = categoryRepo.findById(1l).get();
+        assertEquals(category.getId(), 1l);
     }
 
     @Test
     public void updateCategoryTest(){
-        Category category = categoryRepo.findById(1L).get();
-        category.setId(5L);
+        Category category = categoryRepo.findById(1l).get();
+        category.setId(5l);
         category = categoryRepo.save(category);
-        assertNotEquals(category.getId(), 1L);
+        assertNotEquals(category.getId(), 1l);
     }
 
     @Test

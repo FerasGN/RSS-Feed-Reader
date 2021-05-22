@@ -13,6 +13,7 @@ import org.springframework.test.annotation.Rollback;
 
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 @DataJpaTest
 class UserTest {
@@ -20,9 +21,8 @@ class UserTest {
 	@Autowired
 	private UserRepository userRepo;
 
-	@Test
-	@Rollback(false)
-	public void saveUserTest() {
+	@BeforeTransaction
+	public void init(){
 		User user = new User();
 		user.setId(1l);
 		user.setFirstName("jon");
@@ -31,9 +31,7 @@ class UserTest {
 		user.setEmail("jsnow@gmail.com");
 		user.setAge(20);
 		user.setPassword("123");
-
-		user = userRepo.save(user);
-		assertEquals(user.getId(), 1l);
+		userRepo.save(user);
 	}
 
 	@Test

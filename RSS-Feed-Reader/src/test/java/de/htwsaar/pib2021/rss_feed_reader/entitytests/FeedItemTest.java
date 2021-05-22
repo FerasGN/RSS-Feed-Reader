@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -21,29 +22,26 @@ public class FeedItemTest {
     private static final String DESC = "A short story";
     private ZonedDateTime zone= ZonedDateTime.now();
 
-    @Test
-    @Rollback(false)
-    public void saveFeedItemTest(){
+    @BeforeTransaction
+    public void init(){
         FeedItem feedItem = new FeedItem();
-        FeedItem feedItem_ = new FeedItem();
-
         feedItem.setId(1l);
         feedItem.setDescription(DESC);
         feedItem.setLink("https://google-news");
         feedItem.setTitle("One day in my life");
         feedItem.setContent("Here is some content");
         feedItem.setPublishDate(zone);
+        feedItemRepo.save(feedItem);
 
+        FeedItem feedItem_ = new FeedItem();
         feedItem_.setId(2l);
         feedItem_.setDescription(DESC);
         feedItem_.setLink("https://spiegel-news");
         feedItem_.setTitle("A second story");
         feedItem_.setContent("Here is some content for feed2");
         feedItem_.setPublishDate(zone);
+        feedItemRepo.save(feedItem_);
 
-        feedItem = feedItemRepo.save(feedItem);
-        feedItem_ = feedItemRepo.save(feedItem_);
-        assertEquals(feedItem.getDescription(), DESC);
     }
 
     @Test
@@ -64,5 +62,4 @@ public class FeedItemTest {
         List<FeedItem> feedItems = feedItemRepo.findAll();
         assertEquals(feedItems.size(), 2);
     }
-
 }
