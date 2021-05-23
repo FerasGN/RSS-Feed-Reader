@@ -118,6 +118,13 @@ button.close {
 		position: relative;
 		top: -2px;
 	}
+
+	#{&}-xs {
+		padding: .25rem .4rem;
+		font-size: .65rem;
+		line-height: .5;
+		border-radius: .2rem;
+	  }
 }
 
 .btn:focus,
@@ -255,7 +262,7 @@ button.close {
 		border-radius: 50%;
 
 		&::after {
-			@include icon("\f128");
+			@include icon('\f128');
 			align-self: center;
 		}
 	}
@@ -270,7 +277,7 @@ button.close {
 	span {
 		color: $light-gray;
 		.icon-close::before {
-			@include icon("\f00d");
+			@include icon('\f00d');
 		}
 	}
 	&:hover {

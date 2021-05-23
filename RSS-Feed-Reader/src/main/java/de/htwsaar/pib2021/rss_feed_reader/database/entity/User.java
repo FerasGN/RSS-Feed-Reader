@@ -38,7 +38,7 @@ public class User extends BaseEntity {
     @Column(name = "job", columnDefinition = "TEXT")
     private String job;
     @Column(name = "age")
-    private int age;
+    private Integer age;
     @Column(name = "enabled")
     private boolean enabled;
 

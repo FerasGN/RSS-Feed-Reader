@@ -4,13 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-// @EnableWebSecurity
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -39,19 +40,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // http.authorizeRequests()
-        //     .antMatchers("/signup", "/confirm-account", "/reset-password", "/login", "/complete-profile", "/all-feeds")
-        //     .permitAll()
-        //     .anyRequest()
-        //     .authenticated()
-        //     .and()
-        //     .formLogin()
-        //     .permitAll()
-        //     .and()
-        //     .logout()
-        //     .permitAll()
-        //     .and()
-        //     .exceptionHandling().accessDeniedPage("/error");
-        super.configure(http);
+        http.authorizeRequests()
+            .antMatchers("/signup", "/login", "/confirm-account", "/restore-password","/all-feeds")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .formLogin()
+            .loginPage("/login")
+            .and()
+            .logout()
+            .permitAll()
+            .and()
+            .exceptionHandling().accessDeniedPage("/error");
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.
+        ignoring().
+        antMatchers("/assets/**");
     }
 }

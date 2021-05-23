@@ -22,30 +22,80 @@
 					<h2 class="auth-heading text-center mb-4">Sign up to feedify</h2>
 
 					<div class="auth-form-container text-left mx-auto">
-						<form class="auth-form auth-signup-form">
-							<div class="email mb-3">
+						<form action="#" th:action="@{/signup}" th:object="${userCommand}" th:method="POST"
+							id="auth-form" class="auth-form auth-signup-form ">
+							<div id="first-name" class="mb-3 position-relative">
 								<label class="sr-only" for="signup-first-name">Your first name</label>
-								<input id="signup-first-name" name="signup-fisrt-name" type="text"
-									class="form-control signup-name" placeholder="First name" required="required">
+								<input th:field="*{firstName}" id="signup-first-name" name="signup-fisrt-name"
+									type="text" class="form-control signup-name" placeholder="First name"
+									required="required">
+								<th:block th:if="${#fields.hasErrors('firstName')}">
+									<div class="alert alert-danger alert-dismissible fade show mt-1 text-start"
+										role="alert">
+										<span th:each="error : ${#fields.errors('firstName')}" th:text="${error}"
+											style="white-space: pre-line; font-size: 0.75rem;"></span>
+										<button type="button" class="btn-close btn-xs" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+									<!--//firstName-validation-->
+								</th:block>
 							</div>
 							<!--//form-group-->
-							<div class="email mb-3">
+							<div id="last-name" class="mb-3 position-relative">
 								<label class="sr-only" for="signup-last-name">Your last name</label>
-								<input id="signup-last-name" name="signup-last-name" type="text"
+								<input th:field="*{lastName}" id="signup-last-name" name="signup-last-name" type="text"
 									class="form-control signup-name" placeholder="Last name" required="required">
+								<th:block th:if="${#fields.hasErrors('lastName')}">
+									<div class="alert alert-danger alert-dismissible fade show mt-1 text-start"
+										role="alert">
+										<span th:each="error : ${#fields.errors('lastName')}" th:text="${error}"
+											style="white-space: pre-line; font-size: 0.75rem;"></span>
+										<button type="button" class="btn-close btn-xs" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+									<!--//lastName-validation-->
+								</th:block>
 							</div>
 							<!--//form-group-->
-							<div class="email mb-3">
+							<div id="email" class="mb-3">
 								<label class="sr-only" for="signup-email">Your Email</label>
-								<input id="signup-email" name="signup-email" type="email"
+								<input th:field="*{email}" id="signup-email" name="signup-email" type="email"
 									class="form-control signup-email" placeholder="Email" required="required">
 							</div>
 							<!--//form-group-->
-							<div class="password mb-3">
+							<div id="username" class="mb-3 position-relative">
+								<label class="sr-only" for="signup-username">Your username</label>
+								<input th:field="*{username}" id="signup-username" name="signup-email" type="text"
+									class="form-control username" placeholder="Username" required="required">
+								<th:block th:if="${#fields.hasErrors('username')}">
+									<div class="alert alert-danger alert-dismissible fade show mt-1 text-start"
+										role="alert">
+										<span th:each="error : ${#fields.errors('username')}" th:text="${error}"
+											style="white-space: pre-line; font-size: 0.75rem;"></span>
+										<button type="button" class="btn-close btn-xs" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+									<!--//username-validation-->
+								</th:block>
+							</div>
+							<!--//form-group-->
+							<div id="password" class="mb-3">
 								<label class="sr-only" for="signup-password">Password</label>
-								<input id="signup-password" name="signup-password" type="password"
-									class="form-control signup-password" placeholder="Create a password"
+								<input th:field="*{password}" id="signup-password" name="signup-password"
+									type="password" class="form-control signup-password" placeholder="Create a password"
 									required="required">
+								<th:block th:if="${#fields.hasErrors('password')}">
+									<div class="alert alert-danger alert-dismissible fade show mt-1 text-start"
+										role="alert">
+										<span th:each="error : ${#fields.errors('password')}" th:text="${error}"
+											style="white-space: pre-line; font-size: 0.75rem;"></span>
+										<button type="button" class="btn-close btn-xs" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+									<!--//password-validation-->
+								</th:block>
+
+
 							</div>
 							<!--//form-group-->
 
@@ -70,9 +120,11 @@
 		</div>
 		<!--//auth-main-col-->
 
-
 	</div>
 	<!--//row-->
+
+	<!-- Javascript -->
+	<script type="text/javascript" th:src="@{/assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
 
 </body>
 
