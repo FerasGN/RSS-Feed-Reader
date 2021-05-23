@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 import java.util.List;
 
@@ -22,31 +23,27 @@ public class ChannelTest {
     private static final String NAME_ = "Spiegel";
 
 
-    @Test
-    @Rollback(false)
-    public void saveChannelTest() {
+    @BeforeTransaction
+    public void init(){
         Channel channel = new Channel();
         channel.setId(1l);
         channel.setDescription(DESCRIPTION);
         channel.setUrl(URL);
         channel.setName(NAME);
-
         channel = channelRepo.save(channel);
-        assertEquals(channel.getId(), 1);
     }
-
-    @Test
-    public void findAllChannelTest() {
-        List<Channel> channels = channelRepo.findAll();
-        assertEquals(channels.size(), 1);
-    }
-
 
     @Test
     public void findChannelTest() {
         Channel channel = channelRepo.findById(1l).get();
         channel = channelRepo.save(channel);
         assertEquals(channel.getId(), 1l);
+    }
+
+    @Test
+    public void findAllChannelTest() {
+        List<Channel> channels = channelRepo.findAll();
+        assertEquals(channels.size(), 1);
     }
 
     @Test
