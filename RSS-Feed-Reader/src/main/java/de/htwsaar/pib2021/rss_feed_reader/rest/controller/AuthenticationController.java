@@ -1,8 +1,10 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.UserCommand;
+import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
-import de.htwsaar.pib2021.rss_feed_reader.exceptions.UserAlreadyExistException;
+import de.htwsaar.pib2021.rss_feed_reader.exceptions.EmailAlreadyExistException;
+import de.htwsaar.pib2021.rss_feed_reader.exceptions.UsernameAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.AuthenticationService;
 
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,15 +44,14 @@ public class AuthenticationController {
      * @param model
      * @return String
      */
-    @PostMapping(value = { "/login" })
-    public String postLogIn(Model model, @ModelAttribute("username") String username,
-            @ModelAttribute("password") String password) {
+    @GetMapping(value = { "/" })
+    public ModelAndView viewHome(ModelAndView mav, @AuthenticationPrincipal SecurityUser securityUser) {
         try {
-            User user = authenticationService.login(username, password);
-            // model.addAttribute("user", user)
-            return "";
+
+            mav.setViewName("complete-profile");
+            return mav;
         } catch (Exception e) {
-            return ""; // Errormessage unable to login
+            return mav; // Errormessage unable to login
         }
     }
 
@@ -61,18 +63,29 @@ public class AuthenticationController {
     public String getSignUp(Model model) {
         // If true, it means there was a sign up failure (Validation errors) and the
         // user was redirected to this handler again
-        if (model.containsAttribute("hasErrors")) {
+        if (model.containsAttribute("hasValidationErrors")) {
             // the errors encountered
             BindingResult bindingResult = (BindingResult) model
                     .getAttribute("org.springframework.validation.BindingResult.userCommand");
-            // the user inputs
-            UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
             // the names of the fields that are in error
             List<String> errorsFields = bindingResult.getFieldErrors().stream().map(field -> field.getField())
                     .collect(Collectors.toList());
-
+            // the user inputs
+            UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
             model.addAttribute("userCommand", userCommand);
             model.addAttribute("errorsFields", errorsFields);
+
+        } else if (model.containsAttribute("emailExist")) {
+
+            UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
+            model.addAttribute("userCommand", userCommand);
+            model.addAttribute("emailExist", "true");
+
+        } else if (model.containsAttribute("usernameExist")) {
+
+            UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
+            model.addAttribute("userCommand", userCommand);
+            model.addAttribute("usernameExist", "true");
 
         } else {
             model.addAttribute("userCommand", new UserCommand());
@@ -95,7 +108,7 @@ public class AuthenticationController {
         if (bindingResult.hasErrors()) {
             redAttrs.addFlashAttribute("org.springframework.validation.BindingResult.userCommand", bindingResult);
             redAttrs.addFlashAttribute("userCommand", userCommand);
-            redAttrs.addFlashAttribute("hasErrors", "true");
+            redAttrs.addFlashAttribute("hasValidationErrors", "true");
             mav.setViewName("redirect:/signup");
             return mav;
         }
@@ -103,9 +116,21 @@ public class AuthenticationController {
         try {
             authenticationService.signUp(userCommand);
             mav.setViewName("redirect:/login");
-        } catch (UserAlreadyExistException ex) {
+
+        } catch (EmailAlreadyExistException ex) {
+
+            redAttrs.addFlashAttribute("emailExist", "true");
+            redAttrs.addFlashAttribute("userCommand", userCommand);
             mav.setViewName("redirect:/signup");
+
+        } catch (UsernameAlreadyExistException ex) {
+
+            redAttrs.addFlashAttribute("usernameExist", "true");
+            redAttrs.addFlashAttribute("userCommand", userCommand);
+            mav.setViewName("redirect:/signup");
+
         }
+
         return mav;
     }
 
@@ -115,6 +140,14 @@ public class AuthenticationController {
     @GetMapping(value = { "/restore-password" })
     public String restorePassword() {
         return "authentication/restore-password";
+    }
+
+    /**
+     * @return String
+     */
+    @GetMapping(value = { "/complete-profile" })
+    public String completeProfile() {
+        return "complete-profile";
     }
 
 }

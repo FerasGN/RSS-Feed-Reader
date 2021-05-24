@@ -4,7 +4,8 @@ import de.htwsaar.pib2021.rss_feed_reader.commands.UserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.UserCommandToUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
-import de.htwsaar.pib2021.rss_feed_reader.exceptions.UserAlreadyExistException;
+import de.htwsaar.pib2021.rss_feed_reader.exceptions.EmailAlreadyExistException;
+import de.htwsaar.pib2021.rss_feed_reader.exceptions.UsernameAlreadyExistException;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class AuthenticationService {
 
     private final static String EMAIL_EXIST = "There is an account with that email address: ";
+    private final static String USERNAME_EXIST = "There is an account with that username : ";
 
     private UserRepository userRepository;
     private UserCommandToUser userCommandToUser;
@@ -23,41 +25,29 @@ public class AuthenticationService {
         this.userCommandToUser = userCommandToUser;
     }
 
-    
-    /** 
-     * @param username
-     * @param password
-     * @return User
-     */
-    public User login(String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (!user.isPresent()) {
-            // user not found exception
-        }
-        if (!user.get().getPassword().equals(password)) {
-            // wrong password exception
-        }
-        return user.get();
-    }
-
-    
-    /** 
+    /**
      * @param userCommand
      * @return User
-     * @throws UserAlreadyExistException
+     * @throws EmailAlreadyExistException
+     * @throws UsernameAlreadyExistException
      */
-    public User signUp(UserCommand userCommand) throws UserAlreadyExistException {
+    public User signUp(UserCommand userCommand) throws EmailAlreadyExistException, UsernameAlreadyExistException {
         if (emailExist(userCommand.getEmail()))
-            throw new UserAlreadyExistException(EMAIL_EXIST + userCommand.getEmail());
+            throw new EmailAlreadyExistException(EMAIL_EXIST + userCommand.getEmail());
+
+        if (usernameExist(userCommand.getUsername()))
+            throw new UsernameAlreadyExistException(USERNAME_EXIST + userCommand.getUsername());
 
         User user = userCommandToUser.convert(userCommand);
         user.setEnabled(true);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
 
         return userRepository.save(user);
     }
 
-    
-    /** 
+    /**
      * @param email
      * @return boolean
      */
@@ -66,8 +56,16 @@ public class AuthenticationService {
         return user.isPresent();
     }
 
-    
-    /** 
+     /**
+     * @param username
+     * @return boolean
+     */
+    private boolean usernameExist(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.isPresent();
+    }
+
+    /**
      * @param user
      */
     public void confirmEmail(User user) {
@@ -80,8 +78,7 @@ public class AuthenticationService {
         }
     }
 
-    
-    /** 
+    /**
      * @param user
      * @param password
      */

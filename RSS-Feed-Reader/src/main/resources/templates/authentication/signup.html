@@ -22,6 +22,11 @@
 					<h2 class="auth-heading text-center mb-4">Sign up to feedify</h2>
 
 					<div class="auth-form-container text-left mx-auto">
+						
+						<div th:if="${emailExist}" class="alert alert-danger">* Email already exists</div>
+						<div th:if="${usernameExist}" class="alert alert-danger">* Username already exists</div>
+						<!--//auth-errors-->
+
 						<form action="#" th:action="@{/signup}" th:object="${userCommand}" th:method="POST"
 							id="auth-form" class="auth-form auth-signup-form ">
 							<div id="first-name" class="mb-3">
