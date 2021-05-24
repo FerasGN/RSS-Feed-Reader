@@ -3,11 +3,7 @@ package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,6 +37,17 @@ public class User extends BaseEntity {
     private Integer age;
     @Column(name = "enabled")
     private boolean enabled;
+    @Column(name = "accountNonExpired")
+    private boolean accountNonExpired;
+    @Column(name = "accountNonLocked")
+    private boolean accountNonLocked;
+    @Column(name = "credentialsNonExpired")
+    private boolean credentialsNonExpired;
+
+    @ElementCollection
+    @CollectionTable(name = "user_x_interest", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @Column(name = "user_interest")
+    private List<String> userInterests = new ArrayList<String>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
