@@ -43,8 +43,9 @@ public class AuthenticationService {
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
-
-        return userRepository.save(user);
+        userRepository.save(user);
+        
+        return user;
     }
 
     /**
@@ -56,7 +57,7 @@ public class AuthenticationService {
         return user.isPresent();
     }
 
-     /**
+    /**
      * @param username
      * @return boolean
      */

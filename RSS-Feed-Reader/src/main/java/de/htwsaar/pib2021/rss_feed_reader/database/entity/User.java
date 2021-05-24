@@ -44,7 +44,7 @@ public class User extends BaseEntity {
     @Column(name = "credentialsNonExpired")
     private boolean credentialsNonExpired;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_x_interest", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     @Column(name = "user_interest")
     private List<String> userInterests = new ArrayList<String>();

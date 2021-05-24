@@ -22,7 +22,7 @@
 					<h2 class="auth-heading text-center mb-4">Sign up to feedify</h2>
 
 					<div class="auth-form-container text-left mx-auto">
-						
+
 						<div th:if="${emailExist}" class="alert alert-danger">* Email already exists</div>
 						<div th:if="${usernameExist}" class="alert alert-danger">* Username already exists</div>
 						<!--//auth-errors-->
@@ -133,7 +133,7 @@
 						<!--//auth-form-->
 
 						<div class="auth-option text-center pt-5">Already have an account? <a class="text-link"
-								th:href="@{log-in}">Log in</a></div>
+								th:href="@{/login}">Log in</a></div>
 					</div>
 					<!--//auth-form-container-->
 

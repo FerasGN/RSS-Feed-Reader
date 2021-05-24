@@ -2,6 +2,7 @@ package de.htwsaar.pib2021.rss_feed_reader.config.security;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -63,6 +64,9 @@ public class SecurityUser implements UserDetails {
         return user.isEnabled();
     }
 
+    public List<String> getUserInterests(){
+        return user.getUserInterests();
+    }
     public User getUser() {
         return user;
     }

@@ -35,7 +35,7 @@
                             <!--//app-utility-item-->
 
                             <div class="app-utility-item app-user-dropdown dropdown">
-                                <a class="dropdown-toggle" id="user-dropdown-toggle" data-toggle="dropdown" href="#"
+                                <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#"
                                     role="button" aria-expanded="false">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-person-fill" viewBox="0 0 16 16">
@@ -49,7 +49,12 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" th:href="@{/logout}">Log Out</a></li>
+                                    <li>
+                                        <form th:action="@{/logout}" method="post">
+                                            <button type="submit" class="dropdown-item">Log Out</button>
+                                        </form>
+                                    </li>
+
                                 </ul>
                             </div>
                             <!--//app-user-dropdown-->
@@ -76,7 +81,7 @@
 
                 <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
                     <ul class="app-menu list-unstyled accordion" id="menu-accordion">
-                        <li class="nav-item" data-bs-toggle="tooltip" title="Subscribe to a new channel" data-toggle="modal" data-target="#subscribe-modal">
+                        <li class="nav-item" data-toggle="modal" data-target="#subscribe-modal">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                             <a class="nav-link">
                                 <span class="nav-icon">
@@ -88,12 +93,13 @@
                                             d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                     </svg>
                                 </span>
-                                <span class="nav-link-text">Subscribe</span>
+                                <span class="nav-link-text" data-bs-toggle="tooltip" title="Subscribe to a new channel"
+                                    data-bs-placement="right">Subscribe</span>
                             </a>
                             <!--//nav-link-->
                         </li>
                         <!--//nav-item-->
-                        <li class="nav-item" data-bs-toggle="tooltip" title="Read Later">
+                        <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                             <a class="nav-link" th:href="@{/read-later}">
                                 <span class="nav-icon">
@@ -103,14 +109,15 @@
                                             d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z" />
                                     </svg>
                                 </span>
-                                <span class="nav-link-text">Read Later</span>
+                                <span class="nav-link-text" data-bs-toggle="tooltip" title="Read Later"
+                                    data-bs-placement="right">Read Later</span>
                             </a>
                             <!--//nav-link-->
                         </li>
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link" th:href="@{/liked-feeds}" data-bs-toggle="tooltip" title="Liked">
+                            <a class="nav-link" th:href="@{/liked-feeds}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-heart" viewBox="0 0 16 16">
@@ -118,14 +125,15 @@
                                             d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
                                     </svg>
                                 </span>
-                                <span class="nav-link-text">Liked</span>
+                                <span class="nav-link-text" data-bs-toggle="tooltip" title="Liked"
+                                    data-bs-placement="right">Liked</span>
                             </a>
                             <!--//nav-link-->
                         </li>
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link" href="#" data-bs-toggle="tooltip" title="Favorite Channels">
+                            <a class="nav-link" href="#">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-star" viewBox="0 0 16 16">
@@ -134,14 +142,15 @@
                                     </svg>
                                 </span>
 
-                                <span class="nav-link-text">Favorite Channels</span>
+                                <span class="nav-link-text" data-bs-toggle="tooltip" title="Favorite Channels"
+                                    data-bs-placement="right">Favorite Channels</span>
                                 <span class="count">5</span>
                                 <!--//count-->
                             </a>
                             <!--//nav-link-->
                         </li>
                         <!--//nav-item-->
-                        <li class="nav-item" data-bs-toggle="tooltip" title="Recently Read">
+                        <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                             <a class="nav-link">
                                 <span class="nav-icon">
@@ -155,15 +164,15 @@
                                             d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z" />
                                     </svg>
                                 </span>
-                                <span class="nav-link-text">Recently Read</span>
+                                <span class="nav-link-text" data-bs-toggle="tooltip" title="Recently Read"
+                                    data-bs-placement="right">Recently Read</span>
                             </a>
                         </li>
                         <!--//nav-item-->
                         <li class="nav-item has-submenu">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link submenu-toggle" href="#" data-toggle="collapse" data-target="#submenu-1"
-                                aria-expanded="false" aria-controls="submenu-1" data-bs-toggle="tooltip"
-                                title="Categories">
+                            <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse"
+                                data-bs-target="#submenu-1" aria-expanded="false" aria-controls="submenu-1">
                                 <span class="nav-icon">
                                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -175,7 +184,8 @@
                                     </svg>
                                 </span>
                                 <div class="text-count-arrow">
-                                    <span class="nav-link-text">Categories</span>
+                                    <span class="nav-link-text" data-bs-toggle="tooltip" title="Categories"
+                                        data-bs-placement="right">Categories</span>
                                     <span class="count">45</span>
                                     <!--//count-->
                                     <span class="submenu-arrow">
@@ -194,8 +204,8 @@
                                 <ul class="submenu-list list-unstyled">
                                     <li class="submenu-item has-submenu">
                                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                                        <a class="submenu-link submenu-toggle" href="#" data-toggle="collapse"
-                                            data-target="#sub-submenu-1" aria-expanded="false"
+                                        <a class="submenu-link submenu-toggle" href="#" data-bs-toggle="collapse"
+                                            data-bs-target="#sub-submenu-1" aria-expanded="false"
                                             aria-controls="sub-submenu-1">
                                             <div class="text-count-arrow">
                                                 <span class="nav-link-text submenu-item-text">Tech</span>
@@ -248,8 +258,8 @@
 
                                     <li class="submenu-item has-submenu">
                                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                                        <a class="submenu-link submenu-toggle" href="#" data-toggle="collapse"
-                                            data-target="#sub-submenu-2" aria-expanded="false"
+                                        <a class="submenu-link submenu-toggle" href="#" data-bs-toggle="collapse"
+                                            data-bs-target="#sub-submenu-2" aria-expanded="false"
                                             aria-controls="sub-submenu-2">
                                             <div class="text-count-arrow">
                                                 <span class="nav-link-text submenu-item-text">Sport</span>
@@ -296,8 +306,8 @@
                                     </li>
                                     <li class="submenu-item has-submenu">
                                         <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                                        <a class="submenu-link submenu-toggle" href="#" data-toggle="collapse"
-                                            data-target="#sub-submenu-3" aria-expanded="false"
+                                        <a class="submenu-link submenu-toggle" href="#" data-bs-toggle="collapse"
+                                            data-bs-target="#sub-submenu-3" aria-expanded="false"
                                             aria-controls="sub-submenu-3">
                                             <div class="text-count-arrow">
                                                 <span class="nav-link-text submenu-item-text">Cars</span>
@@ -382,7 +392,7 @@
         </div>
         <!--//app-sidepanel-->
 
-        
+
     </header>
     <!--//app-header-->
 
