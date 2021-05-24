@@ -10,12 +10,16 @@
 		<div class="col-12 col-md-7 col-lg-6 auth-main-col p-5 m-sm-auto">
 			<div class="d-flex flex-column align-content-end">
 				<div class="app-auth-body mx-auto">
-					<div class="app-auth-branding text-center mb-4"><a class="app-logo" href="#"><img class="logo-icon mr-2"
-								src="assets/images/logo.svg" alt="logo"></a></div>
+					<div class="app-auth-branding text-center mb-4"><a class="app-logo" href="#"><img
+								class="logo-icon mr-2" src="assets/images/logo.svg" alt="logo"></a></div>
 					<h2 class="auth-heading text-center mb-5">Log in to feedify</h2>
 					<div class="auth-form-container text-start">
-						<form action="#" th:action="@{/login}" th:method="POST"
-						id="auth-form"class="auth-form login-form">
+
+						<div th:if="${loginError}" class="alert alert-danger">* Incorrect username or password</div>
+						<!--//auth-errors-->
+
+						<form action="#" th:action="@{/login}" th:method="POST" id="auth-form"
+							class="auth-form login-form">
 							<div class="mb-3">
 								<label class="sr-only" for="signin-username">Username</label>
 								<input id="signin-username" name="username" type="username"

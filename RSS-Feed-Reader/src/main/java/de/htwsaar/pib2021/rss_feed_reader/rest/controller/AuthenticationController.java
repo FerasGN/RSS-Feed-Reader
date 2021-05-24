@@ -62,7 +62,7 @@ public class AuthenticationController {
     private Model showUsernameError(Model model) {
         UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
         model.addAttribute("userCommand", userCommand);
-        model.addAttribute("usernameExist", "true");
+        model.addAttribute("usernameExist", true);
         return model;
     }
 
@@ -73,7 +73,7 @@ public class AuthenticationController {
     private Model showEmailError(Model model) {
         UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
         model.addAttribute("userCommand", userCommand);
-        model.addAttribute("emailExist", "true");
+        model.addAttribute("emailExist", true);
         return model;
     }
 
@@ -110,7 +110,7 @@ public class AuthenticationController {
         if (bindingResult.hasErrors()) {
             redAttrs.addFlashAttribute("org.springframework.validation.BindingResult.userCommand", bindingResult);
             redAttrs.addFlashAttribute("userCommand", userCommand);
-            redAttrs.addFlashAttribute("hasValidationErrors", "true");
+            redAttrs.addFlashAttribute("hasValidationErrors", true);
             mav.setViewName("redirect:/signup");
             return mav;
         }
@@ -160,6 +160,15 @@ public class AuthenticationController {
             return "redirect:/";
         }
         return "authentication/login";
+    }
+
+    // Login form with error
+    @GetMapping(value = {"/login-error"})
+    public ModelAndView loginError(ModelAndView mav) {
+        System.out.println("Incorrect username or password");
+        mav.addObject("loginError", true);
+        mav.setViewName("authentication/login");
+        return mav;
     }
 
     /**
