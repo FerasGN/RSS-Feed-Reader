@@ -56,7 +56,7 @@ public class ChannelUserTest {
         channel_.setName(NAME_);
         channel_ = channelRepo.save(channel_);
 
-        //TODO sollte eigentlich nicht gehen, das gleiche Ids und email
+
         User user = new User();
         user.setId(1l);
         user.setFirstName("jon");
@@ -66,16 +66,6 @@ public class ChannelUserTest {
         user.setAge(20);
         user.setPassword("123");
         userRepo.save(user);
-
-        User user2 = new User();
-        user2.setId(1l);
-        user2.setFirstName("rochella");
-        user2.setLastName("vofo");
-        user2.setUsername("jsnow");
-        user2.setEmail("jsnow@gmail.com");
-        user2.setAge(20);
-        user2.setPassword("569");
-        userRepo.save(user2);
 
         Category category = new Category();
         category.setId(1l);

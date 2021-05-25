@@ -18,7 +18,10 @@ import org.springframework.context.annotation.Bean;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "`user`")
+@Table(name = "`user`", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username", name = "uniqueUsernameConstraint"),
+        @UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")
+})
 public class User extends BaseEntity {
 
     @Column(name = "first_name", nullable = false, columnDefinition = "TEXT")
