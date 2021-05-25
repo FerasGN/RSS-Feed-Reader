@@ -43,38 +43,13 @@ public class AuthenticationController {
         if (model.containsAttribute("hasValidationErrors"))
             model = showValidationErrors(model);
 
-        else if (model.containsAttribute("emailExist"))
-            model = showEmailError(model);
-
-        else if (model.containsAttribute("usernameExist"))
-            model = showUsernameError(model);
+        else if (model.containsAttribute("emailExist") || (model.containsAttribute("usernameExist")))
+            return "authentication/signup";
 
         else
             model.addAttribute("userCommand", new UserCommand());
 
         return "authentication/signup";
-    }
-
-    /**
-     * @param model
-     * @return Model
-     */
-    private Model showUsernameError(Model model) {
-        UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
-        model.addAttribute("userCommand", userCommand);
-        model.addAttribute("usernameExist", true);
-        return model;
-    }
-
-    /**
-     * @param model
-     * @return Model
-     */
-    private Model showEmailError(Model model) {
-        UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
-        model.addAttribute("userCommand", userCommand);
-        model.addAttribute("emailExist", true);
-        return model;
     }
 
     /**
@@ -88,9 +63,6 @@ public class AuthenticationController {
         // the names of the fields that are in error
         List<String> errorsFields = bindingResult.getFieldErrors().stream().map(field -> field.getField())
                 .collect(Collectors.toList());
-        // the user inputs
-        UserCommand userCommand = (UserCommand) model.getAttribute("userCommand");
-        model.addAttribute("userCommand", userCommand);
         model.addAttribute("errorsFields", errorsFields);
         return model;
     }
@@ -109,7 +81,6 @@ public class AuthenticationController {
         // Check for any validation errors
         if (bindingResult.hasErrors()) {
             redAttrs.addFlashAttribute("org.springframework.validation.BindingResult.userCommand", bindingResult);
-            redAttrs.addFlashAttribute("userCommand", userCommand);
             redAttrs.addFlashAttribute("hasValidationErrors", true);
             mav.setViewName("redirect:/signup");
             return mav;
@@ -134,13 +105,15 @@ public class AuthenticationController {
 
         } catch (EmailAlreadyExistException ex) {
 
-            redAttrs.addFlashAttribute("emailExist", "true");
+            redAttrs.addFlashAttribute("emailExist", true);
+            // redirect the same user information that contanins an error
             redAttrs.addFlashAttribute("userCommand", userCommand);
             mav.setViewName("redirect:/signup");
 
         } catch (UsernameAlreadyExistException ex) {
 
-            redAttrs.addFlashAttribute("usernameExist", "true");
+            redAttrs.addFlashAttribute("usernameExist", true);
+            // redirect the same user information that contanins an error
             redAttrs.addFlashAttribute("userCommand", userCommand);
             mav.setViewName("redirect:/signup");
 
@@ -163,9 +136,8 @@ public class AuthenticationController {
     }
 
     // Login form with error
-    @GetMapping(value = {"/login-error"})
+    @GetMapping(value = { "/login-error" })
     public ModelAndView loginError(ModelAndView mav) {
-        System.out.println("Incorrect username or password");
         mav.addObject("loginError", true);
         mav.setViewName("authentication/login");
         return mav;
