@@ -101,12 +101,15 @@
 							<!--//form-group-->
 							<div id="password" class="mb-3">
 								<label class="sr-only" for="signup-password">Password</label>
-
-								<input th:field="*{password}" id="signup-password" name="signup-password"
-									type="password" class="form-control signup-password" placeholder="Create a password"
-									pattern="^(?!.* )(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,30}$"
-									oninvalid="this.setCustomValidity('Password must contain 8 or more characters that are of at least one number,  one uppercase and lowercase letter and not a whitespace')"
-									oninput="this.setCustomValidity('')" required="required">
+								<div class="password-toggle position-relative">
+									<input th:field="*{password}" id="signup-password" name="signup-password"
+										type="password" class="form-control signup-password"
+										placeholder="Create a password"
+										pattern="^(?!.* )(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,30}$"
+										oninvalid="this.setCustomValidity('Password must contain 8 or more characters that are of at least one number,  one uppercase and lowercase letter and not a whitespace')"
+										oninput="this.setCustomValidity('')" required="required">
+									<i class="far fa-eye" id="toggle-icon"></i>
+								</div>
 
 
 								<th:block th:if="${#fields.hasErrors('password')}">
@@ -150,6 +153,17 @@
 
 	<!-- Javascript -->
 	<script type="text/javascript" th:src="@{/assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript">
+		const toggleIcon = document.querySelector('#toggle-icon');
+		const password = document.querySelector("input[type='password']");
+		toggleIcon.addEventListener('click', function (e) {
+			// toggle the type attribute
+			const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+			password.setAttribute('type', type);
+			// toggle the eye slash icon
+			this.classList.toggle('fa-eye-slash');
+		});
+	</script>
 
 </body>
 

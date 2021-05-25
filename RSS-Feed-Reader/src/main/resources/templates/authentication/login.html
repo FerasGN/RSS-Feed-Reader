@@ -27,9 +27,13 @@
 							</div>
 							<!--//form-group-->
 							<div class="password mb-3">
-								<label class="sr-only" for="signin-password">Password</label>
-								<input id="signin-password" name="password" type="password"
-									class="form-control signin-password" placeholder="Password" required="required">
+								<div class="password-toggle position-relative">
+									<label class="sr-only" for="signin-password">Password</label>
+									<input id="signin-password" name="password" type="password"
+										class="form-control signin-password" placeholder="Password" required="required">
+									<i class="far fa-eye" id="toggle-icon"></i>
+								</div>
+								</button>
 								<div class="extra mt-3 row justify-content-between">
 									<div class="col-6">
 										<div class="form-check">
@@ -77,7 +81,17 @@
 
 	</div>
 	<!--//row-->
-
+	<script>
+		const toggleIcon = document.querySelector('#toggle-icon');
+		const password = document.querySelector("input[type='password']");
+		toggleIcon.addEventListener('click', function (e) {
+			// toggle the type attribute
+			const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+			password.setAttribute('type', type);
+			// toggle the eye slash icon
+			this.classList.toggle('fa-eye-slash');
+		});
+	</script>
 </body>
 
 </html>
