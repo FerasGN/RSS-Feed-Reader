@@ -16,11 +16,17 @@
             </div>
             <!--//col-->
             <div class="col-auto">
-
+                <select id="view-select" class="form-select w-auto">
+                    <option selected value="view-cards">View Cards</option>
+                    <option value="view-title-only">View Title Only</option>
+                </select>
+            </div>
+            <!--//col-->
+            <div class="col-auto">
                 <select id="period-select" class="form-select w-auto">
                     <option selected value="today">Today</option>
-                    <option value="this-week">This week</option>
-                    <option value="this-month">This month</option>
+                    <option value="this-week">This Week</option>
+                    <option value="this-month">This Month</option>
                     <option value="all">All</option>
 
                 </select>
@@ -29,12 +35,12 @@
             <div class="col-auto">
                 <select id="order-select" class="form-select w-auto">
                     <option selected value="latest">Latest</option>
-                    <option value="most-relevant">Most relevant</option>
+                    <option value="most-relevant">Most Relevant</option>
                     <option value="oldest">Oldest</option>
                     <option value="unread" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
-                    <option value="sort-by-channel" th:if="${url} != 'channel'">Sort by channel</option>
-                    <option value="sort-by-category" th:if="${url} != 'category' and ${url} != 'channel'">Sort by
-                        category</option>
+                    <option value="sort-by-channel" th:if="${url} != 'channel'">Sort By Channel</option>
+                    <option value="sort-by-category" th:if="${url} != 'category' and ${url} != 'channel'">Sort By
+                        Category</option>
                 </select>
             </div>
             <!--//col-->

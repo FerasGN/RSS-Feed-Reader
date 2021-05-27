@@ -2,10 +2,12 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.UserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.EmailAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.UsernameAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.AuthenticationService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -157,7 +160,7 @@ public class AuthenticationController {
         // return mav;
         // }
 
-        mav.setViewName("all-feeds");
+        mav.setViewName("redirect:/all-feeds");
         return mav;
     }
 
