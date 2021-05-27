@@ -17,8 +17,14 @@ public class UserProfileUpdateCommand {
     @ValidFormInput(minLength = 6, maxLength = 60, blank = false)
     private String lastName;
 
+    @ValidFormInput(minLength = 5, maxLength = 30, blank = false)
+    private String userName;
+
     @Email
     private String email;
+
+    @ValidPassword
+    private String password;
 
     private String country;
 
