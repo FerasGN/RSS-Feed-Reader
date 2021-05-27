@@ -101,69 +101,145 @@ function get(url, container) {
 }
 
 /* ===== Select order and period ====== */
+const viewSelect = document.getElementById('view-select');
 const orederSelect = document.getElementById('order-select');
 const periodSelect = document.getElementById('period-select');
-const cardsContainer = document.getElementById('cards-container');
 
-function handlePerieodAndOrderSelect(selectedPeriod, selectedOrder) {
+function handleViewAndPerieodAndOrderSelect(selectedView, selectedPeriod, selectedOrder, feedsContainer) {
 	if (window.location.href.indexOf('/all-feeds') > -1)
-		handlePeriodAndOrder('/all-feeds', selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/all-feeds', selectedView, selectedPeriod, selectedOrder, feedsContainer);
 	else if (window.location.href.indexOf('/read-later') > -1)
-		handlePeriodAndOrder('/read-later', selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/read-later', selectedView, selectedPeriod, selectedOrder, feedsContainer);
 	else if (window.location.href.indexOf('/liked-feeds') > -1)
-		handlePeriodAndOrder('/liked-feeds', selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/liked-feeds', selectedView, selectedPeriod, selectedOrder, feedsContainer);
 	else if (window.location.href.indexOf('/favorite-channels') > -1)
-		handlePeriodAndOrder('/favorite-channels', selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/favorite-channels', selectedView, selectedPeriod, selectedOrder, feedsContainer);
 	else if (window.location.href.indexOf('/recently-read') > -1)
-		handlePeriodAndOrder('/recently-read', selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/recently-read', selectedView, selectedPeriod, selectedOrder, feedsContainer);
 	else if (window.location.href.indexOf('/category/') > -1) {
 		const categoryPathVariable = window.location.pathname.split("/").pop();
-		handlePeriodAndOrder('/category/' + categoryPathVariable, selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/category/' + categoryPathVariable, selectedView, selectedPeriod, selectedOrder, feedsContainer);
 	} else if (window.location.href.indexOf('/channel/') > -1) {
 		const categoryPathVariable = window.location.pathname.split("/").pop();
-		handlePeriodAndOrder('/channel/' + categoryPathVariable, selectedPeriod, selectedOrder);
+		handleViewAndPeriodAndOrder('/channel/' + categoryPathVariable, selectedView, selectedPeriod, selectedOrderm, feedsContainer);
 	}
 }
 
-function handlePeriodAndOrder(url, selectedPeriod, slectedOrder) {
+function handleViewAndPeriodAndOrder(url, selectedView, selectedPeriod, slectedOrder, feedsContainer) {
 	if (selectedPeriod == 'today')
-		handleOrder(url + '?period=today', slectedOrder);
+		handleOrderAndView(url + '?period=today', slectedOrder, selectedView, feedsContainer);
 	else if (selectedPeriod == 'this-week')
-		handleOrder(url + '?period=this-week', slectedOrder);
+		handleOrderAndView(url + '?period=this-week', slectedOrder, selectedView, feedsContainer);
 	else if (selectedPeriod == 'this-month')
-		handleOrder(url + '?period=this-month', slectedOrder);
+		handleOrderAndView(url + '?period=this-month', slectedOrder, selectedView, feedsContainer);
 	else if (selectedPeriod == 'all')
-		handleOrder(url + '?period=all', slectedOrder);
+		handleOrderAndView(url + '?period=all', slectedOrder, selectedView, feedsContainer);
 }
 
-function handleOrder(url, slectedOrder) {
+
+
+function handleOrderAndView(url, slectedOrder, selectedView, feedsContainer) {
 	if (slectedOrder == 'latest')
-		get(url + '&orderBy=latest', cardsContainer);
+		handleView(url + '&orderBy=latest', selectedView, feedsContainer);
 	else if (slectedOrder == 'most-relevant')
-		get(url + '&orderBy=most-relevant', cardsContainer);
+		handleView(url + '&orderBy=most-relevant', selectedView, feedsContainer);
 	else if (slectedOrder == 'oldest')
-		get(url + '&orderBy=oldest', cardsContainer);
+		handleView(url + '&orderBy=oldest', selectedView, feedsContainer);
 	else if (slectedOrder == 'unread')
-		get(url + '&orderBy=unread', cardsContainer);
+		handleView(url + '&orderBy=unread', selectedView, feedsContainer);
 	else if (slectedOrder == 'channel')
-		get(url + '&orderBy=channel', cardsContainer);
+		handleView(url + '&orderBy=channel', selectedView, feedsContainer);
 	else if (slectedOrder == 'category')
-		get(url + '&orderBy=category', cardsContainer);
+		handleView(url + '&orderBy=category', selectedView, feedsContainer);
 }
 
+function handleView(url, selectedView, feedsContainer) {
+	if (selectedView == 'view-cards')
+		get(url + '&view=cards', feedsContainer);
+	else if (selectedView == 'view-title-only')
+		get(url + '&view=title-only', feedsContainer);
+}
+
+async function handleSelect(selectedView, selectedPeriod, selectedOrder) {
+	// delete list contianer, if it exists
+	const listItemsContainer = document.getElementById('list-items-container');
+	const cardsContainer = document.getElementById('cards-container');
+
+
+	if (document.body.contains(listItemsContainer))
+		listItemsContainer.remove();
+
+	if (document.body.contains(cardsContainer))
+		cardsContainer.remove();
+
+	await showPreloader();
+
+	if (selectedView == 'view-cards') {
+
+		const mainContainer = document.getElementById('main-container');
+		const cardsContainer = document.createElement("div");
+		cardsContainer.id = 'cards-container';
+		mainContainer.appendChild(cardsContainer);
+		handleViewAndPerieodAndOrderSelect(selectedView, selectedPeriod, selectedOrder, cardsContainer);
+
+	} else if (selectedView == 'view-title-only') {
+
+		const mainContainer = document.getElementById('main-container');
+		const listItemsContainer = document.createElement("div");
+		listItemsContainer.id = 'list-items-container';
+		mainContainer.appendChild(listItemsContainer);
+		handleViewAndPerieodAndOrderSelect(selectedView, selectedPeriod, selectedOrder, listItemsContainer);
+
+	} else {
+		console.log('Feeds container was not found !')
+	}
+}
+
+// handle view select
+viewSelect.addEventListener('change', function (e) {
+	var selectedView = e.target.value;
+	var selectedPeriod = document.getElementById('period-select').value;
+	var selectedOrder = document.getElementById('order-select').value;
+
+	console.log('Selected view =' + selectedView + ', period = ' + selectedPeriod, ' and order = ' + selectedOrder);
+	handleSelect(selectedView, selectedPeriod, selectedOrder);
+
+});
+
+
+// handle period select
 periodSelect.addEventListener('change', function (e) {
+	var selectedView = document.getElementById('view-select').value;
 	var selectedPeriod = e.target.value;
 	var selectedOrder = document.getElementById('order-select').value;
-	console.log('Selected period = ' + selectedPeriod, 'and order =  ' + selectedOrder);
-	handlePerieodAndOrderSelect(selectedPeriod, selectedOrder);
+
+	console.log('Selected view =' + selectedView + ', period = ' + selectedPeriod, ' and order = ' + selectedOrder);
+	handleSelect(selectedView, selectedPeriod, selectedOrder);
+
 });
 
+
+// handle order select
 orederSelect.addEventListener('change', function (e) {
+	var selectedView = document.getElementById('view-select').value;
 	var selectedPeriod = document.getElementById('period-select').value;
 	var selectedOrder = e.target.value;
-	console.log('Selected period = ' + selectedPeriod, 'and order = ' + selectedOrder);
-	handlePerieodAndOrderSelect(selectedPeriod, selectedOrder);
+
+	console.log('Selected view =' + selectedView + ', period = ' + selectedPeriod, ' and order = ' + selectedOrder);
+	handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
 
 
+// disply pre-loader
+function showPreloader() {
+	return new Promise((resolve) => {
+		
+		const preloader = document.getElementById('loader');
+		preloader.style.cssText = 'display:block !important';
+		setTimeout(() => {
+			preloader.style.cssText = 'display:none !important';
+		}, 1000);
 
+		setTimeout(resolve, 1000);
+	});
+}

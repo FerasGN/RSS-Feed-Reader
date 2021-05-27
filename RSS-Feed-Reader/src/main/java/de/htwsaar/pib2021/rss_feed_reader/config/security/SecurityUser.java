@@ -2,6 +2,7 @@ package de.htwsaar.pib2021.rss_feed_reader.config.security;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -45,17 +46,17 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return user.isAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return user.isCredentialsNonExpired();
     }
 
     @Override
@@ -63,6 +64,9 @@ public class SecurityUser implements UserDetails {
         return user.isEnabled();
     }
 
+    public List<String> getUserInterests(){
+        return user.getUserInterests();
+    }
     public User getUser() {
         return user;
     }

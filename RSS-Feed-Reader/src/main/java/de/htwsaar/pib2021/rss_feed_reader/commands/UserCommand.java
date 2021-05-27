@@ -9,10 +9,10 @@ import lombok.Data;
 @Data
 public class UserCommand {
 
-    @ValidFormInput(minLength = 6, maxLength = 60, blank = false)
+    @ValidFormInput(minLength = 3, maxLength = 60, blank = false)
     private String firstName;
 
-    @ValidFormInput(minLength = 6, maxLength = 60, blank = false)
+    @ValidFormInput(minLength = 3, maxLength = 60, blank = false)
     private String lastName;
 
     @Email

@@ -23,7 +23,8 @@
 	margin-bottom: 1.5rem;
 }
 
-.app-card {
+.app-card,
+.app-list {
 	position: relative;
 	background: #fff;
 	@include border-radius(0.25rem);
@@ -121,6 +122,7 @@
 .app-card-feed {
 	.feed-category {
 		.badge {
+			line-height: initial;
 			font-size: 0.65rem;
 			text-transform: uppercase;
 		}
@@ -156,6 +158,32 @@
 		.toolbar {
 			float: right;
 		}
+	}
+}
+
+.app-list {
+	position: relative;
+	background: #fff;
+	@include border-radius(0.25rem);
+}
+
+.app-list-feed {
+	.feed-category {
+		.badge {
+			line-height: initial;
+			font-size: 0.65rem;
+			text-transform: uppercase;
+		}
+	}
+
+	.feed-title {
+		font-size: 1rem;
+		cursor: pointer;
+	}
+
+	.feed-meta {
+		font-size: 0.75rem;
+		color: $theme-text-color-light;
 	}
 }
 
@@ -266,4 +294,9 @@
 		font-size: 1em;
 		opacity: 1;
 	}
+}
+
+// loader
+.loader{
+	@include loader($size: 20px, $gap: 6px, $align: middle);
 }

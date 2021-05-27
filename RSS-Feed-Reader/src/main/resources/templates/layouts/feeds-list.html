@@ -1,0 +1,43 @@
+<thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="feeds-list"
+    th:remove="tag">
+    <th:block th:each="feed,i : ${feeds}" th:id="'feed-list-item-' + ${i.index + 1}" class="feeds-list">
+        <div class="app-list app-list-feed shadow-sm mb-1">
+            <div class="px-4 p-1">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-auto feed-category me-0 ms-0 m-auto"><span
+                            class="badge bg-success m-auto">tech</span>
+                    </div>
+                    <!--//col-->
+                    <h6 class=" col-auto feed-title me-0 ms-0 m-auto">Feed title Lorem ipsum dolor sit amet
+                        consectetur adipisicing elit ipsum dolor sit.</h6>
+                    <!--//col-->
+                    <ul class="col-auto feed-meta list-inline me-0 ms-0 m-auto">
+                        <li class="list-inline-item"><a href="#">Spiegel</a></li>
+                        <li class="list-inline-item">|</li>
+                        <li class="list-inline-item">2 hrs ago</li>
+                    </ul>
+                    <!--//col-->
+
+
+                    <div class="col-auto toolbar me-0 ms-0 m-auto">
+                        <div class="animated-icon heart  ms-0" data-bs-toggle="tooltip" title="like">
+                            <input type="checkbox" th:id="'heart-' + ${i.index + 1}" />
+                            <label th:for="'heart-' + ${i.index + 1}"></label>
+                        </div>
+                        <div class="animated-icon bookmark" data-bs-toggle="tooltip" title="read later">
+                            <input type="checkbox" th:id="'bookmark-' + ${i.index + 1}" />
+                            <label th:for="'bookmark-' + ${i.index + 1}"></label>
+                        </div>
+                        <div class="animated-icon read" data-bs-toggle="tooltip" title="mark as read">
+                            <input type="checkbox" th:id="'read-' + ${i.index + 1}" />
+                            <label th:for="'read-' + ${i.index + 1}"></label>
+                        </div>
+                    </div>
+                    <!--//list-item-toolbar-->
+                </div>
+                <!--//row-->
+            </div>
+        </div>
+        <!--//app-list-->
+    </th:block>
+</thymeleaf>

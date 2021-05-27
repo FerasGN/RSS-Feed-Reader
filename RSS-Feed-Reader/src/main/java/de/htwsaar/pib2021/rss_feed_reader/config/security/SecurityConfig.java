@@ -1,5 +1,6 @@
 package de.htwsaar.pib2021.rss_feed_reader.config.security;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,15 +42,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/signup", "/login", "/confirm-account", "/restore-password","/all-feeds")
+            .antMatchers("/signup", "/login", "/confirm-account", "/restore-password")
             .permitAll()
             .anyRequest()
             .authenticated()
             .and()
             .formLogin()
             .loginPage("/login")
+            .failureUrl("/login-error")
+            .permitAll()
             .and()
             .logout()
+            .logoutSuccessUrl("/login")
             .permitAll()
             .and()
             .exceptionHandling().accessDeniedPage("/error");
