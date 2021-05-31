@@ -76,15 +76,16 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 	return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
-
 /* ===== Ajax ====== */
 function get(url, container) {
 	var request = new XMLHttpRequest();
 	request.open('GET', url, true);
 
-	request.onload = function () {
+	request.onload = async function () {
 		if (this.status >= 200 && this.status < 400) {
 			// Success!
+			await showPreloader();
+
 			var resp = this.response;
 			container.innerHTML = request.responseText
 		} else {
@@ -160,11 +161,10 @@ function handleView(url, selectedView, feedsContainer) {
 		get(url + '&view=title-only', feedsContainer);
 }
 
-async function handleSelect(selectedView, selectedPeriod, selectedOrder) {
+function handleSelect(selectedView, selectedPeriod, selectedOrder) {
 	// delete list contianer, if it exists
 	const listItemsContainer = document.getElementById('list-items-container');
 	const cardsContainer = document.getElementById('cards-container');
-
 
 	if (document.body.contains(listItemsContainer))
 		listItemsContainer.remove();
@@ -172,15 +172,13 @@ async function handleSelect(selectedView, selectedPeriod, selectedOrder) {
 	if (document.body.contains(cardsContainer))
 		cardsContainer.remove();
 
-	await showPreloader();
-
 	if (selectedView == 'view-cards') {
 
 		const mainContainer = document.getElementById('main-container');
 		const cardsContainer = document.createElement("div");
 		cardsContainer.id = 'cards-container';
 		mainContainer.appendChild(cardsContainer);
-		handleViewAndPerieodAndOrderSelect(selectedView, selectedPeriod, selectedOrder, cardsContainer);
+		handleViewAndPerieodAndOrderSelect(selectedView, selectedPeriod, selectedOrder, cardsContainer)
 
 	} else if (selectedView == 'view-title-only') {
 
@@ -229,11 +227,9 @@ orederSelect.addEventListener('change', function (e) {
 	handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
 
-
-// disply pre-loader
+/* ===== disply pre-loader ====== */
 function showPreloader() {
 	return new Promise((resolve) => {
-		
 		const preloader = document.getElementById('loader');
 		preloader.style.cssText = 'display:block !important';
 		setTimeout(() => {
@@ -243,3 +239,18 @@ function showPreloader() {
 		setTimeout(resolve, 1000);
 	});
 }
+
+/* ===== Loading spinner on button click ====== */
+const searchChannel = document.getElementById("search-channel");
+searchChannel.addEventListener('click', (e) => {
+	searchChannel.disabled = true
+	searchChannel.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ' +
+		'Searching...';
+});
+
+/* ===== reset bootstrap modal on hide ====== */
+var subscribeModal = document.getElementById('subscribe-modal')
+subscribeModal.addEventListener('hidden.bs.modal', function (event) {
+	searchChannel.disabled = false
+	searchChannel.innerHTML = "Search"
+})

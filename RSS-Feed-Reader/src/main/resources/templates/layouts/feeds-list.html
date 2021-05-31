@@ -4,7 +4,7 @@
         <div class="app-list app-list-feed shadow-sm mb-1">
             <div class="px-4 p-1">
                 <div class="row d-flex justify-content-between">
-                    <div class="col-auto feed-category me-0 ms-0 m-auto"><span
+                    <div class="col-auto feed-category me-0 ms-0 m-auto position-relative" style="top: -1.5px"><span
                             class="badge bg-success m-auto">tech</span>
                     </div>
                     <!--//col-->
@@ -19,7 +19,7 @@
                     <!--//col-->
 
 
-                    <div class="col-auto toolbar me-0 ms-0 m-auto">
+                    <div class="col-auto toolbar me-0 ms-0 m-auto position-relative" style="top: -1.5px">
                         <div class="animated-icon heart  ms-0" data-bs-toggle="tooltip" title="like">
                             <input type="checkbox" th:id="'heart-' + ${i.index + 1}" />
                             <label th:for="'heart-' + ${i.index + 1}"></label>
