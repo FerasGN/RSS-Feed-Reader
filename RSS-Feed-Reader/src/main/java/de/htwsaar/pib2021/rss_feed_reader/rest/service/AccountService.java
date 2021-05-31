@@ -1,5 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
+import de.htwsaar.pib2021.rss_feed_reader.commands.UserProfileUpdateCommand;
+import de.htwsaar.pib2021.rss_feed_reader.converters.UserProfileUpdateCommandToUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.UserNotFoundException;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -18,6 +21,7 @@ public class AccountService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     private static final String USER_NOT_FOUND = "We couldn't find any user with the username provided";
+    private static final String NO_USER_WITH_GIVEN_EMAIL = "No user with given email was found.";
 
     /**
      *
@@ -34,10 +38,34 @@ public class AccountService {
         }
     }
 
-    public void updateProfileInfo(User user){
-        //TODO
-    }
+    /**
+     *
+     * @param userProfileUpdateCommand
+     * @throws UserNotFoundException
+     */
+    public void updateProfileInfo(UserProfileUpdateCommand userProfileUpdateCommand) throws
+            UserNotFoundException{
 
+        UserProfileUpdateCommandToUser  up = new UserProfileUpdateCommandToUser(passwordEncoder);
+        User user = up.convert(userProfileUpdateCommand);
+        Optional<User> repoUser = userRepository.findByEmail(user.getEmail());
+
+        if(repoUser.isPresent()){
+            User repoUser_ = repoUser.get();
+            repoUser_.setUsername(user.getUsername());
+            repoUser_.setEmail(user.getEmail());
+            repoUser_.setFirstName(user.getFirstName());
+            repoUser_.setLastName(user.getLastName());
+            repoUser_.setCountry(user.getCountry());
+            repoUser_.setJob(user.getJob());
+            repoUser_.setAge(user.getAge());
+            repoUser_.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(repoUser_);
+        } else {
+            throw new UserNotFoundException(NO_USER_WITH_GIVEN_EMAIL);
+        }
+
+    }
     /**
      *
      * @param user

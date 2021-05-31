@@ -5,6 +5,7 @@ import de.htwsaar.pib2021.rss_feed_reader.converters.UserCommandToUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.EmailAlreadyExistException;
+import de.htwsaar.pib2021.rss_feed_reader.exceptions.UserCouldNotBeSavedException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.UsernameAlreadyExistException;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class AuthenticationService {
 
     private final static String EMAIL_EXIST = "There is an account with that email address: ";
     private final static String USERNAME_EXIST = "There is an account with that username : ";
+    private final static String USER_NOT_SAVED = "User could not be saved, please try again.";
 
     private UserRepository userRepository;
     private UserCommandToUser userCommandToUser;
@@ -69,13 +71,13 @@ public class AuthenticationService {
     /**
      * @param user
      */
-    public void confirmEmail(User user) {
+    public void confirmEmail(User user) throws UserCouldNotBeSavedException{
         try {
             Optional<User> user1 = userRepository.findByUsername(user.getUsername());
             user1.get().setEnabled(true);
             userRepository.save(user1.get());
         } catch (Exception e) {
-            // user couldnt be saved exception
+            throw new UserCouldNotBeSavedException(USER_NOT_SAVED);
         }
     }
 
@@ -83,12 +85,12 @@ public class AuthenticationService {
      * @param user
      * @param password
      */
-    public void restorePassword(User user, String password) {
+    public void restorePassword(User user, String password) throws UserCouldNotBeSavedException {
         try {
             user.setPassword(password);
             userRepository.save(user);
         } catch (Exception e) {
-            // user couldnt be saved exception
+            throw new UserCouldNotBeSavedException(USER_NOT_SAVED);
         }
     }
 }
