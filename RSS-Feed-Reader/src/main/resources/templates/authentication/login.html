@@ -14,7 +14,8 @@
 								class="logo-icon mr-2" src="assets/images/logo.svg" alt="logo"></a></div>
 					<h2 class="auth-heading text-center mb-5">Log in to feedify</h2>
 					<div class="auth-form-container text-start">
-
+						<div th:if="${signedUp}" class="alert alert-success">Successfully signed up</div>
+						<!--//successfully-signed-up-->
 						<div th:if="${loginError}" class="alert alert-danger">* Incorrect username or password</div>
 						<!--//auth-errors-->
 

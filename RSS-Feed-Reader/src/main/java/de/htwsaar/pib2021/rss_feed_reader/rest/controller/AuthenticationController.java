@@ -104,6 +104,7 @@ public class AuthenticationController {
     private ModelAndView trySignUp(ModelAndView mav, UserCommand userCommand, RedirectAttributes redAttrs) {
         try {
             authenticationService.signUp(userCommand);
+            redAttrs.addFlashAttribute("signedUp", true);
             mav.setViewName("redirect:/login");
 
         } catch (EmailAlreadyExistException ex) {
@@ -178,6 +179,128 @@ public class AuthenticationController {
     @GetMapping(value = { "/complete-profile" })
     public String completeProfile() {
         return "complete-profile";
+    }
+
+    /**
+     * Returns a view that contains all feeds that match the two Criteria period and
+     * order. If this endpoint was hit for the first time, the period and order will
+     * be null, so the default values are period = all (all means published at any
+     * time) and order = last (last means order feeds by the latest publication
+     * date). Each time these creteria are changed, not the whole view is reloaded,
+     * but only the view fragment containing the feeds.
+     * 
+     * @param period
+     * @param order
+     * @param model
+     * @return String
+     */
+    @GetMapping("/all-feeds")
+    public String showAllFeeds(
+            @RequestParam(value = "view", required = false) String view,
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "orderBy", required = false) String order, 
+            Model model) {
+
+        if (existVieAndPeriodAbdOrderParams(view, period, order)) {
+            String filteredAndOrderedFeeds = "";
+            if ("cards".equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(model, period, order);
+            else if ("title-only".equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(model, period, order);
+            return filteredAndOrderedFeeds;
+        } else {
+            List<FeedItem> feeds = new ArrayList<FeedItem>();
+            feeds = getFilteredAndOrderedFeeds("all", "latest");
+            model.addAttribute("view", "cards");
+            model.addAttribute("feeds", feeds);
+        }
+        return "all-feeds";
+    }
+
+    /**
+     * @param model
+     * @param period
+     * @param order
+     * @return String
+     */
+    private String getFilteredAndOrderedFeedsAsCards(Model model, String period, String order) {
+        List<FeedItem> feeds = new ArrayList<FeedItem>();
+        feeds = getFilteredAndOrderedFeeds(period, order);
+        model.addAttribute("view", "cards");
+        model.addAttribute("feeds", feeds);
+        return "layouts/feeds-cards :: feeds-cards";
+    }
+
+    private String getFilteredAndOrderedFeedsAsList(Model model, String period, String order) {
+        List<FeedItem> feeds = new ArrayList<FeedItem>();
+        feeds = getFilteredAndOrderedFeeds(period, order);
+        model.addAttribute("view", "list");
+        model.addAttribute("feeds", feeds);
+        return "layouts/feeds-list :: feeds-list";
+    }
+
+    /**
+     * @param period
+     * @param order
+     * @return boolean
+     */
+    private boolean existVieAndPeriodAbdOrderParams(String view, String period, String order) {
+        return (view != null && !view.trim().isEmpty()) && (order != null && !order.trim().isEmpty())
+                && (period != null && !period.trim().isEmpty());
+    }
+
+    /**
+     * @return List<FeedItem>
+     */
+    // @GetMapping("/category/{categoryName}")
+    // public String showAllFeedsofACategory(@PathVariable(value = "categoryName")
+    // String categoryName,
+    // @RequestParam(value = "orderBy", required = false) String order, Model model)
+    // {
+    // List<FeedItem> feeds = new ArrayList<FeedItem>();
+    // if (categoryName != null && !categoryName.trim().isEmpty()) {
+    // if (order != null && !order.trim().isEmpty()) {
+    // feeds = getAllFeedsOrderedBy(order);
+    // model.addAttribute("feeds", feeds);
+    // return "layouts/feeds-cards :: feeds-cards";
+    // } else {
+    // feeds = getAllFeedsOrderedBy("latest");
+    // model.addAttribute("feeds", feeds);
+    // }
+    // }
+
+    // return "all-feeds";
+    // }
+    // @GetMapping("/channel/{channelName}")
+    // public String showAllFeedsofAChannel(@PathVariable(value = "channelName")
+    // String channelName,
+    // @RequestParam(value = "orderBy", required = false) String order, Model model)
+    // {
+    // List<FeedItem> feeds = new ArrayList<FeedItem>();
+    // if (channelName != null && !channelName.trim().isEmpty()) {
+    // if (order != null && !order.trim().isEmpty()) {
+    // feeds = getAllFeedsOrderedBy(order);
+    // model.addAttribute("feeds", feeds);
+    // return "layouts/feeds-cards :: feeds-cards";
+    // } else {
+    // feeds = getAllFeedsOrderedBy("latest");
+    // model.addAttribute("feeds", feeds);
+    // }
+    // }
+
+    // return "all-feeds";
+    // }
+
+    private List<FeedItem> getFilteredAndOrderedFeeds(String period, String order) {
+        List<FeedItem> feeds = new ArrayList<FeedItem>();
+        if ("latest".equals(order)) {
+            feeds.add(new FeedItem());
+        } else if ("most-relevant".equals(order)) {
+            feeds.add(new FeedItem());
+            feeds.add(new FeedItem());
+            feeds.add(new FeedItem());
+        }
+        return feeds;
     }
 
 }
