@@ -8,11 +8,9 @@ import de.htwsaar.pib2021.rss_feed_reader.exceptions.NoFeedAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 @Service
@@ -99,12 +97,31 @@ public class FeedsService {
         feedItemUserRepository.save(item);
     }
 
+    public List<FeedItem> sortFeedsByLatest(List<FeedItem> feeds){
+        // create and index on feed items publishdate
+        // easier whith native sql?
+        // TODO
+        return null;
+    }
+
+    public List<FeedItem> sortFeedsByOldest(){
+        return null;
+        // TODO
+
+    }
+
+    public List<FeedItem> showRecentlyReadFeeds(){
+        // TODO
+        return null;
+    }
+
 
     /**
      * Methods takes a function as argument. The function should be the corresponding
      * lambda expression to the various methods sortTodayFeeds, sortThisWeekFeeds,
      * sortThisMonthFeeds...
      * The Lambda expression should be passed when calling the method in the controller.
+     * Should already read feeds appear in the sorted feeds?
      *
      * Exemple: Predicate for sortThisWeekFeeds looks like:
      * Predicate<FeedItem> todayFeeds = feedItem -> {
@@ -151,12 +168,4 @@ public class FeedsService {
         }
         throw new NoFeedAvailableException(NO_FEED_ITEM_AVAILABLE);
     }
-
-    public List<FeedItem> sortFeeds(User user){
-
-
-
-        return null;
-    }
-
 }
