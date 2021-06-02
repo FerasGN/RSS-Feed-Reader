@@ -1,9 +1,6 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
