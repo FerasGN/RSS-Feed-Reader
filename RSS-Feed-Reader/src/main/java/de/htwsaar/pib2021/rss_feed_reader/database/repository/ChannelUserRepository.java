@@ -7,7 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.ChannelUserId;
 
+import java.util.List;
+
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, ChannelUserId> {
 
     ChannelUser findByUserAndChannel(User user, Channel channel);
+
+    List<ChannelUser> findAllByUserAndCategory(User user ,String category);
+
+    List<ChannelUser> findAllByUser(User user);
+
+    List<ChannelUser> findAllByUserAndFavorite(User user, Boolean bool);
 }
