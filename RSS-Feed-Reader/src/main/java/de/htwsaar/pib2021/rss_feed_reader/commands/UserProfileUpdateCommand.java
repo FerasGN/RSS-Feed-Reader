@@ -9,7 +9,7 @@ import javax.validation.constraints.Email;
 @Data
 public class UserProfileUpdateCommand {
 
-    private long id;
+    private Long id;
 
     @ValidFormInput(minLength = 6, maxLength = 60, blank = false)
     private String firstName;
@@ -30,5 +30,5 @@ public class UserProfileUpdateCommand {
 
     private String job;
 
-    private int age;
+    private Integer age;
 }

@@ -33,7 +33,7 @@ public class AccountService {
         try {
             User user = userRepository.findByUsername(username).get();
             return user;
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
     }
@@ -43,14 +43,13 @@ public class AccountService {
      * @param userProfileUpdateCommand
      * @throws UserNotFoundException
      */
-    public void updateProfileInfo(UserProfileUpdateCommand userProfileUpdateCommand) throws
-            UserNotFoundException{
+    public void updateProfileInfo(UserProfileUpdateCommand userProfileUpdateCommand) throws UserNotFoundException {
 
-        UserProfileUpdateCommandToUser  up = new UserProfileUpdateCommandToUser(passwordEncoder);
+        UserProfileUpdateCommandToUser up = new UserProfileUpdateCommandToUser(passwordEncoder);
         User user = up.convert(userProfileUpdateCommand);
         Optional<User> repoUser = userRepository.findByEmail(user.getEmail());
 
-        if(repoUser.isPresent()){
+        if (repoUser.isPresent()) {
             User repoUser_ = repoUser.get();
             repoUser_.setUsername(user.getUsername());
             repoUser_.setEmail(user.getEmail());
@@ -66,12 +65,13 @@ public class AccountService {
         }
 
     }
+
     /**
      *
      * @param user
      * @param password
      */
-    public void changePassword(User user, String password){
+    public void changePassword(User user, String password) {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
     }
@@ -81,12 +81,13 @@ public class AccountService {
      * @param user
      * @param interests
      */
-    public void saveUserInterests(User user, List<String> interests){
+    public void saveUserInterests(User user, List<String> interests) {
         user.setUserInterests(interests);
+        userRepository.save(user);
     }
 
-    public void changeLanguage(){
-        //TODO
+    public void changeLanguage() {
+        // TODO
 
     }
 }

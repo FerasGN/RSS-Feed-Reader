@@ -24,9 +24,11 @@
 				</div>
 				<div class="row justify-content-center mt-5">
 					<div class="col-auto">
-						<a type="submit" th:href="@{/all-feeds}" class="btn app-btn-primary">Start</a>
+						<a id="save-interests" type="submit" class="btn app-btn-primary">Start</a>
 					</div>
 				</div>
+
+				<div id="loader" class="loader d-none"></div>
 
 			</div>
 			<!--//container-fluid-->
@@ -36,15 +38,19 @@
 	</div>
 	<!--//app-wrapper-no-header-->
 
-
-	<script src="assets/js/tags-input.js"></script>
+	<thymeleaf th:replace="layouts/scripts :: scripts" />
+	<script type="text/javascript" th:src="@{/assets/js/preloader.js}"></script>
+	<script th:inline="javascript">
+		var csrfToken =  /*[[${_csrf.token}]]*/ '';
+	</script>
+	<script th:inline="javascript" th:src="@{/assets/js/completeProfile.js}"></script>
+	<script src="assets/js/tagsInput.js"></script>
 	<script>
 		var tagInput = new TagsInput({
 			selector: 'tag-input',
 			duplicate: false,
 			max: 10
 		});
-
 	</script>
 
 </body>
