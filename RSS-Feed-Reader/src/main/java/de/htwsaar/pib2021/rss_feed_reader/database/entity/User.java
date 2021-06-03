@@ -56,10 +56,10 @@ public class User extends BaseEntity {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChannelUser> channels = new ArrayList<ChannelUser>();
+    private List<ChannelUser> channelUsers = new ArrayList<ChannelUser>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "feedItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeedItemUser> feedItems = new ArrayList<FeedItemUser>();
+    private List<FeedItemUser> feedItemUsers = new ArrayList<FeedItemUser>();
 
 }

@@ -1,0 +1,51 @@
+<thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="side-panel-submenus"
+    th:remove="tag">
+    <th:block th:each="category,i : ${categories}" th:id="'category' + ${i.index + 1}">
+        <ul th:id="'submenu' + ${i.index + 1}" class="submenu-list list-unstyled">
+            <li class="submenu-item has-submenu">
+                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                <div class="submenu-link submenu-toggle">
+                    <div class="text-count-arrow">
+                        <a class="submenu-item-link submenu-item-text" th:href="@{/all-feeds}"
+                            th:text="${category}"></a>
+                        <span class="count">15</span>
+                        <!--//count-->
+                        <span class="submenu-toggle" data-bs-toggle="collapse"
+                            th:attr="data-bs-target='#sub-submenu' + ${i.index + 1}, aria-controls='#sub-submenu' + ${i.index + 1}"
+                            aria-expanded="false">
+                            <span class="submenu-arrow">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                            <!--//submenu-arrow-->
+                        </span>
+                        <!--//submenu-toggle-->
+                    </div>
+                    <!--//text-count-arrow-->
+                </div>
+                <div th:id="'sub-submenu' + ${i.index + 1}" class="collapse sub-submenu sub-submenu-1">
+                    <ul class="sub-submenu-list list-unstyled">
+                        <th:block th:each="channelCommand,j : ${channelCommands}">
+                            <th:block th:if="${channelCommand.category == category }">
+                                <li th:id="'channel' + ${i.index + 1} + ${j.index + 1}" class="sub-submenu-item">
+                                    <a class="submenu-link" href="#">
+                                        <img alt="" class="channel-image"
+                                            src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391">
+                                        <span class="category-item" th:text="${channelCommand.name}">channel name</span>
+                                        <span class="count" th:text="${channelCommand.numberOfUnreadFeeds}">Number of read feeds</span>
+                                        <!--//count-->
+                                    </a>
+                                </li>
+                            </th:block>
+                        </th:block>
+                    </ul>
+                </div>
+                <!--//sub-submenu-->
+            </li>
+        </ul>
+        <!--//submenu-->
+    </th:block>
+</thymeleaf>

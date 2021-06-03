@@ -10,6 +10,8 @@ import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -100,5 +102,77 @@ public class ChannelService {
         }catch (Exception e){
             //unable to save
         }
+    }
+
+    public List<String> findCategories(){
+        List<String> categories = Arrays.asList("Sport", "Politik", "Tech");
+        return categories;
+    }
+
+    public List<ChannelUser> findAllChannelUserOrderdByCategory(){
+        Channel c1 = new Channel();
+        c1.setName("Politik1");
+        Channel c2 = new Channel();
+        c2.setName("Politik2");
+
+        Channel c3 = new Channel();
+        c3.setName("Tech1");
+        Channel c4 = new Channel();
+        c4.setName("Tech2");
+
+        Channel c5 = new Channel();
+        c5.setName("Sport1");
+        Channel c6 = new Channel();
+        c6.setName("Sport2");
+    
+        ChannelUser cu1 = new ChannelUser();
+        cu1.setChannel(c1);
+        cu1.setCategory("Politik");
+        ChannelUser cu2 = new ChannelUser();
+        cu2.setChannel(c2);
+        cu2.setCategory("Politik");
+
+        ChannelUser cu3 = new ChannelUser();
+        cu3.setChannel(c3);
+        cu3.setCategory("Tech");
+        ChannelUser cu4 = new ChannelUser();
+        cu4.setChannel(c4);
+        cu4.setCategory("Tech");
+
+        ChannelUser cu5 = new ChannelUser();
+        cu5.setChannel(c5);
+        cu5.setCategory("Sport");
+        ChannelUser cu6 = new ChannelUser();
+        cu6.setChannel(c6);
+        cu6.setCategory("Sport");
+
+        List<ChannelUser> channels =Arrays.asList(cu1, cu2, cu3, cu4, cu5, cu6);
+
+        return channels;
+    }
+
+    public Long findNumberOfUnreadFeedsOfChannel(User user, Channel channel){
+        // ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user, channel);
+        // Long numberOfUnreadFeeds = channelUser.getUser()
+        //                         .getFeedItemUsers()
+        //                         .stream()
+        //                         .filter(feedItemUser -> feedItemUser.getFeedItem().getChannel().equals(channel)
+        //                                             && !feedItemUser.isRead())
+        //                         .count();
+        return 99l;
+    }
+
+    public Long findNumberOfUnreadFeedsOfCategory(User user, Channel channel, String category){
+        // List<ChannelUser> channelUsers = channelUserRepository.findAllByUserAndCategory(user, category);
+        // Long numberOfUnreadFeeds = 0l;
+        // for(ChannelUser channelUser : channelUsers){
+        //     numberOfUnreadFeeds +=  channelUser.getUser()
+        //                             .getFeedItemUsers()
+        //                             .stream()
+        //                             .filter(feedItemUser -> feedItemUser.getFeedItem().getChannel().equals(channel)
+        //                                                 && !feedItemUser.isRead())
+        //                             .count();
+        // }
+        return 100l;
     }
 }

@@ -101,6 +101,27 @@
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link"  th:href="@{/all-feeds}">
+                                <span class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-rss" viewBox="0 0 16 16">
+                                        <path
+                                            d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                        <path
+                                            d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1zm0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1z" />
+                                    </svg>
+                                </span>
+
+                                <span class="nav-link-text" data-bs-toggle="tooltip" title="All Feeds"
+                                    data-bs-placement="right">All</span>
+                                <span class="count">105</span>
+                                <!--//count-->
+                            </a>
+                            <!--//nav-link-->
+                        </li>
+                        <!--//nav-item-->
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                             <a class="nav-link" th:href="@{/read-later}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -171,16 +192,16 @@
                         <!--//nav-item-->
                         <li class="nav-item has-submenu">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse"
-                                data-bs-target="#submenu-1" aria-expanded="false" aria-controls="submenu-1">
+                            <a class="nav-link submenu-toggle" data-bs-toggle="collapse"
+                                data-bs-target="#submenus" aria-expanded="false" aria-controls="submenus">
                                 <span class="nav-icon">
                                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-rss" viewBox="0 0 16 16">
+                                        class="bi bi-tags" viewBox="0 0 16 16">
                                         <path
-                                            d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                            d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z" />
                                         <path
-                                            d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1zm0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1z" />
+                                            d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z" />
                                     </svg>
                                 </span>
                                 <div class="text-count-arrow">
@@ -200,162 +221,10 @@
                                 <!--//text-count-arrow-->
                             </a>
                             <!--//nav-link-->
-                            <div id="submenu-1" class="collapse submenu submenu-1">
-                                <ul class="submenu-list list-unstyled">
-                                    <li class="submenu-item has-submenu">
-                                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                                        <a class="submenu-link submenu-toggle" href="#" data-bs-toggle="collapse"
-                                            data-bs-target="#sub-submenu-1" aria-expanded="false"
-                                            aria-controls="sub-submenu-1">
-                                            <div class="text-count-arrow">
-                                                <span class="nav-link-text submenu-item-text">Tech</span>
-                                                <span class="count">15</span>
-                                                <!--//count-->
-                                                <span class="submenu-arrow">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                        class="bi bi-chevron-down" fill="currentColor"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd"
-                                                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                    </svg>
-                                                </span>
-                                                <!--//submenu-arrow-->
-                                            </div>
-                                            <!--//text-count-arrow-->
-                                        </a>
-                                        <div id="sub-submenu-1" class="collapse sub-submenu sub-submenu-1">
-                                            <ul class="sub-submenu-list list-unstyled">
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <img alt="" class="channel-image"
-                                                            src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391">
-                                                        <span class="category-item">Spiegel lorem ipsum dolor sit
-                                                            amet</span>
-                                                        <span class="count">10</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <img alt="" class="channel-image"
-                                                            src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391">
-                                                        <span class="category-item">ARD</span>
-                                                        <span class="count">2</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">DW</span>
-                                                        <span class="count">3</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <!--//sub-submenu-1-->
-                                    </li>
-
-                                    <li class="submenu-item has-submenu">
-                                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                                        <a class="submenu-link submenu-toggle" href="#" data-bs-toggle="collapse"
-                                            data-bs-target="#sub-submenu-2" aria-expanded="false"
-                                            aria-controls="sub-submenu-2">
-                                            <div class="text-count-arrow">
-                                                <span class="nav-link-text submenu-item-text">Sport</span>
-                                                <span class="count">15</span>
-                                                <!--//count-->
-                                                <span class="submenu-arrow">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                        class="bi bi-chevron-down" fill="currentColor"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd"
-                                                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                    </svg>
-                                                </span>
-                                                <!--//submenu-arrow-->
-                                            </div>
-                                            <!--//text-count-arrow-->
-                                        </a>
-                                        <div id="sub-submenu-2" class="collapse sub-submenu sub-submenu-2">
-                                            <ul class="sub-submenu-list list-unstyled">
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">Spiegel</span>
-                                                        <span class="count">10</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">ARD</span>
-                                                        <span class="count">2</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">DW</span>
-                                                        <span class="count">3</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <!--//sub-submenu-2-->
-                                    </li>
-                                    <li class="submenu-item has-submenu">
-                                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                                        <a class="submenu-link submenu-toggle" href="#" data-bs-toggle="collapse"
-                                            data-bs-target="#sub-submenu-3" aria-expanded="false"
-                                            aria-controls="sub-submenu-3">
-                                            <div class="text-count-arrow">
-                                                <span class="nav-link-text submenu-item-text">Cars</span>
-                                                <span class="count">15</span>
-                                                <!--//count-->
-                                                <span class="submenu-arrow">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                        class="bi bi-chevron-down" fill="currentColor"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd"
-                                                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                                    </svg>
-                                                </span>
-                                                <!--//submenu-arrow-->
-                                            </div>
-                                            <!--//text-count-arrow-->
-                                        </a>
-                                        <div id="sub-submenu-3" class="collapse sub-submenu sub-submenu-3">
-                                            <ul class="sub-submenu-list list-unstyled">
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">Spiegel</span>
-                                                        <span class="count">10</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">ARD</span>
-                                                        <span class="count">2</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                                <li class="sub-submenu-item">
-                                                    <a class="submenu-link" href="#">
-                                                        <span class="category-item">DW</span>
-                                                        <span class="count">3</span>
-                                                        <!--//count-->
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <!--//sub-submenu-3-->
-                                    </li>
-
-                                </ul>
+                            <div id="submenus" class="collapse submenu submenus"
+                                th:insert="layouts/side-panel-submenus :: side-panel-submenus">
                             </div>
-                            <!--//submenu-1-->
+
                         </li>
                         <!--//nav-item-->
                     </ul>

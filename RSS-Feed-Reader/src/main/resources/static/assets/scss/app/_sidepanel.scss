@@ -132,6 +132,7 @@
 		position: absolute;
 		right: 1rem;
 		color: $theme-text-color-light;
+		cursor: pointer;
 		svg {
 			width: 14px;
 			height: 14px;
@@ -143,11 +144,9 @@
 		&[aria-expanded="true"] {
 			.submenu-arrow {
 				color: $theme-text-color-primary;
-				svg {
-					-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
-					transform: rotate(180deg);
-					-webkit-transform: rotate(180deg);
-				}
+				-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+				transform: rotate(180deg);
+				-webkit-transform: rotate(180deg);
 			}
 		}
 	}
@@ -157,11 +156,18 @@
 
 	.submenu-item {
 		margin-bottom: 0;
+		&-link {
+			color: $theme-text-color-secondary;
 
+			&:hover {
+				color: $theme-text-color-primary;
+			}
+		}
 		&-text {
 			text-transform: uppercase;
 			font-weight: 600;
 		}
+		
 	}
 
 	.sub-submenu-item {

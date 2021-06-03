@@ -1,6 +1,5 @@
 package de.htwsaar.pib2021.rss_feed_reader.converters;
 
-import de.htwsaar.pib2021.rss_feed_reader.commands.UserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.UserProfileUpdateCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import org.springframework.core.convert.converter.Converter;
