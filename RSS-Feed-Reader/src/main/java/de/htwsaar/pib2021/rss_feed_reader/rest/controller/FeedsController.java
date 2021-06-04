@@ -128,7 +128,7 @@ public class FeedsController {
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feeds);
         }
-        return "all-feeds";
+        return "read-later";
     }
 
     @GetMapping("/liked-feeds")
@@ -149,7 +149,7 @@ public class FeedsController {
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feeds);
         }
-        return "all-feeds";
+        return "liked-feeds";
     }
 
     /**
