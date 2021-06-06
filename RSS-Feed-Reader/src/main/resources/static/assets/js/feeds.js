@@ -24,9 +24,9 @@ function get(url, container) {
 }
 
 /* ===== Select order and period ====== */
-const viewSelect = document.getElementById('view-select');
-const orederSelect = document.getElementById('order-select');
-const periodSelect = document.getElementById('period-select');
+var viewSelect = document.getElementById('view-select');
+var orederSelect = document.getElementById('order-select');
+var periodSelect = document.getElementById('period-select');
 
 function handleViewAndPerieodAndOrderSelect(selectedView, selectedPeriod, selectedOrder, feedsContainer) {
 	if (window.location.href.indexOf('/all-feeds') > -1)
