@@ -64,7 +64,7 @@ public class FeedsController {
 
     private Model initSidePanelFeedsInfo(Model model) {
         List<String> categories = channelService.findCategories();
-        List<ChannelUser> channelUser = channelService.findAllChannelUserOrderdByCategory();
+        List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory();
         ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(channelService);
         List<ChannelCommand> channelCommands = channelUser.stream()
                                                           .map(cu -> channelUserToChannelCommand.convert(cu))
