@@ -8,6 +8,7 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.ChannelUserId;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, ChannelUserId> {
 
@@ -18,4 +19,6 @@ public interface ChannelUserRepository extends JpaRepository<ChannelUser, Channe
     List<ChannelUser> findAllByUser(User user);
 
     List<ChannelUser> findAllByUserAndFavorite(User user, Boolean bool);
+
+    Optional<ChannelUser> findByUserAndUrl(User user, String url);
 }
