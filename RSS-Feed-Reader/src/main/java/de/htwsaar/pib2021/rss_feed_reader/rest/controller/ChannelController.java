@@ -1,5 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
+import com.rometools.rome.io.FeedException;
+import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
+
+import java.io.IOException;
 
 @Controller
 public class ChannelController {
@@ -24,7 +28,8 @@ public class ChannelController {
      * @return ModelAndView
      */
     @GetMapping(value = { "/search-channel" })
-    public ModelAndView searchForChannel(ModelAndView mav, @RequestParam("url") String url) {
+    public ModelAndView searchForChannel(ModelAndView mav, @RequestParam("url") String url)
+            throws NotValidURLException, IOException, FeedException, Exception {
 
         boolean correctUrl = channelService.isRssURLPresent(url);
         boolean channelExists = channelService.existsChannelURL(url);

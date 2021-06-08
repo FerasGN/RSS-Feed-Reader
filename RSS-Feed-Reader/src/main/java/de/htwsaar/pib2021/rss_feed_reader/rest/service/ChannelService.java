@@ -1,12 +1,14 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.SyndFeedInput;
-import com.sun.syndication.io.XmlReader;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.Category;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Channel;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
+import de.htwsaar.pib2021.rss_feed_reader.database.repository.CategoryRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelAlreadyExistException;
@@ -28,6 +30,8 @@ public class ChannelService {
 
     @Autowired
     private ChannelRepository channelRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ChannelUserRepository channelUserRepository;
@@ -36,8 +40,12 @@ public class ChannelService {
     private final static String CHANNEL_NAME_NOT_FOUND = "Channel with given name could not be found: ";
     private final static String CHANNEL_URL_EXIST = "Channel with given URL already exists:  ";
     private final static String NOT_VALID_URL = "The given URL is not valid";
+    private final static String CHANNEL_ALREADY_SUBSCRIBE = "You have already subscribed to this channel";
+    private final static String ERROR_SUBSCRIBING_CHANNEL = "An error occurred while subscribing to this channel.";
+    private final static String FEED_PARSING_ERROR = "Problem occurred while parsing the feed.";
+    private final static String IOEXCEPTION_WHILE_SUBSCRIBING = "IOException error caught while subscribing to channel";
 
-    /**
+    /**FEED_PARSING_ERROR
      *
      * @param name
      * @return
@@ -77,52 +85,6 @@ public class ChannelService {
         //RSS reader nach dem Channel suchen lassen
     }
 
-    /**
-     *
-     * @param user
-     * @param url
-     * @return
-     * @throws ChannelAlreadyExistException
-     * @throws NotValidURLException
-     */
-    public String subscribeToChannel(User user, String url) throws ChannelAlreadyExistException, NotValidURLException {
-        // check if user is already subscribed to the channel
-        Optional <ChannelUser> channelUser = channelUserRepository.findByUserAndUrl(user, url);
-        if (channelUser.isPresent()){
-            throw new ChannelAlreadyExistException(CHANNEL_URL_EXIST);
-        }
-
-        // verify if url is a feed reader link
-        try {
-            URL feedSource = new URL(url);
-            SyndFeedInput input = new SyndFeedInput();
-            SyndFeed feed = input.build(new XmlReader(feedSource));
-            if (feed != null){
-                Channel channel = new Channel();
-                channel.setUrl(url);
-                channel.setDescription(feed.getDescription());
-                channelRepository.save(channel);
-
-                ChannelUser channelUser1 = new ChannelUser();
-                channelUser1.setChannel(channel);
-                channelUser1.setUser(user);
-                channelUser1.setFavorite(false);
-                channelUser1.setCategory(""); // TODO Wie bekomme ich die Kategorie?
-                channelUserRepository.save(channelUser1);
-            } else {
-                return "No feeds available for this channel.";
-            }
-        } catch (MalformedURLException e){
-            throw new NotValidURLException(NOT_VALID_URL);
-        } catch (FeedException e){
-            // TODO
-
-        } catch (IOException e){
-            // TODO
-        }
-
-        return "You have succesfully subscribe to the given channel";
-    }
 
 
     /**
@@ -233,4 +195,97 @@ public class ChannelService {
         // }
         return 100l;
     }
+
+    public boolean existsChannelURL(String url) throws NotValidURLException, IOException, FeedException, Exception{
+
+        try {
+            URL feedSource = new URL(url.trim());
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed feed = input.build(new XmlReader(feedSource));
+            if(feed.getEntries() != null){
+                return true;
+            }
+            return false;
+        } catch (MalformedURLException e){
+            throw new NotValidURLException(NOT_VALID_URL);
+        } catch (FeedException e){
+            throw new FeedException(FEED_PARSING_ERROR);
+        } catch (IOException e){
+            throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
+        } catch (Exception e){
+            throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
+        }
+    }
+
+    /**
+     *
+     * @param url
+     * @return
+     */
+    public boolean isRssURLPresent(String url) {
+        Optional<Channel> channel = channelRepository.findByUrl(url.trim());
+        if(channel.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param user
+     * @param url
+     * @param category
+     * @return
+     * @throws ChannelAlreadyExistException
+     * @throws NotValidURLException
+     * @throws IOException
+     * @throws Exception
+     */
+    public String subscribeToChannel(User user, String url, String category) throws ChannelAlreadyExistException,
+            NotValidURLException, IOException, Exception {
+
+        // check if user is already subscribed to the channel
+        Optional <ChannelUser> channelUser = channelUserRepository.findByUserAndUrl(user, url);
+        if (channelUser.isPresent()){
+            throw new ChannelAlreadyExistException(CHANNEL_ALREADY_SUBSCRIBE);
+        }
+        // Add Channel to user
+        try {
+            URL feedSource = new URL(url);
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed feed = input.build(new XmlReader(feedSource));
+
+            Channel channel = new Channel();
+            channel.setUrl(url);
+            channel.setDescription(feed.getDescription());
+            channelRepository.save(channel);
+
+            ChannelUser channelUser1 = new ChannelUser();
+            channelUser1.setChannel(channel);
+            channelUser1.setUser(user);
+            channelUser1.setFavorite(false);
+
+            // Check if category is already available in database
+            Optional<Category> category1 = categoryRepository.findByName(category);
+            if(category1.isPresent()){
+                channelUser1.setCategory(category);
+            } else{
+                Category newCategory = new Category();
+                newCategory.setName(category);
+                categoryRepository.save(newCategory);
+                channelUser1.setCategory(category);
+            }
+            channelUserRepository.save(channelUser1);
+        } catch (MalformedURLException e){
+            throw new NotValidURLException(NOT_VALID_URL);
+        } catch (FeedException e){
+            throw new FeedException(FEED_PARSING_ERROR);
+        } catch (IOException e){
+            throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
+        } catch (Exception e){
+            throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
+        }
+        return "You have successfully subscribe to the given channel.";
+    }
+
 }
