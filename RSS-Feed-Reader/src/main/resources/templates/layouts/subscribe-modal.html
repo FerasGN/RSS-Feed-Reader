@@ -1,40 +1,40 @@
 <thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="subscribe-modal"
 	th:remove="tag">
-	<div id="subscribe-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscribe-modal-title"
-		aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content rounded-0">
-				<div class="modal-body p-4 px-5">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content rounded-0">
+			<div class="modal-body p-4 px-5">
 
+				<div class="main-content text-center">
 
-					<div class="main-content text-center">
+					<a href="#" class="close-btn" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"><span class="icon-close"></span></span>
+					</a>
 
-						<a href="#" class="close-btn" data-bs-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true"><span class="icon-close"></span></span>
-						</a>
-
-						<div class="warp-channel-image mb-4">
-							<!-- <img alt="" class="channel-image"
+					<div class="warp-channel-image mb-4">
+						<!-- <img alt="" class="channel-image"
 									src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391"> -->
-							
-						</div>
-						<form action="#">
-							<label>Which channel would you like to subscribe to?</label>
-							<p class=" channel-name mb-4"></p>
-							<div class="form-group mb-4">
-								<input type="text" class="form-control" placeholder="Enter a channel url">
-							</div>
-
-							<div class="d-flex">
-								<div class="mx-auto">
-									<button id="search-channel" class="btn app-btn-primary">Search</button>
-								</div>
-							</div>
-						</form>
 
 					</div>
+					<form id="channel-form" action="#" th:method="POST" th:action="@{/save-channel}"
+						th:object="${channelCommand}">
+						<label>Which channel would you like to subscribe to?</label>
+						<p id="channel-info" class="channel-name m-2" th:text="${channelInfo}">
+						</p>
+						<div class="form-group mb-4">
+							<input id="channel-url" type="text" class="form-control" placeholder="Enter a channel url"
+								required="required" th:field="*{url}">
+						</div>
+
+						<div class="d-flex">
+							<div id="button-container" class="mx-auto">
+								<button id="search-channel-button" class="btn app-btn-primary"
+									onclick="searchChannel(); return false;">Search</button>
+							</div>
+						</div>
+					</form>
 
 				</div>
+
 			</div>
 		</div>
 	</div>
