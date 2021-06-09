@@ -46,14 +46,14 @@ public class ChannelUserTest {
         channel.setId(1l);
         channel.setDescription(DESCRIPTION_);
         channel.setUrl(URL);
-        channel.setName(NAME);
+        channel.setTitle(NAME);
         channel = channelRepo.save(channel);
 
         Channel channel_ = new Channel();
         channel_.setId(2l);
         channel_.setDescription(DESCRIPTION_);
         channel_.setUrl(URL_);
-        channel_.setName(NAME_);
+        channel_.setTitle(NAME_);
         channel_ = channelRepo.save(channel_);
 
 

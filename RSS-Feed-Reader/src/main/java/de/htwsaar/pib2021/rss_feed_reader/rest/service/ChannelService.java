@@ -50,8 +50,8 @@ public class ChannelService {
      * @param name
      * @return
      */
-    public Channel searchForChannelName(String name) throws ChannelNotFoundException {
-        Optional<Channel> channel = channelRepository.findByName(name);
+    public Channel searchForChannelTitle(String name) throws ChannelNotFoundException {
+        Optional<Channel> channel = channelRepository.findByTitle(name);
         if(!channel.isPresent()){
             throw new ChannelNotFoundException(CHANNEL_NAME_NOT_FOUND + name);
         }
@@ -131,19 +131,19 @@ public class ChannelService {
 
     public List<ChannelUser> findAllChannelUserOrderedByCategory(){
         Channel c1 = new Channel();
-        c1.setName("Politik1");
+        c1.setTitle("Politik1");
         Channel c2 = new Channel();
-        c2.setName("Politik2");
+        c2.setTitle("Politik2");
 
         Channel c3 = new Channel();
-        c3.setName("Tech1");
+        c3.setTitle("Tech1");
         Channel c4 = new Channel();
-        c4.setName("Tech2");
+        c4.setTitle("Tech2");
 
         Channel c5 = new Channel();
-        c5.setName("Sport1");
+        c5.setTitle("Sport1");
         Channel c6 = new Channel();
-        c6.setName("Sport2");
+        c6.setTitle("Sport2");
     
         ChannelUser cu1 = new ChannelUser();
         cu1.setChannel(c1);
@@ -253,6 +253,7 @@ public class ChannelService {
             SyndFeed feed = input.build(new XmlReader(feedSource));
 
             Channel channel = new Channel();
+            channel.setTitle(feed.getTitle());
             channel.setUrl(url);
             channel.setDescription(feed.getDescription());
             channelRepository.save(channel);
@@ -272,9 +273,9 @@ public class ChannelService {
                 categoryRepository.save(newCategory);
                 channelUser1.setCategory(category);
             }
-            channelUserRepository.save(channelUser1);
-            
-            return Optional.of(channel);
+            channelUser1 =  channelUserRepository.save(channelUser1);
+
+            return Optional.of(channelUser1.getChannel());
         } catch (MalformedURLException e){
             throw new NotValidURLException(NOT_VALID_URL);
         } catch (FeedException e){

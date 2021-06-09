@@ -29,7 +29,7 @@ public class ChannelTest {
         channel.setId(1l);
         channel.setDescription(DESCRIPTION);
         channel.setUrl(URL);
-        channel.setName(NAME);
+        channel.setTitle(NAME);
         channel = channelRepo.save(channel);
     }
 
@@ -49,9 +49,9 @@ public class ChannelTest {
     @Test
     public void updateChannelTest() {
         Channel channel = channelRepo.findById(1l).get();
-        channel.setName(NAME_);
+        channel.setTitle(NAME_);
         channel = channelRepo.save(channel);
-        assertEquals(channel.getName(), NAME_);
+        assertEquals(channel.getTitle(), NAME_);
     }
 }
 

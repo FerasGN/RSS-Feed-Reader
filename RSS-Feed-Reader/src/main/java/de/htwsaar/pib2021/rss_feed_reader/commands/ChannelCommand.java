@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ChannelCommand {
 
-    private String name;
+    private String title;
 
     private String category;
 

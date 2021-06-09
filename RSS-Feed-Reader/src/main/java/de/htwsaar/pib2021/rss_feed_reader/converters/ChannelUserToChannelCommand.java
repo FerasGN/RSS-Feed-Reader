@@ -23,7 +23,7 @@ public class ChannelUserToChannelCommand implements Converter<ChannelUser, Chann
         }
 
         final ChannelCommand channelCommand = new ChannelCommand();
-        channelCommand.setName(source.getChannel().getName());
+        channelCommand.setTitle(source.getChannel().getTitle());
         channelCommand.setCategory(source.getCategory());
         Long numberOfUnreadFeeds = channelService.findNumberOfUnreadFeedsOfChannel(source.getUser(), source.getChannel());
         channelCommand.setNumberOfUnreadFeeds(numberOfUnreadFeeds);

@@ -65,12 +65,15 @@ public class ChannelController {
      */
     @PostMapping(value = { "/save-channel" })
     public ModelAndView saveChannel(ModelAndView mav, ChannelCommand channelCommand, @AuthenticationPrincipal SecurityUser securityUser) {
-        System.out.println("Channel = " + channelCommand.getUrl());
         String url = channelCommand.getUrl();
         String category = channelCommand.getCategory();
 
         try {
             Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, "Tech");
+            System.out.println("--------------------------------------");
+            System.out.println(channel.get().getTitle());
+            System.out.println(channel.get().getUrl());
+
         } catch (Exception e) {
 
         }
