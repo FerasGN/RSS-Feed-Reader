@@ -196,7 +196,7 @@ public class ChannelService {
         return 100l;
     }
 
-    public boolean existsChannelURL(String url) throws NotValidURLException, IOException, FeedException, Exception{
+    public boolean isRssURLCorrect(String url) throws MalformedURLException, IOException, FeedException, Exception{
 
         try {
             URL feedSource = new URL(url.trim());
@@ -207,7 +207,7 @@ public class ChannelService {
             }
             return false;
         } catch (MalformedURLException e){
-            throw new NotValidURLException(NOT_VALID_URL);
+             throw new MalformedURLException(NOT_VALID_URL);
         } catch (FeedException e){
             throw new FeedException(FEED_PARSING_ERROR);
         } catch (IOException e){
@@ -222,7 +222,7 @@ public class ChannelService {
      * @param url
      * @return
      */
-    public boolean isRssURLPresent(String url) {
+    public boolean existsChannelURL(String url) {
         Optional<Channel> channel = channelRepository.findByUrl(url.trim());
         if(channel.isPresent()){
             return true;

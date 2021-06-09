@@ -30,20 +30,24 @@ public class ChannelController {
     @GetMapping(value = { "/search-channel" })
     public ModelAndView searchForChannel(ModelAndView mav, @RequestParam("url") String url)
             throws NotValidURLException, IOException, FeedException, Exception {
-
-        boolean correctUrl = channelService.isRssURLPresent(url);
+                
+        boolean correctUrl = channelService.isRssURLCorrect(url);
         boolean channelExists = channelService.existsChannelURL(url);
 
-        if (!correctUrl)
+        if (!correctUrl) {
             mav.addObject("channelInfo", "URL was not found");
-        else if (channelExists)
-             mav.addObject("channelInfo", "Channel already exists");
-        else
-          mav.addObject("channelInfo", "Name of the channel");
-          
+
+        } else if (channelExists) {
+            mav.addObject("channelInfo", "Channel already exists");
+
+        }  else {
+            mav.addObject("channelInfo", "Name of the channel");
+            mav.addObject("channelImage", "//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391");
+        }
+        
+
         ChannelCommand channelCommand = new ChannelCommand();
         channelCommand.setUrl(url);
-
 
         mav.addObject("channelCommand", channelCommand);
         mav.setViewName("layouts/subscribe-modal :: subscribe-modal");

@@ -103,6 +103,10 @@ function addSubscribeButton() {
 	saveChannelButton.innerText = "Subscribe to channel";
 	buttonContainer.appendChild(saveChannelButton);
 
+	// clean up the default image for the channel image
+	var warpChannelImage = document.getElementById("warp-channel-image");
+	warpChannelImage.classList.add("warp-channel-image-no-after")
+
 	// bind save channel button to the channel url input
 	var channelUrl = document.getElementById('channel-url');
 	channelUrl.addEventListener('input', (e) => {

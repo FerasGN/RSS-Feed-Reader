@@ -265,6 +265,9 @@ button.close {
 			@include icon('\f128');
 			align-self: center;
 		}
+
+		&-no-after::after { content: none; }
+		
 	}
 }
 

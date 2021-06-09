@@ -10,9 +10,9 @@
 						<span aria-hidden="true"><span class="icon-close"></span></span>
 					</a>
 
-					<div class="warp-channel-image mb-4">
-						<!-- <img alt="" class="channel-image"
-									src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391"> -->
+					<div id="warp-channel-image" class="warp-channel-image mb-4">
+						<img alt="" class="channel-image"
+									th:src="${channelImage}">
 
 					</div>
 					<form id="channel-form" action="#" th:method="POST" th:action="@{/save-channel}"
