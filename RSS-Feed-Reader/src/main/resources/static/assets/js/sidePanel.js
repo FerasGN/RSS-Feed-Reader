@@ -83,15 +83,12 @@ function getSubscribeModal(url, container) {
 
 function searchChannel() {
 	var searchChannelButton = document.getElementById("search-channel-button");
-	searchChannel.disabled = true
-	searchChannel.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ' +
+	searchChannelButton.disabled = true
+	searchChannelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ' +
 		'Searching...';
 	var subscribeModal = document.getElementById('subscribe-modal');
 	var channelUrl = document.getElementById('channel-url').value;
 	getSubscribeModal("/search-channel?url=" + channelUrl, subscribeModal);
-
-	return false;
-
 }
 
 // if channel url was valid and not found in the DB, show the save channel button

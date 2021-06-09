@@ -129,7 +129,7 @@ public class ChannelService {
         return categories;
     }
 
-    public List<ChannelUser> findAllChannelUserOrderdByCategory(){
+    public List<ChannelUser> findAllChannelUserOrderedByCategory(){
         Channel c1 = new Channel();
         c1.setName("Politik1");
         Channel c2 = new Channel();
@@ -196,25 +196,21 @@ public class ChannelService {
         return 100l;
     }
 
-    public boolean isRssURLCorrect(String url) throws MalformedURLException, IOException, FeedException, Exception{
-
+    public boolean isRssURLCorrect(String url) {
+        URL feedSource;
         try {
-            URL feedSource = new URL(url.trim());
+            feedSource = new URL(url.trim());
+
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed feed = input.build(new XmlReader(feedSource));
-            if(feed.getEntries() != null){
+            if (feed.getEntries() != null) {
                 return true;
             }
+        } catch (IllegalArgumentException | FeedException | IOException e) {
             return false;
-        } catch (MalformedURLException e){
-             throw new MalformedURLException(NOT_VALID_URL);
-        } catch (FeedException e){
-            throw new FeedException(FEED_PARSING_ERROR);
-        } catch (IOException e){
-            throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
-        } catch (Exception e){
-            throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
         }
+        return false;
+
     }
 
     /**
@@ -222,9 +218,10 @@ public class ChannelService {
      * @param url
      * @return
      */
-    public boolean existsChannelURL(String url) {
-        Optional<Channel> channel = channelRepository.findByUrl(url.trim());
-        if(channel.isPresent()){
+    public boolean existsChannelURL(User user, String url) {
+        // check if user is already subscribed to the channel
+        Optional<ChannelUser> channelUser = channelUserRepository.findByUserAndChannel_Url(user, url.trim());
+        if (channelUser.isPresent()) {
             return true;
         }
         return false;
@@ -241,11 +238,11 @@ public class ChannelService {
      * @throws IOException
      * @throws Exception
      */
-    public String subscribeToChannel(User user, String url, String category) throws ChannelAlreadyExistException,
+    public Optional<Channel> subscribeToChannel(User user, String url, String category) throws ChannelAlreadyExistException,
             NotValidURLException, IOException, Exception {
 
         // check if user is already subscribed to the channel
-        Optional <ChannelUser> channelUser = channelUserRepository.findByUserAndUrl(user, url);
+        Optional <ChannelUser> channelUser = channelUserRepository.findByUserAndChannel_Url(user, url);
         if (channelUser.isPresent()){
             throw new ChannelAlreadyExistException(CHANNEL_ALREADY_SUBSCRIBE);
         }
@@ -276,6 +273,8 @@ public class ChannelService {
                 channelUser1.setCategory(category);
             }
             channelUserRepository.save(channelUser1);
+            
+            return Optional.of(channel);
         } catch (MalformedURLException e){
             throw new NotValidURLException(NOT_VALID_URL);
         } catch (FeedException e){
@@ -285,7 +284,7 @@ public class ChannelService {
         } catch (Exception e){
             throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
         }
-        return "You have successfully subscribe to the given channel.";
+       
     }
 
 }
