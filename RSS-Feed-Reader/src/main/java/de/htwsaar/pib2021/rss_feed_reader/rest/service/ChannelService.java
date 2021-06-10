@@ -1,16 +1,17 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
+import com.rometools.rome.feed.synd.SyndCategory;
+import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.feed.synd.SyndPerson;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.Category;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.Channel;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.CategoryRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
+import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,8 @@ public class ChannelService {
     private ChannelRepository channelRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private FeedItemRepository feedItemRepository;
 
     @Autowired
     private ChannelUserRepository channelUserRepository;
@@ -241,11 +245,9 @@ public class ChannelService {
     public Optional<Channel> subscribeToChannel(User user, String url, String category) throws ChannelAlreadyExistException,
             NotValidURLException, IOException, Exception {
 
-        // check if user is already subscribed to the channel
-        Optional <ChannelUser> channelUser = channelUserRepository.findByUserAndChannel_Url(user, url);
-        if (channelUser.isPresent()){
-            throw new ChannelAlreadyExistException(CHANNEL_ALREADY_SUBSCRIBE);
-        }
+        // checking if user is already subscribed to the channel
+        // is done in existsChannelURL Method already
+
         // Add Channel to user
         try {
             URL feedSource = new URL(url);
@@ -257,6 +259,43 @@ public class ChannelService {
             channel.setUrl(url);
             channel.setDescription(feed.getDescription());
             channelRepository.save(channel);
+
+            // Extract feedItems
+            List<SyndEntry> syndFeedItems = feed.getEntries();
+            for(SyndEntry feedItem: syndFeedItems){
+                FeedItem feedItem1 = new FeedItem();
+                feedItem1.setChannel(channel);
+                feedItem1.setTitle(feedItem.getTitle());
+                feedItem1.setDescription(feedItem.getDescription().toString());
+                feedItem1.setLink(feedItem.getLink());
+                //feedItem1.setPublishDate(feedItem.getPublishedDate());
+
+                // set the feed item authors
+                List<SyndPerson> authors = feedItem.getAuthors();
+                List<String> authorNames = new ArrayList<>();
+                for(SyndPerson syndPerson: authors){
+                    authorNames.add(syndPerson.getName());
+                }
+                feedItem1.setAuthorsNames(authorNames);
+
+                // set categories of feed item
+                // If category is not yet available, create one and link the feed item to it.
+                List<SyndCategory> SyndCategories = feedItem.getCategories();
+                List<Category> categories = new ArrayList<>();
+                for(SyndCategory category_: SyndCategories){
+                    Optional<Category> checkCategory = categoryRepository.findByName(category_.getName());
+                    if(checkCategory.isPresent()){
+                        categories.add(checkCategory.get());
+                    } else {
+                        Category newCategory = new Category();
+                        newCategory.setName(category_.getName());
+                        categoryRepository.save(newCategory);
+                        categories.add(newCategory);
+                    }
+                }
+                feedItem1.setCategories(categories);
+                feedItemRepository.save(feedItem1);
+            }
 
             ChannelUser channelUser1 = new ChannelUser();
             channelUser1.setChannel(channel);
