@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.BeforeTransaction;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +20,7 @@ public class FeedItemTest {
     @Autowired
     private FeedItemRepository feedItemRepo;
     private static final String DESC = "A short story";
-    private ZonedDateTime zone= ZonedDateTime.now();
+    private LocalDateTime ldt= LocalDateTime.now();
 
     @BeforeTransaction
     public void init(){
@@ -30,7 +30,7 @@ public class FeedItemTest {
         feedItem.setLink("https://google-news");
         feedItem.setTitle("One day in my life");
         feedItem.setContent("Here is some content");
-        feedItem.setPublishDate(zone);
+        feedItem.setPublishDate(ldt);
         feedItemRepo.save(feedItem);
 
         FeedItem feedItem_ = new FeedItem();
@@ -39,7 +39,7 @@ public class FeedItemTest {
         feedItem_.setLink("https://spiegel-news");
         feedItem_.setTitle("A second story");
         feedItem_.setContent("Here is some content for feed2");
-        feedItem_.setPublishDate(zone);
+        feedItem_.setPublishDate(ldt);
         feedItemRepo.save(feedItem_);
 
     }

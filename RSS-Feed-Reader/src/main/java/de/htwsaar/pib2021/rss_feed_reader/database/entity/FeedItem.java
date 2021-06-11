@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +24,7 @@ public class FeedItem extends BaseEntity {
 	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
 	@Column(name = "publish_date", nullable = false)
-	private ZonedDateTime publishDate;
-
+	private LocalDateTime  publishDate;
 
 	@ElementCollection
 	@CollectionTable(name = "feedItem_x_authorName", joinColumns = @JoinColumn(name = "feed_item_id", referencedColumnName = "id"))
@@ -47,6 +46,11 @@ public class FeedItem extends BaseEntity {
 
 	public void addAuthorName(String name) {
 		authorsNames.add(name);
+	}
+
+	public void setCategories(List<Category> categories) {
+		for (Category category : categories)
+			addCategory(category);
 	}
 
 	public void addCategory(Category category) {

@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,7 +29,7 @@ public class FeedItemUserTest {
     private UserRepository userRepo;
     @Autowired
     private FeedItemRepository feedItemRepo;
-    private ZonedDateTime zone = ZonedDateTime.now();
+    private LocalDateTime ldt = LocalDateTime.now();
 
     @BeforeTransaction
     public void init() {
@@ -49,7 +49,7 @@ public class FeedItemUserTest {
         feedItem.setLink("https://google-news");
         feedItem.setTitle("One day in my life");
         feedItem.setContent("Here is some content");
-        feedItem.setPublishDate(zone);
+        feedItem.setPublishDate(ldt);
         feedItem = feedItemRepo.save(feedItem);
 
         FeedItemUser feedItemUser = new FeedItemUser();

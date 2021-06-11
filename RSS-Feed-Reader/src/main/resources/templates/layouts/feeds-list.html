@@ -3,18 +3,27 @@
     <th:block th:each="feed,i : ${feeds}" th:id="'feed-list-item-' + ${i.index + 1}" class="feeds-list">
         <div class="app-list app-list-feed shadow-sm mb-1">
             <div class="px-4 p-1">
-                <div class="row d-flex justify-content-between">
-                    <div class="col-auto feed-category me-0 ms-0 m-auto position-relative" style="top: -1.5px"><span
-                            class="badge bg-success m-auto">tech</span>
+                <div class="row justify-content-start">
+                    <div class="col-auto feed-category  me-0 ms-0 m-auto position-relative" style="top: -1.5px"><span
+                            class="badge bg-success m-auto" th:text="${feed.category}">category</span>
                     </div>
                     <!--//col-->
-                    <h6 class=" col-auto feed-title me-0 ms-0 m-auto">Feed title Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit ipsum dolor sit.</h6>
+                    <h6 class=" col feed-title me-0 ms-0 m-auto" th:text="${feed.title}">Feed title</h6>
                     <!--//col-->
-                    <ul class="col-auto feed-meta list-inline me-0 ms-0 m-auto">
+                    <ul class="col feed-meta list-inline me-0  m-auto">
                         <li class="list-inline-item"><a href="#">Spiegel</a></li>
                         <li class="list-inline-item">|</li>
-                        <li class="list-inline-item">2 hrs ago</li>
+                        <li class="list-inline-item"
+                            th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
+                                th:text="${feed.elapsedPublisMinutes}"></span> min<th:block
+                                th:if="${feed.elapsedPublishMinutes != 1}">s</th:block> ago</li>
+                        <li class="list-inline-item"
+                            th:if="${feed.elapsedPublishDays == 0 && feed.elapsedPublishHoures > 0 }"><span
+                                th:text="${feed.elapsedPublishHoures}"></span> hr<th:block
+                                th:if="${feed.elapsedPublishHoures != 1}">s</th:block> ago</li>
+                        <li class="list-inline-item" th:if="${feed.elapsedPublishDays > 0 }"><span
+                                th:text="${feed.elapsedPublishDays}"></span> day<th:block
+                                th:if="${feed.elapsedPublishDays != 1}">s</th:block> ago</li>
                     </ul>
                     <!--//col-->
 

@@ -9,12 +9,22 @@
                     </div>
                     <!--//col-->
                     <div class="col-12 col-lg-auto text-center text-lg-start">
-                        <div class="feed-category mb-2"><span class="badge bg-success">tech</span></div>
-                        <h4 class="feed-title mb-1">Feed title Lorem ipsum dolor sit amet consectetur
-                            adipisicing elit.</h4>
+                        <div class="feed-category mb-2"><span class="badge bg-success"
+                                th:text="${feed.category}">category</span></div>
+                        <h4 class="feed-title mb-1" th:text="${feed.title}">Feed title</h4>
 
                         <ul class="feed-meta list-inline mb-0">
-                            <li class="list-inline-item">2 hrs ago</li>
+                            <li class="list-inline-item"
+                                th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
+                                    th:text="${feed.elapsedPublisMinutes}"></span> min<th:block
+                                    th:if="${feed.elapsedPublishMinutes != 1}">s</th:block> ago</li>
+                            <li class="list-inline-item"
+                                th:if="${feed.elapsedPublishDays == 0 && feed.elapsedPublishHoures > 0 }"><span
+                                    th:text="${feed.elapsedPublishHoures}"></span> hr<th:block
+                                    th:if="${feed.elapsedPublishHoures != 1}">s</th:block> ago</li>
+                            <li class="list-inline-item" th:if="${feed.elapsedPublishDays > 0 }"><span
+                                    th:text="${feed.elapsedPublishDays}"></span> day<th:block
+                                    th:if="${feed.elapsedPublishDays != 1}">s</th:block> ago</li>
                             <li class="list-inline-item">|</li>
                             <li class="list-inline-item">Annette Dittert</li>
                         </ul>
@@ -26,10 +36,7 @@
             </div>
             <!--//app-card-header-->
             <div class="app-card-body p-4">
-                <div class="feed-content">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolore
-                    nobis
-                    ducimus officiis veniam, quibusdam eum modi quas tempore obcaecati esse mollitia error
-                    deleniti minus eius dicta ipsa reprehenderit, possimus tempora.</div>
+                <div class="feed-description" th:text="${feed.description}">Feed description</div>
             </div>
             <!--//app-card-body-->
             <div class="app-card-footer px-4 py-3">
@@ -55,11 +62,10 @@
                             <input type="checkbox" th:id="'star-' + ${i.index + 1}" />
                             <label th:for="'star-' + ${i.index + 1}"></label>-->
                 </div>
+                <!--//card-toolbar-->
             </div>
-            <!--//card-toolbar-->
+            <!--//app-card-footer-->
         </div>
         <!--//app-card-footer-->
-        </div>
-        <!--//app-card-->
     </th:block>
 </thymeleaf>

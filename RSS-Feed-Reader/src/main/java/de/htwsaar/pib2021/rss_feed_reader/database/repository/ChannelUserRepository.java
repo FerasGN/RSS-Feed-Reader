@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, ChannelUserId> {
-
+  
     ChannelUser findByUserAndChannel(User user, Channel channel);
 
     List<ChannelUser> findAllByUserAndCategory(User user ,String category);

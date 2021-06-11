@@ -16,6 +16,7 @@ public class FeedItemUser {
 	private boolean liked;
 	private boolean read;
 	private boolean readLater;
+	@Column(columnDefinition = "integer default 0")
 	private Integer clicks;
 
 	@ManyToOne(fetch = FetchType.LAZY)

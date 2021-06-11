@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.transaction.BeforeTransaction;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,14 +27,10 @@ public class FeedItemUserTest {
     @Autowired
     private FeedItemUserRepository feedItemUserRepo;
     private static final String DESC = "A short story";
-    private ZonedDateTime zone= ZonedDateTime.now();
-
-
-
-
+    private LocalDateTime ldt = LocalDateTime.now();
 
     @BeforeTransaction
-    public void init(){
+    public void init() {
         User user = new User();
         user.setId(1l);
         user.setFirstName("jon");
@@ -52,7 +47,7 @@ public class FeedItemUserTest {
         feedItem.setLink("https://google-news");
         feedItem.setTitle("One day in my life");
         feedItem.setContent("Here is some content");
-        feedItem.setPublishDate(zone);
+        feedItem.setPublishDate(ldt);
         feedItemRepo.save(feedItem);
 
         FeedItem feedItem2 = new FeedItem();
@@ -61,10 +56,10 @@ public class FeedItemUserTest {
         feedItem2.setLink("https://news.de");
         feedItem2.setTitle("A horrible movie");
         feedItem2.setContent("Some content for feedItem2");
-        feedItem2.setPublishDate(zone);
+        feedItem2.setPublishDate(ldt);
         feedItemRepo.save(feedItem2);
 
-        FeedItemUserId feedItemUserId = new FeedItemUserId(feedItem.getId(),user.getId());
+        FeedItemUserId feedItemUserId = new FeedItemUserId(feedItem.getId(), user.getId());
         FeedItemUser feedItemUser = new FeedItemUser();
         feedItemUser.setId(feedItemUserId);
         feedItemUser.setRead(true);
@@ -74,7 +69,7 @@ public class FeedItemUserTest {
         feedItemUser.setFeedItem(feedItem);
         feedItemUserRepo.save(feedItemUser);
 
-        FeedItemUserId feedItemUserId_ = new FeedItemUserId(2l,1l);
+        FeedItemUserId feedItemUserId_ = new FeedItemUserId(2l, 1l);
         FeedItemUser feedItemUser_ = new FeedItemUser();
         feedItemUser_.setId(feedItemUserId_);
         feedItemUser_.setRead(true);
@@ -84,29 +79,28 @@ public class FeedItemUserTest {
         feedItemUser_.setFeedItem(feedItem2);
         feedItemUserRepo.save(feedItemUser_);
 
-
     }
 
     @Test
-    public void findUserIdInFeedItemUser(){
-        FeedItemUserId feedItemUserId = new FeedItemUserId(1l,1l);
+    public void findUserIdInFeedItemUser() {
+        FeedItemUserId feedItemUserId = new FeedItemUserId(1l, 1l);
         FeedItemUser feedItemUser1 = feedItemUserRepo.findById(feedItemUserId).get();
         User user = userRepo.findById(feedItemUser1.getUser().getId()).get();
         assertEquals(user.getLastName(), "snow");
     }
 
     @Test
-    public void findFeedItemInFeedItemUser(){
-        FeedItemUserId feedItemUserId = new FeedItemUserId(1l,1l);
+    public void findFeedItemInFeedItemUser() {
+        FeedItemUserId feedItemUserId = new FeedItemUserId(1l, 1l);
         FeedItemUser feedItemUser1 = feedItemUserRepo.findById(feedItemUserId).get();
         FeedItem feedItem = feedItemRepo.findById(feedItemUser1.getFeedItem().getId()).get();
         assertEquals(feedItem.getTitle(), "One day in my life");
     }
 
     @Test
-    public void checkNumberOfFeedItemsOfUser(){
+    public void checkNumberOfFeedItemsOfUser() {
         List<FeedItemUser> feedItemUsers = feedItemUserRepo.findAll();
-        long  feedItemId = feedItemUsers.get(1).getFeedItem().getId();
+        long feedItemId = feedItemUsers.get(1).getFeedItem().getId();
         assertEquals(feedItemId, 2l);
     }
 
