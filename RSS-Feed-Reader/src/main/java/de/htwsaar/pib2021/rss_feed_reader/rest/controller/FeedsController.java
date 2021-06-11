@@ -46,6 +46,7 @@ public class FeedsController {
              @RequestParam(value = "orderBy", required = false) String order, Model model,
              @AuthenticationPrincipal SecurityUser securityUser) {
 
+                
         // add categories, channels and the number of unread feeds
         model = initSidePanelFeedsInfo(model, securityUser);
 
@@ -66,7 +67,7 @@ public class FeedsController {
     }
 
     private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {
-        List<String> categories = channelService.findAllCategoriesByUser(securityUser.getUser());
+        List<String> categories = channelService.findAllChannelsCategoriesByUser(securityUser.getUser());
         List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory();
         ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(channelService);
         List<ChannelCommand> channelCommands = channelUser.stream()

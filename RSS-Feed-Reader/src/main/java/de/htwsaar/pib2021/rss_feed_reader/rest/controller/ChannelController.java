@@ -89,7 +89,7 @@ public class ChannelController {
         List<String> allCategories = new ArrayList<String>();
         try {
 
-            allCategories = channelService.findAllCategoriesByUser(securityUser.getUser());
+            allCategories = channelService.findAllChannelsCategoriesByUser(securityUser.getUser());
 
         } catch (Exception e) {
             e.printStackTrace();

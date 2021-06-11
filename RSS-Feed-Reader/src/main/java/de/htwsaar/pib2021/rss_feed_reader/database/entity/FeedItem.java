@@ -21,7 +21,7 @@ public class FeedItem extends BaseEntity {
 	private String link;
 	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
 	private String description;
-	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
 	@Column(name = "publish_date", nullable = false)
 	private ZonedDateTime publishDate;

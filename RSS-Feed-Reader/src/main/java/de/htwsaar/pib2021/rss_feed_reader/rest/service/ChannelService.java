@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -130,8 +132,8 @@ public class ChannelService {
     }
 
 
-    public List<String> findAllCategoriesByUser(User user){
-        List<String> allCategories = categoryRepository.findAllByUser(user.getId());   
+    public List<String> findAllChannelsCategoriesByUser(User user){
+        List<String> allCategories = categoryRepository.findAllChannelsCategoriesByUser(user.getId());   
         return allCategories;
     }
 
@@ -271,7 +273,9 @@ public class ChannelService {
                 feedItem1.setTitle(feedItem.getTitle());
                 feedItem1.setDescription(feedItem.getDescription().toString());
                 feedItem1.setLink(feedItem.getLink());
-                //feedItem1.setPublishDate(feedItem.getPublishedDate());
+                ZonedDateTime publishDate = ZonedDateTime.ofInstant(feedItem.getPublishedDate().toInstant(),
+                                          ZoneId.systemDefault());
+                feedItem1.setPublishDate(publishDate);
 
                 // set the feed item authors
                 List<SyndPerson> authors = feedItem.getAuthors();
