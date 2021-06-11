@@ -1,15 +1,18 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import com.rometools.rome.io.FeedException;
-import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
+import com.rometools.rome.feed.synd.SyndFeed;
+
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
@@ -35,17 +38,18 @@ public class ChannelController {
     public ModelAndView searchForChannel(ModelAndView mav, @RequestParam("url") String url,
             @AuthenticationPrincipal SecurityUser securityUser) {
 
-        boolean correctUrl = channelService.isRssURLCorrect(url);
+        Optional<SyndFeed> parsedRssFeedFromURL = channelService.parseRssFeedFromURL(url);
         boolean channelExists = channelService.existsChannelURL(securityUser.getUser(), url);
 
-        if (!correctUrl) {
+        if (!parsedRssFeedFromURL.isPresent()){
             mav.addObject("channelInfo", "URL was not found");
 
         } else if (channelExists) {
             mav.addObject("channelInfo", "Channel already exists");
 
         } else {
-            mav.addObject("channelInfo", "Name of the channel");
+            SyndFeed feed = parsedRssFeedFromURL.get();
+            mav.addObject("channelInfo", feed.getTitle());
             mav.addObject("channelImage",
                     "//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391");
         }
@@ -64,20 +68,34 @@ public class ChannelController {
      * @return ModelAndView
      */
     @PostMapping(value = { "/save-channel" })
-    public ModelAndView saveChannel(ModelAndView mav, ChannelCommand channelCommand, @AuthenticationPrincipal SecurityUser securityUser) {
+    public ModelAndView saveChannel(ModelAndView mav, ChannelCommand channelCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
         String url = channelCommand.getUrl();
-        String category = channelCommand.getCategory();
+        String categoryName = channelCommand.getCategoryCommand().getName();
 
         try {
-            Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, "Tech");
-            System.out.println("--------------------------------------");
-            System.out.println(channel.get().getTitle());
-            System.out.println(channel.get().getUrl());
+            Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, categoryName);
 
         } catch (Exception e) {
 
         }
         mav.setViewName("redirect:/all-feeds");
         return mav;
+    }
+
+    @GetMapping(value = "/findCategories")
+    @ResponseBody
+    public List<String> findCategories(@AuthenticationPrincipal SecurityUser securityUser) {
+        List<String> allCategories = new ArrayList<String>();
+        try {
+
+            allCategories = channelService.findAllCategoriesByUser(securityUser.getUser());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return allCategories;
+
     }
 }

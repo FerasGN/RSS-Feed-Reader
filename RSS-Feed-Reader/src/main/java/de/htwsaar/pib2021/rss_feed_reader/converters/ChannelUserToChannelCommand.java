@@ -3,6 +3,7 @@ package de.htwsaar.pib2021.rss_feed_reader.converters;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 
+import de.htwsaar.pib2021.rss_feed_reader.commands.CategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
@@ -24,7 +25,9 @@ public class ChannelUserToChannelCommand implements Converter<ChannelUser, Chann
 
         final ChannelCommand channelCommand = new ChannelCommand();
         channelCommand.setTitle(source.getChannel().getTitle());
-        channelCommand.setCategory(source.getCategory());
+        CategoryCommand categoryCommand = new CategoryCommand();
+        categoryCommand.setName(source.getCategory().getName());
+        channelCommand.setCategoryCommand(categoryCommand);
         Long numberOfUnreadFeeds = channelService.findNumberOfUnreadFeedsOfChannel(source.getUser(), source.getChannel());
         channelCommand.setNumberOfUnreadFeeds(numberOfUnreadFeeds);
 

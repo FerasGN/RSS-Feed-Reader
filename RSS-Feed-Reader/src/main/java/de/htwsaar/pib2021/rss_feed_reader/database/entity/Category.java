@@ -23,4 +23,8 @@ public class Category extends BaseEntity {
                         @JoinColumn(name = "category_id") }, inverseJoinColumns = { @JoinColumn(name = "feedItem_id") })
         private List<FeedItem> feedItems = new ArrayList<FeedItem>();
 
+        @ToString.Exclude
+	@OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+        private List<ChannelUser> channelUsers = new ArrayList<ChannelUser>();
+
 }

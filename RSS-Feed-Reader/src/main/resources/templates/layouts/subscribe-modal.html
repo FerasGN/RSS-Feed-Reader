@@ -11,20 +11,18 @@
 					</a>
 
 					<div id="warp-channel-image" class="warp-channel-image mb-4">
-						<img alt="" class="channel-image"
-									th:src="${channelImage}">
+						<img alt="" class="channel-image" th:src="${channelImage}">
 
 					</div>
 					<form id="channel-form" action="#" th:method="POST" th:action="@{/save-channel}"
 						th:object="${channelCommand}">
 						<label>Which channel would you like to subscribe to?</label>
-						<p id="channel-info" class="channel-name m-2" th:text="${channelInfo}">
+						<p id="channel-info" class="channel-name m-2 text-danger" th:text="${channelInfo}">
 						</p>
-						<div class="form-group mb-4">
+						<div id="url-container" class="form-group mb-4">
 							<input id="channel-url" type="text" class="form-control" placeholder="Enter a channel url"
 								required="required" th:field="*{url}">
 						</div>
-
 						<div class="d-flex">
 							<div id="button-container" class="mx-auto">
 								<button id="search-channel-button" class="btn app-btn-primary"

@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
+import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.converters.ChannelUserToChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
@@ -40,11 +42,12 @@ public class FeedsController {
      */
     @GetMapping("/all-feeds")
     public String showAllFeeds(@RequestParam(value = "view", required = false) String view,
-            @RequestParam(value = "period", required = false) String period,
-            @RequestParam(value = "orderBy", required = false) String order, Model model) {
+             @RequestParam(value = "period", required = false) String period,
+             @RequestParam(value = "orderBy", required = false) String order, Model model,
+             @AuthenticationPrincipal SecurityUser securityUser) {
 
         // add categories, channels and the number of unread feeds
-        model = initSidePanelFeedsInfo(model);
+        model = initSidePanelFeedsInfo(model, securityUser);
 
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             String filteredAndOrderedFeeds = "";
@@ -62,8 +65,8 @@ public class FeedsController {
         return "all-feeds";
     }
 
-    private Model initSidePanelFeedsInfo(Model model) {
-        List<String> categories = channelService.findCategories();
+    private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {
+        List<String> categories = channelService.findAllCategoriesByUser(securityUser.getUser());
         List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory();
         ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(channelService);
         List<ChannelCommand> channelCommands = channelUser.stream()
@@ -112,10 +115,10 @@ public class FeedsController {
     @GetMapping("/read-later")
     public String showReadLaterFeeds(@RequestParam(value = "view", required = false) String view,
             @RequestParam(value = "period", required = false) String period,
-            @RequestParam(value = "orderBy", required = false) String order, Model model) {
-
+            @RequestParam(value = "orderBy", required = false) String order, Model model, 
+            @AuthenticationPrincipal SecurityUser securityUser){
         // add categories, channels and the number of unread feeds
-        model = initSidePanelFeedsInfo(model);
+        model = initSidePanelFeedsInfo(model, securityUser);
 
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             String filteredAndOrderedFeeds = "";
@@ -136,9 +139,10 @@ public class FeedsController {
     @GetMapping("/liked-feeds")
     public String showLikedFeeds(@RequestParam(value = "view", required = false) String view,
             @RequestParam(value = "period", required = false) String period,
-            @RequestParam(value = "orderBy", required = false) String order, Model model) {
+            @RequestParam(value = "orderBy", required = false) String order, Model model, 
+            @AuthenticationPrincipal SecurityUser securityUser) {
         // add categories, channels and the number of unread feeds
-        model = initSidePanelFeedsInfo(model);
+        model = initSidePanelFeedsInfo(model, securityUser);
 
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             String filteredAndOrderedFeeds = "";

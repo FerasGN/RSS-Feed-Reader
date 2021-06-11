@@ -65,9 +65,10 @@ function getSubscribeModal(url, container) {
 
 			// if the channel was found
 			channelInfo = document.getElementById("channel-info").innerText;
-			if (channelInfo != 'URL was not found' && channelInfo != 'Channel already exists')
-				addSubscribeButton();
-
+			if (channelInfo != 'URL was not found' && channelInfo != 'Channel already exists') {
+				initModalCategories();
+				addSubscribeButton();	
+			}
 		} else {
 			// We reached our target server, but it returned an error
 
@@ -81,6 +82,70 @@ function getSubscribeModal(url, container) {
 	request.send();
 }
 
+function initModalCategories() {
+
+	var div = document.createElement('div');
+	div.id = 'category-container';
+	div.className += 'form-group mb-4';
+
+	var label = document.createElement('label');
+	label.setAttribute('for','category');
+	label.className += "form-label";
+	label.innerText = 'Category';
+
+	div.appendChild(label);
+
+	var input = document.createElement('input');
+	input.id = 'category';
+	input.className += 'form-control';
+	input.setAttribute('type','text');
+	input.setAttribute('list','categories');
+	input.placeholder = 'Add the channel to a a Category...';
+	input.autocomplete = 'off';
+	input.required = true;
+	input.name = 'categoryCommand.name';
+
+	div.appendChild(input);
+
+	var dataList = document.createElement('datalist');
+	dataList.id = 'categories';
+
+	div.appendChild(dataList);
+
+	var urlContainer = document.getElementById("url-container");
+	urlContainer.parentNode.insertBefore(div, urlContainer.nextSibling);
+
+	var request = new XMLHttpRequest();
+
+	// Handle state changes for the request.
+	request.onreadystatechange = function (response) {
+		if (request.readyState === 4) {
+			if (request.status >= 200 && request.status < 400) {
+				// Parse the JSON
+				var jsonOptions = JSON.parse(request.responseText);
+
+				// Loop over the JSON array.
+				jsonOptions.forEach(function (item) {
+					// Create a new <option> element.
+					var option = document.createElement('option');
+					// Set the value using the item in the JSON array.
+					option.value = item;
+					// Add the <option> element to the <datalist>.
+					dataList.appendChild(option);
+				});
+
+				
+			} else {
+				// An error occured 
+				input.placeholder = "Couldn't load datalist options";
+			}
+		}
+	};
+
+	request.open('GET', '/findCategories', true);
+	request.send();
+}
+
 function searchChannel() {
 	var searchChannelButton = document.getElementById("search-channel-button");
 	searchChannelButton.disabled = true
@@ -89,6 +154,7 @@ function searchChannel() {
 	var subscribeModal = document.getElementById('subscribe-modal');
 	var channelUrl = document.getElementById('channel-url').value;
 	getSubscribeModal("/search-channel?url=" + channelUrl, subscribeModal);
+
 }
 
 // if channel url was valid and not found in the DB, show the save channel button
@@ -107,9 +173,14 @@ function addSubscribeButton() {
 	// bind save channel button to the channel url input
 	var channelUrl = document.getElementById('channel-url');
 	channelUrl.addEventListener('input', (e) => {
+		const categoryContainer = document.getElementById("category-container");
 		const saveChannelButton = document.getElementById('save-channel-button');
 		if (typeof (saveChannelButton) != 'undefined' && saveChannelButton != null) {
 			saveChannelButton.parentNode.removeChild(saveChannelButton);
+		}
+
+		if (typeof (categoryContainer) != 'undefined' && categoryContainer != null) {
+			categoryContainer.parentNode.removeChild(categoryContainer);
 		}
 	});
 }
@@ -121,12 +192,17 @@ var subscribeModal = document.getElementById('subscribe-modal')
 subscribeModal.addEventListener('hidden.bs.modal', function (event) {
 	const channelInfo = document.getElementById("channel-info");
 	const channelUrl = document.getElementById("channel-url");
+	const categoryContainer = document.getElementById("category-container");
 	const searchChannelButton = document.getElementById("search-channel-button");
 	const saveChannelButton = document.getElementById("save-channel-button");
 
 
 	channelInfo.innerText = "";
 	channelUrl.value = "";
+
+	if (typeof (categoryContainer) != 'undefined' && categoryContainer != null)
+		categoryContainer.parentNode.removeChild(categoryContainer);
+
 	searchChannelButton.disabled = false;
 	searchChannelButton.innerHTML = "Search";
 	if (typeof (saveChannelButton) != 'undefined' && saveChannelButton != null)

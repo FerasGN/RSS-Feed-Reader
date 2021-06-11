@@ -21,9 +21,11 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
@@ -124,49 +126,52 @@ public class ChannelService {
         }
     }
 
-    public List<String> findCategories(){
-        List<String> categories = Arrays.asList("Sport", "Politik", "Tech");
-        return categories;
+
+    public List<String> findAllCategoriesByUser(User user){
+        List<String> allCategories = categoryRepository.findAllByUser(user.getId());   
+        return allCategories;
     }
 
     public List<ChannelUser> findAllChannelUserOrderedByCategory(){
-        Channel c1 = new Channel();
-        c1.setTitle("Politik1");
-        Channel c2 = new Channel();
-        c2.setTitle("Politik2");
+        // Channel c1 = new Channel();
+        // c1.setTitle("Politik1");
+        // Channel c2 = new Channel();
+        // c2.setTitle("Politik2");
 
-        Channel c3 = new Channel();
-        c3.setTitle("Tech1");
-        Channel c4 = new Channel();
-        c4.setTitle("Tech2");
+        // Channel c3 = new Channel();
+        // c3.setTitle("Tech1");
+        // Channel c4 = new Channel();
+        // c4.setTitle("Tech2");
 
-        Channel c5 = new Channel();
-        c5.setTitle("Sport1");
-        Channel c6 = new Channel();
-        c6.setTitle("Sport2");
+        // Channel c5 = new Channel();
+        // c5.setTitle("Sport1");
+        // Channel c6 = new Channel();
+        // c6.setTitle("Sport2");
     
-        ChannelUser cu1 = new ChannelUser();
-        cu1.setChannel(c1);
-        cu1.setCategory("Politik");
-        ChannelUser cu2 = new ChannelUser();
-        cu2.setChannel(c2);
-        cu2.setCategory("Politik");
+        // ChannelUser cu1 = new ChannelUser();
+        // cu1.setChannel(c1);
+        // cu1.setCategory("Politik");
+        // ChannelUser cu2 = new ChannelUser();
+        // cu2.setChannel(c2);
+        // cu2.setCategory("Politik");
 
-        ChannelUser cu3 = new ChannelUser();
-        cu3.setChannel(c3);
-        cu3.setCategory("Tech");
-        ChannelUser cu4 = new ChannelUser();
-        cu4.setChannel(c4);
-        cu4.setCategory("Tech");
+        // ChannelUser cu3 = new ChannelUser();
+        // cu3.setChannel(c3);
+        // cu3.setCategory("Tech");
+        // ChannelUser cu4 = new ChannelUser();
+        // cu4.setChannel(c4);
+        // cu4.setCategory("Tech");
 
-        ChannelUser cu5 = new ChannelUser();
-        cu5.setChannel(c5);
-        cu5.setCategory("Sport");
-        ChannelUser cu6 = new ChannelUser();
-        cu6.setChannel(c6);
-        cu6.setCategory("Sport");
+        // ChannelUser cu5 = new ChannelUser();
+        // cu5.setChannel(c5);
+        // cu5.setCategory("Sport");
+        // ChannelUser cu6 = new ChannelUser();
+        // cu6.setChannel(c6);
+        // cu6.setCategory("Sport");
 
-        List<ChannelUser> channels =Arrays.asList(cu1, cu2, cu3, cu4, cu5, cu6);
+        // List<ChannelUser> channels =Arrays.asList(cu1, cu2, cu3, cu4, cu5, cu6);
+        List<ChannelUser> channels = new ArrayList<ChannelUser>();
+
 
         return channels;
     }
@@ -196,7 +201,7 @@ public class ChannelService {
         return 100l;
     }
 
-    public boolean isRssURLCorrect(String url) {
+    public Optional<SyndFeed> parseRssFeedFromURL(String url) {
         URL feedSource;
         try {
             feedSource = new URL(url.trim());
@@ -204,13 +209,12 @@ public class ChannelService {
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed feed = input.build(new XmlReader(feedSource));
             if (feed.getEntries() != null) {
-                return true;
+                return Optional.of(feed);
             }
         } catch (IllegalArgumentException | FeedException | IOException e) {
-            return false;
+            return Optional.empty();
         }
-        return false;
-
+        return  Optional.empty();
     }
 
     /**
@@ -238,7 +242,7 @@ public class ChannelService {
      * @throws IOException
      * @throws Exception
      */
-    public Optional<Channel> subscribeToChannel(User user, String url, String category) throws ChannelAlreadyExistException,
+    public Optional<Channel> subscribeToChannel(User user, String url, String categoryName) throws ChannelAlreadyExistException,
             NotValidURLException, IOException, Exception {
 
         // check if user is already subscribed to the channel
@@ -264,14 +268,14 @@ public class ChannelService {
             channelUser1.setFavorite(false);
 
             // Check if category is already available in database
-            Optional<Category> category1 = categoryRepository.findByName(category);
-            if(category1.isPresent()){
-                channelUser1.setCategory(category);
+            Optional<Category> category = categoryRepository.findByName(categoryName.trim().toLowerCase());
+            if(category.isPresent()){
+                channelUser1.setCategory(category.get());
             } else{
                 Category newCategory = new Category();
-                newCategory.setName(category);
+                newCategory.setName(categoryName.trim().toLowerCase());
                 categoryRepository.save(newCategory);
-                channelUser1.setCategory(category);
+                channelUser1.setCategory(newCategory);
             }
             channelUser1 =  channelUserRepository.save(channelUser1);
 

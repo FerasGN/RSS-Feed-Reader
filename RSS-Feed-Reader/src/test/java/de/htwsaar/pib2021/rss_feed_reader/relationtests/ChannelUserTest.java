@@ -76,7 +76,7 @@ public class ChannelUserTest {
         channelUser.setUser(user);
         channelUser.setChannel(channel);
         channelUser.setFavorite(true);
-        channelUser.setCategory("Politik");
+        channelUser.setCategory(new Category());
         channelUserRepo.save(channelUser);
     }
 
