@@ -23,13 +23,15 @@ public class FeedItem extends BaseEntity {
 	private String description;
 	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
+	@Column(name = "author", nullable = true, columnDefinition = "TEXT")
+	private String author;
 	@Column(name = "publish_date", nullable = false)
 	private LocalDateTime  publishDate;
 
-	@ElementCollection
-	@CollectionTable(name = "feedItem_x_authorName", joinColumns = @JoinColumn(name = "feed_item_id", referencedColumnName = "id"))
-	@Column(name = "author_name")
-	private List<String> authorsNames = new ArrayList<String>();
+	// @ElementCollection
+	// @CollectionTable(name = "feedItem_x_authorName", joinColumns = @JoinColumn(name = "feed_item_id", referencedColumnName = "id"))
+	// @Column(name = "author_name")
+	// private List<String> authorsNames = new ArrayList<String>();
 
 	@ToString.Exclude
 	@ManyToOne
@@ -44,9 +46,9 @@ public class FeedItem extends BaseEntity {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FeedItemUser> users = new ArrayList<FeedItemUser>();
 
-	public void addAuthorName(String name) {
-		authorsNames.add(name);
-	}
+	// public void addAuthorName(String name) {
+	// 	authorsNames.add(name);
+	// }
 
 	public void setCategories(List<Category> categories) {
 		for (Category category : categories)

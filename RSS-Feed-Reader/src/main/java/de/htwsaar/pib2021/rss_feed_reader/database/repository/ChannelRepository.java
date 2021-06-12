@@ -9,6 +9,6 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
     Optional<Channel> findByTitle(String title);
 
-    Optional<Channel> findByUrl(String url);
+    Optional<Channel> findByChannelUrl(String url);
 
 }

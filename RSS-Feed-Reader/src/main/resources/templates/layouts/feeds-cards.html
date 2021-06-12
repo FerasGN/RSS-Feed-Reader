@@ -14,9 +14,11 @@
                         <h4 class="feed-title mb-1" th:text="${feed.title}">Feed title</h4>
 
                         <ul class="feed-meta list-inline mb-0">
+                            <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}" th:text="${feed.channelTitle}"></a></li>
+                            <li class="list-inline-item">|</li>
                             <li class="list-inline-item"
                                 th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
-                                    th:text="${feed.elapsedPublisMinutes}"></span> min<th:block
+                                    th:text="${feed.elapsedPublishMinutes}"></span> min<th:block
                                     th:if="${feed.elapsedPublishMinutes != 1}">s</th:block> ago</li>
                             <li class="list-inline-item"
                                 th:if="${feed.elapsedPublishDays == 0 && feed.elapsedPublishHoures > 0 }"><span
@@ -26,7 +28,7 @@
                                     th:text="${feed.elapsedPublishDays}"></span> day<th:block
                                     th:if="${feed.elapsedPublishDays != 1}">s</th:block> ago</li>
                             <li class="list-inline-item">|</li>
-                            <li class="list-inline-item">Annette Dittert</li>
+                            <li class="list-inline-item" th:text="${feed.author}"></li>
                         </ul>
 
                     </div>

@@ -8,7 +8,9 @@ public class FeedItemCommand {
     private String title;
     private String description;
     private String link;
-    private String channel;
+    private String channelTitle;
+    private String websiteLink;
+    private String author;
     private String category;
     private Integer elapsedPublishMinutes;
     private Integer elapsedPublishHoures;

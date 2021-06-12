@@ -28,7 +28,7 @@ public class ChannelTest {
         Channel channel = new Channel();
         channel.setId(1l);
         channel.setDescription(DESCRIPTION);
-        channel.setUrl(URL);
+        channel.setChannelUrl(URL);
         channel.setTitle(NAME);
         channel = channelRepo.save(channel);
     }

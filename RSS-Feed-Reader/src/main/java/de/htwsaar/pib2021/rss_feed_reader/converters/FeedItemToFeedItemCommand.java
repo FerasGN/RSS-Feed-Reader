@@ -34,7 +34,9 @@ public class FeedItemToFeedItemCommand implements Converter<FeedItem, FeedItemCo
         feedItemCommand.setTitle(source.getTitle());
         feedItemCommand.setDescription(source.getDescription());
         feedItemCommand.setLink(source.getLink());
-        feedItemCommand.setChannel(source.getChannel().getTitle());
+        feedItemCommand.setChannelTitle(source.getChannel().getTitle());
+        feedItemCommand.setWebsiteLink(source.getChannel().getWebsiteLink());
+        feedItemCommand.setAuthor(source.getAuthor());
         feedItemCommand.setElapsedPublishMinutes(calculateElapsedPublishMinutes(source.getPublishDate()));
         feedItemCommand.setElapsedPublishHoures(calculateElapsedPublishHoures(source.getPublishDate()));
         feedItemCommand.setElapsedPublishDays(calculateElapsedPublishDay(source.getPublishDate()));

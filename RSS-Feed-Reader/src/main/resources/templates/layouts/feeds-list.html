@@ -3,46 +3,49 @@
     <th:block th:each="feed,i : ${feeds}" th:id="'feed-list-item-' + ${i.index + 1}" class="feeds-list">
         <div class="app-list app-list-feed shadow-sm mb-1">
             <div class="px-4 p-1">
-                <div class="row justify-content-start">
-                    <div class="col-auto feed-category  me-0 ms-0 m-auto position-relative" style="top: -1.5px"><span
-                            class="badge bg-success m-auto" th:text="${feed.category}">category</span>
-                    </div>
+                <div class="row justify-content-between">
+                    <h6 class="col feed-title ms-0 me-0 m-auto" th:text="${feed.title}">Feed title</h6>
                     <!--//col-->
-                    <h6 class=" col feed-title me-0 ms-0 m-auto" th:text="${feed.title}">Feed title</h6>
-                    <!--//col-->
-                    <ul class="col feed-meta list-inline me-0  m-auto">
-                        <li class="list-inline-item"><a href="#">Spiegel</a></li>
-                        <li class="list-inline-item">|</li>
-                        <li class="list-inline-item"
-                            th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
-                                th:text="${feed.elapsedPublisMinutes}"></span> min<th:block
-                                th:if="${feed.elapsedPublishMinutes != 1}">s</th:block> ago</li>
-                        <li class="list-inline-item"
-                            th:if="${feed.elapsedPublishDays == 0 && feed.elapsedPublishHoures > 0 }"><span
-                                th:text="${feed.elapsedPublishHoures}"></span> hr<th:block
-                                th:if="${feed.elapsedPublishHoures != 1}">s</th:block> ago</li>
-                        <li class="list-inline-item" th:if="${feed.elapsedPublishDays > 0 }"><span
-                                th:text="${feed.elapsedPublishDays}"></span> day<th:block
-                                th:if="${feed.elapsedPublishDays != 1}">s</th:block> ago</li>
-                    </ul>
-                    <!--//col-->
+                    <div class="row justify-content-between">
+                        <div class="col feed-category  m-auto position-relative" style="top: -1.5px"><span
+                                class="badge bg-success m-auto" th:text="${feed.category}">category</span>
+                        </div>
+                        <!--//col-->
+                        <ul class="col text-end feed-meta  m-auto list-inline ">
+                            <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}"
+                                    th:text="${feed.channelTitle}">Spiegel</a></li>
+                            <li class="list-inline-item">|</li>
+                            <li class="list-inline-item"
+                                th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
+                                    th:text="${feed.elapsedPublishMinutes}"></span> min<th:block
+                                    th:if="${feed.elapsedPublishMinutes != 1}">s</th:block> ago</li>
+                            <li class="list-inline-item"
+                                th:if="${feed.elapsedPublishDays == 0 && feed.elapsedPublishHoures > 0 }"><span
+                                    th:text="${feed.elapsedPublishHoures}"></span> hr<th:block
+                                    th:if="${feed.elapsedPublishHoures != 1}">s</th:block> ago</li>
+                            <li class="list-inline-item" th:if="${feed.elapsedPublishDays > 0 }"><span
+                                    th:text="${feed.elapsedPublishDays}"></span> day<th:block
+                                    th:if="${feed.elapsedPublishDays != 1}">s</th:block> ago</li>
+                        </ul>
+                        <!--//col-->
 
 
-                    <div class="col-auto toolbar me-0 ms-0 m-auto position-relative" style="top: -1.5px">
-                        <div class="animated-icon heart  ms-0" data-bs-toggle="tooltip" title="like">
-                            <input type="checkbox" th:id="'heart-' + ${i.index + 1}" />
-                            <label th:for="'heart-' + ${i.index + 1}"></label>
+                        <div class="col-auto toolbar m-auto position-relative" style="top: -1.5px">
+                            <div class="animated-icon heart  ms-0" data-bs-toggle="tooltip" title="like">
+                                <input type="checkbox" th:id="'heart-' + ${i.index + 1}" />
+                                <label th:for="'heart-' + ${i.index + 1}"></label>
+                            </div>
+                            <div class="animated-icon bookmark" data-bs-toggle="tooltip" title="read later">
+                                <input type="checkbox" th:id="'bookmark-' + ${i.index + 1}" />
+                                <label th:for="'bookmark-' + ${i.index + 1}"></label>
+                            </div>
+                            <div class="animated-icon read" data-bs-toggle="tooltip" title="mark as read">
+                                <input type="checkbox" th:id="'read-' + ${i.index + 1}" />
+                                <label th:for="'read-' + ${i.index + 1}"></label>
+                            </div>
                         </div>
-                        <div class="animated-icon bookmark" data-bs-toggle="tooltip" title="read later">
-                            <input type="checkbox" th:id="'bookmark-' + ${i.index + 1}" />
-                            <label th:for="'bookmark-' + ${i.index + 1}"></label>
-                        </div>
-                        <div class="animated-icon read" data-bs-toggle="tooltip" title="mark as read">
-                            <input type="checkbox" th:id="'read-' + ${i.index + 1}" />
-                            <label th:for="'read-' + ${i.index + 1}"></label>
-                        </div>
+                        <!--//list-item-toolbar-->
                     </div>
-                    <!--//list-item-toolbar-->
                 </div>
                 <!--//row-->
             </div>

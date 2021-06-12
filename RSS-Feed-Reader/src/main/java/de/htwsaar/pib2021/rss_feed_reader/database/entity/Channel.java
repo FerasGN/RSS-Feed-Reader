@@ -12,15 +12,17 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "channel", uniqueConstraints = { @UniqueConstraint(name = "unique_url_channel", columnNames = "url") }
-
+@Table(name = "channel", uniqueConstraints = {
+		@UniqueConstraint(name = "unique_url_channel", columnNames = "channel_url") }
 )
 public class Channel extends BaseEntity {
 
 	@Column(name = "title", nullable = false, columnDefinition = "TEXT")
 	private String title;
-	@Column(name = "url", nullable = false, columnDefinition = "TEXT")
-	private String url;
+	@Column(name = "channel_url", nullable = false, columnDefinition = "TEXT")
+	private String channelUrl;
+	@Column(name = "website_link", nullable = true, columnDefinition = "TEXT")
+	private String websiteLink;
 	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
 	private String description;
 
