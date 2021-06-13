@@ -37,9 +37,11 @@ public class FeedItemToFeedItemCommand implements Converter<FeedItem, FeedItemCo
         feedItemCommand.setChannelTitle(source.getChannel().getTitle());
         feedItemCommand.setWebsiteLink(source.getChannel().getWebsiteLink());
         feedItemCommand.setAuthor(source.getAuthor());
-        feedItemCommand.setElapsedPublishMinutes(calculateElapsedPublishMinutes(source.getPublishDate()));
-        feedItemCommand.setElapsedPublishHoures(calculateElapsedPublishHoures(source.getPublishDate()));
-        feedItemCommand.setElapsedPublishDays(calculateElapsedPublishDay(source.getPublishDate()));
+        if (source.getPublishDate() != null) {
+            feedItemCommand.setElapsedPublishMinutes(calculateElapsedPublishMinutes(source.getPublishDate()));
+            feedItemCommand.setElapsedPublishHoures(calculateElapsedPublishHoures(source.getPublishDate()));
+            feedItemCommand.setElapsedPublishDays(calculateElapsedPublishDay(source.getPublishDate()));
+        }
 
         Category category = channelService.findChannelCategory(user, source.getChannel());
         feedItemCommand.setCategory(category.getName());

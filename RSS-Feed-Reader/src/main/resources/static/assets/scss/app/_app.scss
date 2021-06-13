@@ -183,6 +183,10 @@
 		a {
 			color: $theme-text-color-primary;
 			text-decoration: none;
+			&:visited{
+				color: lighten($theme-text-color-primary, 35%);
+			}
+
 			&:hover {
 				color: darken($theme-text-color-primary, 5%);
 			}

@@ -28,8 +28,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -277,16 +279,14 @@ public class ChannelService {
             List<Category> categories = new ArrayList<>();
             for (SyndCategory category_ : SyndCategories) {
                 Optional<Category> checkCategory = categoryRepository
-                        .findByName(category_.getName().trim().toLowerCase());
+                        .findByName(category_.getName());
                 if (checkCategory.isPresent()) {
                     categories.add(checkCategory.get());
                 } else {
                     Category newCategory = new Category();
                     newCategory.setName(category_.getName());
-                    categoryRepository.save(newCategory);
                     categories.add(newCategory);
                 }
-
             }
 
             feedItem.setCategories(categories);
@@ -294,7 +294,7 @@ public class ChannelService {
             channel.addFeedItem(feedItem);
             feedItem = feedItemRepository.save(feedItem);
 
-            categoryRepository.saveAll(categories);
+             categoryRepository.saveAll(categories);
 
             FeedItemUser feedItemUser = new FeedItemUser();
             feedItemUser.setUser(user);

@@ -23,7 +23,7 @@ public class Channel extends BaseEntity {
 	private String channelUrl;
 	@Column(name = "website_link", nullable = true, columnDefinition = "TEXT")
 	private String websiteLink;
-	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "description", nullable = true, columnDefinition = "TEXT")
 	private String description;
 
 	// @Lob
