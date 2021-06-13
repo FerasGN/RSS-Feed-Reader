@@ -1,9 +1,9 @@
 /* ============= Base ============= */
 
 body {
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: $theme-text-color-secondary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: $theme-text-color-secondary;
 }
 
 h1,
@@ -12,280 +12,281 @@ h3,
 h4,
 h5,
 h6 {
-	color: $theme-text-color-primary;
-	font-weight: 600;
+  color: $theme-text-color-primary;
+  font-weight: 600;
 }
 
 a {
-	color: $theme-color-primary;
-	text-decoration: none;
-	&:hover {
-		color: darken($theme-color-primary, 5%);
-	}
+  color: $theme-color-primary;
+  text-decoration: none;
+  &:hover {
+    color: darken($theme-color-primary, 5%);
+  }
 }
 
 hr {
-	background: darken($theme-border-color, 20%);
+  background: darken($theme-border-color, 20%);
 }
 
 .text-muted {
-	color: lighten($theme-text-color-light, 10%) !important;
+  color: lighten($theme-text-color-light, 10%) !important;
 }
 
 .table-dark {
-	background: $theme-text-color-primary;
-	color: #fff;
+  background: $theme-text-color-primary;
+  color: #fff;
 }
 
 .table-bordered th,
 .table-bordered td {
-	border-color: $theme-border-color;
+  border-color: $theme-border-color;
 }
 
 .table th,
 .table td {
-	border-color: $theme-border-color;
+  border-color: $theme-border-color;
 }
 
 .table thead th {
-	border-color: $theme-border-color;
+  border-color: $theme-border-color;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-	background-color: $smoky-white;
+  background-color: $smoky-white;
 }
 
 .table-dark th,
 .table-dark td,
 .table-dark thead th {
-	border-color: lighten($theme-text-color-primary, 20%);
+  border-color: lighten($theme-text-color-primary, 20%);
 }
 
 .table-hover > tbody > tr:hover {
-	background-color: lighten(#f5f6fe, 10%);
+  background-color: lighten(#f5f6fe, 10%);
 }
 
 .popover {
-	border-color: darken($theme-bg-light, 5%);
+  border-color: darken($theme-bg-light, 5%);
 }
 .bs-popover-left > .arrow::before,
 .bs-popover-auto[x-placement^="left"] > .arrow::before {
-	border-left-color: darken($theme-bg-light, 5%);
+  border-left-color: darken($theme-bg-light, 5%);
 }
 .bs-popover-right > .arrow::before,
 .bs-popover-auto[x-placement^="right"] > .arrow::before {
-	border-right-color: darken($theme-bg-light, 5%);
+  border-right-color: darken($theme-bg-light, 5%);
 }
 .bs-popover-top > .arrow::before,
 .bs-popover-auto[x-placement^="top"] > .arrow::before {
-	border-top-color: darken($theme-bg-light, 5%);
+  border-top-color: darken($theme-bg-light, 5%);
 }
 .bs-popover-bottom > .arrow::before,
 .bs-popover-auto[x-placement^="bottom"] > .arrow::before {
-	border-bottom-color: darken($theme-bg-light, 5%);
+  border-bottom-color: darken($theme-bg-light, 5%);
 }
 
 a.app-link {
-	color: $theme-text-color-primary;
-	text-decoration: underline;
-	-webkit-text-decoration-color: rgba($theme-text-color-primary, 0.3);
-	text-decoration-color: rgba($theme-text-color-primary, 0.3);
-	&:hover {
-		color: $theme-color-primary;
-		-webkit-text-decoration-color: rgba($theme-color-primary, 0.8);
-		text-decoration-color: rgba($theme-color-primary, 0.8);
-	}
+  color: $theme-text-color-primary;
+  text-decoration: underline;
+  -webkit-text-decoration-color: rgba($theme-text-color-primary, 0.3);
+  text-decoration-color: rgba($theme-text-color-primary, 0.3);
+  &:hover {
+    color: $theme-color-primary;
+    -webkit-text-decoration-color: rgba($theme-color-primary, 0.8);
+    text-decoration-color: rgba($theme-color-primary, 0.8);
+  }
 }
 
 button.close {
-	&:focus {
-		outline: none;
-		@include box-shadow(none);
-	}
+  &:focus {
+    outline: none;
+    @include box-shadow(none);
+  }
 }
 
 .btn {
-	font-weight: 600;
-	padding: 0.4rem 1rem;
-	font-size: 0.875rem;
-	border: none;
-	&:hover,
-	&:active,
-	&:focus {
-		text-decoration: none;
-	}
-	.bi {
-		position: relative;
-		top: -2px;
-	}
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  border: none;
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+  }
+  .bi {
+    position: relative;
+    top: -2px;
+  }
 
-	#{&}-xs {
-		padding: .25rem .4rem;
-		font-size: .65rem;
-		line-height: .5;
-		border-radius: .2rem;
-	  }
+  #{&}-xs {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.65rem;
+    line-height: 0.5;
+    border-radius: 0.2rem;
+  }
 }
 
 .btn:focus,
 .btn.focus {
-	box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .app-btn-primary {
-	background: $theme-color-primary;
-	color: #fff;
-	border-color: $theme-color-primary;
-	&:hover {
-		color: #fff;
-		background: lighten($theme-color-primary, 5%);
-		border-color: lighten($theme-color-primary, 5%);
-	}
+  background: $theme-color-primary;
+  color: #fff;
+  border-color: $theme-color-primary;
+  &:hover {
+    color: #fff;
+    background: lighten($theme-color-primary, 5%);
+    border-color: lighten($theme-color-primary, 5%);
+  }
 }
 
 .app-btn-secondary {
-	background: white;
-	color: $theme-text-color-secondary;
-	border: 1px solid lighten($theme-text-color-secondary, 35%);
-	&:hover {
-		color: $theme-color-primary;
-		border: 1px solid $theme-color-primary;
-		background: white;
-	}
+  background: white;
+  color: $theme-text-color-secondary;
+  border: 1px solid lighten($theme-text-color-secondary, 35%);
+  &:hover {
+    color: $theme-color-primary;
+    border: 1px solid $theme-color-primary;
+    background: white;
+  }
 }
 
 .btn-light {
-	background: $theme-bg-light;
-	color: $theme-color-primary;
-	&:hover {
-		background: $theme-bg-light;
-		color: $theme-color-primary;
-	}
+  background: $theme-bg-light;
+  color: $theme-color-primary;
+  &:hover {
+    background: $theme-bg-light;
+    color: $theme-color-primary;
+  }
 }
 
 .form-control {
-	padding-top: 0.6rem;
-	padding-bottom: 0.6rem;
-	height: 2.5rem;
-	border-color: $theme-border-color;
-	color: $theme-text-color-secondary;
-	&:focus {
-		@include box-shadow(none);
-		outline: none;
-		color: $theme-text-color-secondary;
-	}
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  height: 2.5rem;
+  border-color: $theme-border-color;
+  color: $theme-text-color-secondary;
+  &:focus {
+    @include box-shadow(none);
+    outline: none;
+    color: $theme-text-color-secondary;
+  }
 }
 
 .form-check-input:checked {
-	background-color: $theme-color-primary;
-	border-color: $theme-color-primary;
+  background-color: $theme-color-primary;
+  border-color: $theme-color-primary;
 }
 
 .dropdown-menu {
-	border-color: $theme-border-color;
+  border-color: $theme-border-color;
 
-	.dropdown-item {
-		padding: 0.5rem 1rem;
+  .dropdown-item {
+    padding: 0.5rem 1rem;
 
-		&:hover {
-			color: $theme-text-color-primary;
-		}
-	}
+    &:hover {
+      color: $theme-text-color-primary;
+    }
+  }
 
-	.dropdown-item:hover,
-	.dropdown-item:focus {
-		background: mix($theme-bg-light, white, 50%);
-	}
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    background: mix($theme-bg-light, white, 50%);
+  }
 
-	.dropdown-item.active,
-	.dropdown-item:active {
-		background: mix($theme-bg-light, white, 50%);
-	}
+  .dropdown-item.active,
+  .dropdown-item:active {
+    background: mix($theme-bg-light, white, 50%);
+  }
 }
 
 .dropdown-divider {
-	border-top-color: $theme-border-color;
-	@include opacity(1);
+  border-top-color: $theme-border-color;
+  @include opacity(1);
 }
 
 .dropdown-toggle.no-toggle-arrow {
-	&:after {
-		display: none !important;
-	}
+  &:after {
+    display: none !important;
+  }
 }
 
 // modal
 .modal {
-	border-radius: 7px;
-	overflow: hidden;
-	background-color: transparent;
+  border-radius: 7px;
+  overflow: hidden;
+  background-color: transparent;
 
-	.modal-content {
-		background-color: transparent;
+  .modal-content {
+    background-color: transparent;
 
-		border: none;
-		border-radius: 7px;
+    border: none;
+    border-radius: 7px;
 
-		.modal-body {
-			border-radius: 7px;
-			overflow: hidden;
-			background-color: $white;
-			padding-left: 0px;
-			padding-right: 0px;
-			@include box-shadow(0 10px 50px -10px rgba(#000, 0.9));
-			h2 {
-				font-size: 18px;
-			}
-			p {
-				color: $theme-text-color-primary;
-				font-size: 14px;
-			}
-			h3 {
-				color: #000;
-				font-size: 22px;
-			}
-			.close-btn {
-				color: black;
-			}
-		}
-	}
+    .modal-body {
+      border-radius: 7px;
+      overflow: hidden;
+      background-color: $white;
+      padding-left: 0px;
+      padding-right: 0px;
+      @include box-shadow(0 10px 50px -10px rgba(#000, 0.9));
+      h2 {
+        font-size: 18px;
+      }
+      p {
+        color: $theme-text-color-primary;
+        font-size: 14px;
+      }
+      h3 {
+        color: #000;
+        font-size: 22px;
+      }
+      .close-btn {
+        color: black;
+      }
+    }
+  }
 
-	.warp-channel-image {
-		display: flex;
-		justify-content: center;
-		width: 50px;
-		height: 50px;
-		margin: 0 auto;
-		position: relative;
-		background: rgba($theme-color-primary, 0.05);
-		color: $theme-color-primary;
-		border-radius: 50%;
+  .warp-channel-image {
+    display: flex;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    position: relative;
+    background: rgba($theme-color-primary, 0.05);
+    color: $theme-color-primary;
+    border-radius: 50%;
 
-		&::after {
-			@include icon('\f128');
-			align-self: center;
-		}
+    &::after {
+      @include icon("\f128");
+      align-self: center;
+    }
 
-		&-no-after::after { content: none; }
-		
-	}
+    &-no-after::after {
+      content: none;
+    }
+  }
 }
 
 .close-btn {
-	position: absolute;
-	right: 20px;
-	top: 20px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
 
-	font-size: 20px;
-	span {
-		color: $light-gray;
-		.icon-close::before {
-			@include icon('\f00d');
-		}
-	}
-	&:hover {
-		span {
-			color: #000;
-		}
-	}
+  font-size: 20px;
+  span {
+    color: $light-gray;
+    .icon-close::before {
+      @include icon("\f00d");
+    }
+  }
+  &:hover {
+    span {
+      color: #000;
+    }
+  }
 }

@@ -1,125 +1,125 @@
 /* ============= Theme Mixins ============= */
 @mixin opacity($opacity: 0.5) {
-    -webkit-opacity: $opacity;
-    -moz-opacity: $opacity;
-    opacity: $opacity;
+  -webkit-opacity: $opacity;
+  -moz-opacity: $opacity;
+  opacity: $opacity;
 }
 
 @mixin scale($factor) {
-    -webkit-transform: scale($factor);
-    -moz-transform: scale($factor);
-    -ms-transform: scale($factor);
-    -o-transform: scale($factor);
+  -webkit-transform: scale($factor);
+  -moz-transform: scale($factor);
+  -ms-transform: scale($factor);
+  -o-transform: scale($factor);
 }
 
 @mixin background-size($string: contain) {
-    -webkit-background-size: $string;
-    -moz-background-size: $string;
-    -o-background-size: $string;
-    background-size: $string;
+  -webkit-background-size: $string;
+  -moz-background-size: $string;
+  -o-background-size: $string;
+  background-size: $string;
 }
 
 @mixin border-radius($radius) {
-    border-radius: $radius;
-    -webkit-border-radius: $radius;
-    -moz-border-radius: $radius;
+  border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
 }
 
 @mixin reset-box-sizing($size: content-box) {
-    &,
-    *,
-    *:before,
-    *:after {
-        -webkit-box-sizing: $size;
-        -moz-box-sizing: $size;
-        box-sizing: $size;
-    }
+  &,
+  *,
+  *:before,
+  *:after {
+    -webkit-box-sizing: $size;
+    -moz-box-sizing: $size;
+    box-sizing: $size;
+  }
 }
 
 @mixin placeholder($color: #999) {
-    &::-webkit-input-placeholder {
-        /* WebKit browsers */
-        color: $color;
-    }
-    &:-moz-placeholder {
-        /* Mozilla Firefox 4 to 18 */
-        color: $color;
-    }
-    &::-moz-placeholder {
-        /* Mozilla Firefox 19+ */
-        color: $color;
-    }
-    &:-ms-input-placeholder {
-        /* Internet Explorer 10+ */
-        color: $color;
-    }
+  &::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: $color;
+  }
+  &:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: $color;
+  }
+  &::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: $color;
+  }
+  &:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: $color;
+  }
 }
 
 @mixin box-shadow($shaodw) {
-    -webkit-box-shadow: $shaodw;
-    -moz-box-shadow: $shaodw;
-    box-shadow: $shaodw;
+  -webkit-box-shadow: $shaodw;
+  -moz-box-shadow: $shaodw;
+  box-shadow: $shaodw;
 }
 
 // generic transform
 @mixin transform($transforms) {
-    -moz-transform: $transforms;
-    -o-transform: $transforms;
-    -ms-transform: $transforms;
-    -webkit-transform: $transforms;
-    transform: $transforms;
+  -moz-transform: $transforms;
+  -o-transform: $transforms;
+  -ms-transform: $transforms;
+  -webkit-transform: $transforms;
+  transform: $transforms;
 }
 // rotate
 @mixin rotate($deg) {
-    @include transform(rotate(#{$deg}deg));
+  @include transform(rotate(#{$deg}deg));
 }
 
 // scale
 @mixin scale($scale) {
-    @include transform(scale($scale));
+  @include transform(scale($scale));
 }
 // translate
 @mixin translate($x, $y) {
-    @include transform(translate($x, $y));
+  @include transform(translate($x, $y));
 }
 // skew
 @mixin skew($x, $y) {
-    @include transform(skew(#{$x}deg, #{$y}deg));
+  @include transform(skew(#{$x}deg, #{$y}deg));
 }
 //transform origin
 @mixin transform-origin($origin) {
-    moz-transform-origin: $origin;
-    -o-transform-origin: $origin;
-    -ms-transform-origin: $origin;
-    -webkit-transform-origin: $origin;
-    transform-origin: $origin;
+  moz-transform-origin: $origin;
+  -o-transform-origin: $origin;
+  -ms-transform-origin: $origin;
+  -webkit-transform-origin: $origin;
+  transform-origin: $origin;
 }
 
 //transition
 @mixin transition($args...) {
-    -webkit-transition: $args;
-    -moz-transition: $args;
-    -ms-transition: $args;
-    -o-transition: $args;
-    transition: $args;
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
 }
 
 // icon
-@mixin icon( $icon) {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: $icon; 
+@mixin icon($icon) {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: $icon;
 }
 
 @mixin on-state-mixin($color, $icon) {
-    label:after {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: $icon;
+  label:after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: $icon;
+  }
+  input:checked + label {
+    &:after {
+      color: $color;
     }
-    input:checked + label {
-        &:after {
-            color: $color;
-        }
-    }
+  }
 }
