@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @Service
@@ -84,21 +85,30 @@ public class FeedsService {
     }
 
     public void likeFeed(User user, FeedItem feedItem) {
-        FeedItemUser item = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
-        item.setLiked(true);
-        feedItemUserRepository.save(item);
+        Optional<FeedItemUser> itemOptional = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
+        if (itemOptional.isPresent()) {
+            FeedItemUser item = itemOptional.get();
+            item.setLiked(true);
+            feedItemUserRepository.save(item);
+        }
     }
 
     public void markFeedAsRead(User user, FeedItem feedItem) {
-        FeedItemUser item = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
-        item.setRead(true);
-        feedItemUserRepository.save(item);
+        Optional<FeedItemUser> itemOptional = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
+        if (itemOptional.isPresent()) {
+            FeedItemUser item = itemOptional.get();
+            item.setRead(true);
+            feedItemUserRepository.save(item);
+        }
     }
 
     public void readFeedLater(User user, FeedItem feedItem) {
-        FeedItemUser item = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
-        item.setReadLater(true);
-        feedItemUserRepository.save(item);
+        Optional<FeedItemUser> itemOptional = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
+        if (itemOptional.isPresent()) {
+            FeedItemUser item = itemOptional.get();
+            item.setReadLater(true);
+            feedItemUserRepository.save(item);
+        }
     }
 
     public List<FeedItem> sortFeedsByLatest(List<FeedItem> feeds) {

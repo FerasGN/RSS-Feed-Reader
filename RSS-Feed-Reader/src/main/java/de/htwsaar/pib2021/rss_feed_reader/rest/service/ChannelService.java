@@ -3,7 +3,6 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 import com.rometools.rome.feed.synd.SyndCategory;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
-import com.rometools.rome.feed.synd.SyndPerson;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
@@ -17,22 +16,18 @@ import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelAlreadyExistExceptio
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
@@ -140,16 +135,28 @@ public class ChannelService {
         }
     }
 
+    /**
+     * @param user
+     * @return List<String>
+     */
     public List<String> findAllChannelsCategoriesByUser(User user) {
         List<String> allCategories = categoryRepository.findAllChannelsCategoriesByUser(user.getId());
         return allCategories;
     }
 
+    /**
+     * @param user
+     * @param channel
+     * @return Category
+     */
     public Category findChannelCategory(User user, Channel channel) {
         ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user, channel);
         return channelUser.getCategory();
     }
 
+    /**
+     * @return List<ChannelUser>
+     */
     public List<ChannelUser> findAllChannelUserOrderedByCategory() {
         // Channel c1 = new Channel();
         // c1.setTitle("Politik1");
@@ -193,6 +200,11 @@ public class ChannelService {
         return channels;
     }
 
+    /**
+     * @param user
+     * @param channel
+     * @return Long
+     */
     public Long findNumberOfUnreadFeedsOfChannel(User user, Channel channel) {
         // ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user,
         // channel);
@@ -206,6 +218,12 @@ public class ChannelService {
         return 99l;
     }
 
+    /**
+     * @param user
+     * @param channel
+     * @param category
+     * @return Long
+     */
     public Long findNumberOfUnreadFeedsOfCategory(User user, Channel channel, String category) {
         // List<ChannelUser> channelUsers =
         // channelUserRepository.findAllByUserAndCategory(user, category);
@@ -222,6 +240,10 @@ public class ChannelService {
         return 100l;
     }
 
+    /**
+     * @param url
+     * @return Optional<SyndFeed>
+     */
     public Optional<SyndFeed> parseRssFeedFromURL(String url) {
         URL feedSource;
         try {
@@ -252,6 +274,12 @@ public class ChannelService {
         return false;
     }
 
+    /**
+     * @param user
+     * @param feed
+     * @param url
+     * @return Optional<Channel>
+     */
     private Optional<Channel> createAChannel(User user, SyndFeed feed, String url) {
         Channel channel = new Channel();
         channel.setTitle(feed.getTitle());
@@ -263,43 +291,7 @@ public class ChannelService {
         // Extract feedItems
         List<SyndEntry> syndFeedItems = feed.getEntries();
         for (SyndEntry syndEntry : syndFeedItems) {
-            FeedItem feedItem = new FeedItem();
-            feedItem.setChannel(channel);
-            feedItem.setTitle(syndEntry.getTitle());
-            feedItem.setDescription(syndEntry.getDescription().getValue());
-            feedItem.setAuthor(syndEntry.getAuthor());
-            feedItem.setLink(syndEntry.getLink());
-            LocalDateTime publishDate = syndEntry.getPublishedDate().toInstant().atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-            feedItem.setPublishDate(publishDate);
-
-            // set categories of feed item
-            // If category is not yet available, create one and link the feed item to it.
-            List<SyndCategory> SyndCategories = syndEntry.getCategories();
-            List<Category> categories = new ArrayList<>();
-            for (SyndCategory category_ : SyndCategories) {
-                Optional<Category> checkCategory = categoryRepository
-                        .findByName(category_.getName());
-                if (checkCategory.isPresent()) {
-                    categories.add(checkCategory.get());
-                } else {
-                    Category newCategory = new Category();
-                    newCategory.setName(category_.getName());
-                    categories.add(newCategory);
-                }
-            }
-
-            feedItem.setCategories(categories);
-
-            channel.addFeedItem(feedItem);
-            feedItem = feedItemRepository.save(feedItem);
-
-             categoryRepository.saveAll(categories);
-
-            FeedItemUser feedItemUser = new FeedItemUser();
-            feedItemUser.setUser(user);
-            feedItemUser.setFeedItem(feedItem);
-            feedItemUserRepository.save(feedItemUser);
+            createFeedItem(user, channel, syndEntry);
         }
 
         return Optional.of(channel);
@@ -345,6 +337,7 @@ public class ChannelService {
             channelUser = channelUserRepository.save(channelUser);
 
             return Optional.of(channelUser.getChannel());
+
         } catch (MalformedURLException e) {
             throw new NotValidURLException(NOT_VALID_URL);
         } catch (FeedException e) {
@@ -355,6 +348,102 @@ public class ChannelService {
             throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
         }
 
+    }
+
+    /**
+     * @param channelUser
+     * @throws IllegalArgumentException
+     * @throws FeedException
+     * @throws IOException
+     */
+    public void saveFeedItems(User user, Channel channel) throws IllegalArgumentException, FeedException, IOException {
+        URL feedSource = new URL(channel.getChannelUrl());
+        SyndFeedInput input = new SyndFeedInput();
+        SyndFeed feed = input.build(new XmlReader(feedSource));
+
+        // Extract feedItems
+        List<SyndEntry> syndFeedItems = feed.getEntries();
+        // Save feedItems
+        for (SyndEntry syndEntry : syndFeedItems) {
+            String feedItemLink = syndEntry.getLink();
+            Optional<FeedItemUser> feedItemUserOptional = feedItemUserRepository.findByUserAndFeedItem_Link(user,
+                    feedItemLink);
+            if (!feedItemUserOptional.isPresent()) {
+
+                Optional<FeedItem> feedItemOptional = feedItemRepository.findByLink(feedItemLink);
+                // if feed Item exists add it to the user
+                if (feedItemOptional.isPresent()) {
+                    FeedItemUser feedItemUser = new FeedItemUser();
+                    feedItemUser.setUser(user);
+                    feedItemUser.setFeedItem(feedItemOptional.get());
+                    feedItemUserRepository.save(feedItemUser);
+                } else {
+                    // if feed item doesn't exit create new one and add it to the user
+                    createFeedItem(user, channel, syndEntry);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * @param user
+     * @param channel
+     * @param syndEntry
+     */
+    private void createFeedItem(User user, Channel channel, SyndEntry syndEntry) {
+        FeedItem feedItem = new FeedItem();
+        feedItem.setChannel(channel);
+        feedItem.setTitle(syndEntry.getTitle());
+        feedItem.setDescription(syndEntry.getDescription().getValue());
+        feedItem.setAuthor(syndEntry.getAuthor());
+        feedItem.setLink(syndEntry.getLink());
+        LocalDateTime publishDate = syndEntry.getPublishedDate().toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        feedItem.setPublishDate(publishDate);
+
+        // set categories of feed item
+        // If category is not yet available, create one and link the feed item to it.
+        List<SyndCategory> SyndCategories = syndEntry.getCategories();
+        List<Category> categories = new ArrayList<>();
+        for (SyndCategory category : SyndCategories) {
+            Optional<Category> checkCategory = categoryRepository.findByName(category.getName());
+            if (checkCategory.isPresent()) {
+                categories.add(checkCategory.get());
+            } else {
+                Category newCategory = new Category();
+                newCategory.setName(category.getName());
+                categories.add(newCategory);
+            }
+        }
+
+        feedItem.setCategories(categories);
+
+        channel.addFeedItem(feedItem);
+        feedItem = feedItemRepository.save(feedItem);
+
+        categoryRepository.saveAll(categories);
+
+        FeedItemUser feedItemUser = new FeedItemUser();
+        feedItemUser.setUser(user);
+        feedItemUser.setFeedItem(feedItem);
+        feedItemUserRepository.save(feedItemUser);
+    }
+
+    /**
+     * Reload channel content every hour.
+     */
+    @Scheduled(fixedRateString = "PT10S")
+    @Transactional
+    public void reloadChannel() {
+        channelUserRepository.findAll().stream().forEach(cu -> {
+            try {
+                saveFeedItems(cu.getUser(), cu.getChannel());
+            } catch (IllegalArgumentException | FeedException | IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }

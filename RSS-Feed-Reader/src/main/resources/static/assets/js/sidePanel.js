@@ -62,7 +62,7 @@ function getSubscribeModal(url, container) {
       container.innerHTML = request.responseText;
 
       // if the channel was found
-      channelInfo = document.getElementById("channel-info").innerText;
+      let channelInfo = document.getElementById("channel-info").innerText;
       if (
         channelInfo != "URL was not found" &&
         channelInfo != "Channel already exists"

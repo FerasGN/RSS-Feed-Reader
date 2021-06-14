@@ -13,8 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "channel", uniqueConstraints = {
-		@UniqueConstraint(name = "unique_url_channel", columnNames = "channel_url") }
-)
+		@UniqueConstraint(name = "unique_url_channel", columnNames = "channel_url") })
 public class Channel extends BaseEntity {
 
 	@Column(name = "title", nullable = false, columnDefinition = "TEXT")
@@ -34,7 +33,7 @@ public class Channel extends BaseEntity {
 	private List<FeedItem> feedItems = new ArrayList<FeedItem>();
 
 	@ToString.Exclude
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ChannelUser> users = new ArrayList<ChannelUser>();
 
 	public void addFeedItem(FeedItem feedItem) {
