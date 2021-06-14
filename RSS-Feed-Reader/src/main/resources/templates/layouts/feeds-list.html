@@ -4,14 +4,15 @@
         <div class="app-list app-list-feed shadow-sm mb-1">
             <div class="px-4 p-1">
                 <div class="row justify-content-between">
-                    <h6 class="col feed-title ms-0 me-0 m-auto"><a th:href="@{${feed.link}}" th:target="_blank" th:text="${feed.title}"></a></h6>
+                    <h6 class="col feed-title ms-0 me-0 m-auto"><a th:href="@{${feed.link}}" th:target="_blank"
+                            th:text="${feed.title}"></a></h6>
                     <!--//col-->
                     <div class="row justify-content-between">
-                        <div class="col feed-category  m-auto position-relative" style="top: -1.5px"><span
+                        <div class="col-auto feed-category  m-auto position-relative" style="top: -1.5px"><span
                                 class="badge bg-success m-auto" th:text="${feed.category}">category</span>
                         </div>
                         <!--//col-->
-                        <ul class="col text-end feed-meta  m-auto list-inline ">
+                        <ul class="col text-start feed-meta  m-auto list-inline ">
                             <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}"
                                     th:text="${feed.channelTitle}">Spiegel</a></li>
                             <li class="list-inline-item">|</li>
