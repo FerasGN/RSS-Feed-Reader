@@ -434,7 +434,7 @@ public class ChannelService {
     /**
      * Reload channel content every hour.
      */
-    @Scheduled(fixedRateString = "PT10S")
+    @Scheduled(fixedRateString = "PT1H")
     @Transactional
     public void reloadChannel() {
         channelUserRepository.findAll().stream().forEach(cu -> {
