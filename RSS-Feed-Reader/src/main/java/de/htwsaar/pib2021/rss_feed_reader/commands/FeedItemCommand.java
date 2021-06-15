@@ -11,7 +11,7 @@ public class FeedItemCommand {
     private String channelTitle;
     private String websiteLink;
     private String author;
-    private String category;
+    private String channelCategory;
     private Integer elapsedPublishMinutes;
     private Integer elapsedPublishHoures;
     private Integer elapsedPublishDays;

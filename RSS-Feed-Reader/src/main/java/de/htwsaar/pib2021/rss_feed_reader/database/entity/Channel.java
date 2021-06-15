@@ -4,6 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class Channel extends BaseEntity {
 	private List<FeedItem> feedItems = new ArrayList<FeedItem>();
 
 	@ToString.Exclude
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ChannelUser> users = new ArrayList<ChannelUser>();
 
 	public void addFeedItem(FeedItem feedItem) {

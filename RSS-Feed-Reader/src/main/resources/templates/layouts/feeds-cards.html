@@ -10,11 +10,12 @@
                     <!--//col-->
                     <div class="col-12 col-lg-auto text-center text-lg-start">
                         <div class="feed-category mb-2"><span class="badge bg-success"
-                                th:text="${feed.category}">category</span></div>
+                                th:text="${feed.channelCategory}">category</span></div>
                         <h4 class="feed-title mb-1" th:text="${feed.title}">Feed title</h4>
 
                         <ul class="feed-meta list-inline mb-0">
-                            <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}" th:text="${feed.channelTitle}"></a></li>
+                            <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}"
+                                    th:text="${feed.channelTitle}"></a></li>
                             <li class="list-inline-item">|</li>
                             <li class="list-inline-item"
                                 th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
@@ -42,8 +43,9 @@
             </div>
             <!--//app-card-body-->
             <div class="app-card-footer px-4 py-3">
-                <a class="action-link" th:href="@{${feed.link}}" th:target="_blank">Read more<svg width="1em" height="1em" viewBox="0 0 16 16"
-                        class="bi bi-arrow-right ml-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <a class="action-link" th:href="@{${feed.link}}" th:target="_blank">Read more<svg width="1em"
+                        height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right ml-2" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
                     </svg></a>

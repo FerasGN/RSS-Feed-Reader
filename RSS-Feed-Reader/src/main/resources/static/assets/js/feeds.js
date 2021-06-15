@@ -2,7 +2,7 @@
 
 /* ===== Ajax ====== */
 function get(url, container) {
-  var request = new XMLHttpRequest();
+  let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
   request.onload = async function () {
@@ -10,7 +10,7 @@ function get(url, container) {
       // Success!
       await showPreloader();
 
-      var resp = this.response;
+      let resp = this.response;
       container.innerHTML = request.responseText;
     } else {
       // We reached our target server, but it returned an error
@@ -25,9 +25,9 @@ function get(url, container) {
 }
 
 /* ===== Select order and period ====== */
-var viewSelect = document.getElementById("view-select");
-var orederSelect = document.getElementById("order-select");
-var periodSelect = document.getElementById("period-select");
+let viewSelect = document.getElementById("view-select");
+let orederSelect = document.getElementById("order-select");
+let periodSelect = document.getElementById("period-select");
 
 function handleViewAndPerieodAndOrderSelect(
   selectedView,
@@ -192,9 +192,9 @@ function handleSelect(selectedView, selectedPeriod, selectedOrder) {
 
 // handle view select
 viewSelect.addEventListener("change", function (e) {
-  var selectedView = e.target.value;
-  var selectedPeriod = document.getElementById("period-select").value;
-  var selectedOrder = document.getElementById("order-select").value;
+  let selectedView = e.target.value;
+  let selectedPeriod = document.getElementById("period-select").value;
+  let selectedOrder = document.getElementById("order-select").value;
 
   console.log(
     "Selected view =" + selectedView + ", period = " + selectedPeriod,
@@ -205,9 +205,9 @@ viewSelect.addEventListener("change", function (e) {
 
 // handle period select
 periodSelect.addEventListener("change", function (e) {
-  var selectedView = document.getElementById("view-select").value;
-  var selectedPeriod = e.target.value;
-  var selectedOrder = document.getElementById("order-select").value;
+  let selectedView = document.getElementById("view-select").value;
+  let selectedPeriod = e.target.value;
+  let selectedOrder = document.getElementById("order-select").value;
 
   console.log(
     "Selected view =" + selectedView + ", period = " + selectedPeriod,
@@ -218,9 +218,9 @@ periodSelect.addEventListener("change", function (e) {
 
 // handle order select
 orederSelect.addEventListener("change", function (e) {
-  var selectedView = document.getElementById("view-select").value;
-  var selectedPeriod = document.getElementById("period-select").value;
-  var selectedOrder = e.target.value;
+  let selectedView = document.getElementById("view-select").value;
+  let selectedPeriod = document.getElementById("period-select").value;
+  let selectedOrder = e.target.value;
 
   console.log(
     "Selected view =" + selectedView + ", period = " + selectedPeriod,
@@ -228,3 +228,18 @@ orederSelect.addEventListener("change", function (e) {
   );
   handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
+
+/* ===== sse-notifications ====== */
+const eventSource = new EventSource("http://localhost:8080/sse-notifications");
+eventSource.onmessage = function (e) {
+  let notification = JSON.parse(e.data);
+
+  // refresh the feed items list
+  if (notification.message === "New Feed item has been added") {
+    console.log(notification);
+    let selectedView = document.getElementById("view-select").value;
+    let selectedPeriod = document.getElementById("period-select").value;
+    let selectedOrder = document.getElementById("order-select").value;
+    handleSelect(selectedView, selectedPeriod, selectedOrder);
+  }
+};

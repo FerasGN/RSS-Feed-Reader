@@ -7,6 +7,7 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.Sse.SseNotification;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.CategoryRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
@@ -16,6 +17,7 @@ import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelAlreadyExistExceptio
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,8 @@ public class ChannelService {
     private FeedItemUserRepository feedItemUserRepository;
     private ChannelUserRepository channelUserRepository;
 
+    private ApplicationEventPublisher eventPublisher;
+
     private final static String CHANNEL_URL_NOT_FOUND = "Channel with given URL could not be found: ";
     private final static String CHANNEL_NAME_NOT_FOUND = "Channel with given name could not be found: ";
     private final static String CHANNEL_URL_EXIST = "Channel with given URL already exists:  ";
@@ -49,12 +53,13 @@ public class ChannelService {
 
     public ChannelService(ChannelRepository channelRepository, CategoryRepository categoryRepository,
             FeedItemRepository feedItemRepository, FeedItemUserRepository feedItemUserRepository,
-            ChannelUserRepository channelUserRepository) {
+            ChannelUserRepository channelUserRepository, ApplicationEventPublisher eventPublisher) {
         this.channelRepository = channelRepository;
         this.categoryRepository = categoryRepository;
         this.feedItemRepository = feedItemRepository;
         this.feedItemUserRepository = feedItemUserRepository;
         this.channelUserRepository = channelUserRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -281,12 +286,19 @@ public class ChannelService {
      * @return Optional<Channel>
      */
     private Optional<Channel> createAChannel(User user, SyndFeed feed, String url) {
-        Channel channel = new Channel();
-        channel.setTitle(feed.getTitle());
-        channel.setChannelUrl(url);
-        channel.setWebsiteLink(feed.getLink());
-        channel.setDescription(feed.getDescription());
-        channelRepository.save(channel);
+
+        Optional<Channel> channelOptional = channelRepository.findByChannelUrl(url);
+        Channel channel = null;
+        if (channelOptional.isPresent()) {
+            channel = channelOptional.get();
+        } else {
+            channel = new Channel();
+            channel.setTitle(feed.getTitle());
+            channel.setChannelUrl(url);
+            channel.setWebsiteLink(feed.getLink());
+            channel.setDescription(feed.getDescription());
+            channelRepository.save(channel);
+        }
 
         // Extract feedItems
         List<SyndEntry> syndFeedItems = feed.getEntries();
@@ -381,6 +393,10 @@ public class ChannelService {
                     // if feed item doesn't exit create new one and add it to the user
                     createFeedItem(user, channel, syndEntry);
                 }
+
+                // notify user that a new feed has been added
+                this.eventPublisher
+                        .publishEvent(new SseNotification(user.getUsername(), "New Feed item has been added"));
             }
 
         }
@@ -392,7 +408,7 @@ public class ChannelService {
      * @param channel
      * @param syndEntry
      */
-    private void createFeedItem(User user, Channel channel, SyndEntry syndEntry) {
+    private FeedItem createFeedItem(User user, Channel channel, SyndEntry syndEntry) {
         FeedItem feedItem = new FeedItem();
         feedItem.setChannel(channel);
         feedItem.setTitle(syndEntry.getTitle());
@@ -429,6 +445,8 @@ public class ChannelService {
         feedItemUser.setUser(user);
         feedItemUser.setFeedItem(feedItem);
         feedItemUserRepository.save(feedItemUser);
+
+        return feedItem;
     }
 
     /**

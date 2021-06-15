@@ -11,7 +11,7 @@ import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
 public class ChannelUserToChannelCommand implements Converter<ChannelUser, ChannelCommand> {
 
     private ChannelService channelService;
-
+    
     public ChannelUserToChannelCommand(ChannelService channelService){
         this.channelService = channelService;      
     }

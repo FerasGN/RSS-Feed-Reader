@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +40,7 @@ public class ChannelController {
         Optional<SyndFeed> parsedRssFeedFromURL = channelService.parseRssFeedFromURL(url);
         boolean channelExists = channelService.existsChannelURL(securityUser.getUser(), url);
 
-        if (!parsedRssFeedFromURL.isPresent()){
+        if (!parsedRssFeedFromURL.isPresent()) {
             mav.addObject("channelInfo", "URL was not found");
 
         } else if (channelExists) {
@@ -98,4 +97,5 @@ public class ChannelController {
         return allCategories;
 
     }
+
 }

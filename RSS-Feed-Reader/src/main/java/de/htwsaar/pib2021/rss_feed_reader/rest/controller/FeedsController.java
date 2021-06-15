@@ -1,28 +1,36 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.springframework.context.event.EventListener;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.converters.ChannelUserToChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemToFeedItemCommand;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.Category;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.Sse.SseNotification;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.FeedsService;
 
 @Controller
 public class FeedsController {
+
+    private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     private ChannelService channelService;
     private FeedsService feedsService;
@@ -209,21 +217,71 @@ public class FeedsController {
     // }
 
     private List<FeedItemCommand> getFilteredAndOrderedFeeds(SecurityUser securityUser, String period, String order) {
-        List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-        List<FeedItem> feedItems = new ArrayList<FeedItem>();
+        List<FeedItemCommand> feedItemCommands = Collections.emptyList();
+
         if ("all".equals(period)) {
-            feedItems = feedsService.findAllFeeds(securityUser.getUser());
-            feedItems.stream().forEach(f -> {
-                FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand(
-                        securityUser.getUser(), channelService);
-                feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
-            });
+            feedItemCommands = getFeedItemCommands(securityUser.getUser());
         } else if ("latest".equals(order)) {
 
         } else if ("most-relevant".equals(order)) {
 
         }
         return feedItemCommands;
+    }
+
+    private List<FeedItemCommand> getFeedItemCommands(User user) {
+        List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
+        List<FeedItem> feedItems = feedsService.findAllFeeds(user);
+        feedItems.stream().forEach(f -> {
+            // convert feedItem to feedItemCommand
+            FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
+            Category category = channelService.findChannelCategory(user, f.getChannel());
+            feedItemToFeedItemCommand.setUser(user);
+            feedItemToFeedItemCommand.setChannelCategory(category.getName());
+            feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
+        });
+
+        return feedItemCommands;
+    }
+
+    /**
+     * 
+     * @param securityUser
+     * @return SseEmitter
+     */
+    @GetMapping("/sse-notifications")
+    public SseEmitter getSseNotification(@AuthenticationPrincipal SecurityUser securityUser) {
+        SseEmitter emitter = new SseEmitter();
+
+        this.emitters.put(securityUser.getUsername(), emitter);
+
+        emitter.onCompletion(() -> this.emitters.remove(securityUser.getUsername()));
+        emitter.onTimeout(() -> {
+            emitter.complete();
+            this.emitters.remove(securityUser.getUsername());
+        });
+        return emitter;
+    }
+
+    /**
+     * Listened to emerging sent server event notifications.
+     * 
+     * 
+     * @param sseNotification
+     */
+    @EventListener
+    public void onSseNotification(SseNotification sseNotification) {
+        List<SseEmitter> deadEmitters = new ArrayList<>();
+        this.emitters.forEach((username, emitter) -> {
+            try {
+                // send the notification to its associated user only
+                if (username.equals(sseNotification.getUsername()))
+                    emitter.send(sseNotification);
+            } catch (Exception e) {
+                deadEmitters.add(emitter);
+            }
+        });
+        this.emitters.remove(deadEmitters);
     }
 
 }
