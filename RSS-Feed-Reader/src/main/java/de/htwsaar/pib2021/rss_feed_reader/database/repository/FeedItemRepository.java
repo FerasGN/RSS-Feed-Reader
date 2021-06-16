@@ -13,4 +13,5 @@ public interface FeedItemRepository extends JpaRepository<FeedItem, Long> {
 
     Optional<FeedItem> findByLink(String link);
 
+
 }

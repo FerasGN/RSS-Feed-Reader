@@ -3,6 +3,8 @@ package de.htwsaar.pib2021.rss_feed_reader.database.repository;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Channel;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
@@ -24,5 +26,9 @@ public interface FeedItemUserRepository extends JpaRepository<FeedItemUser, Feed
     Optional<FeedItemUser> findByUserAndFeedItem(User user, FeedItem feedItem);
 
     Optional<FeedItemUser> findByUserAndFeedItem_Link(User user, String link);
+
+    Page<FeedItemUser> findByUser(Long userId, Pageable pageable);
+
+
 
 }

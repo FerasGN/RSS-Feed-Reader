@@ -6,12 +6,17 @@ import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NoFeedAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedsService {
@@ -19,6 +24,8 @@ public class FeedsService {
     private ChannelUserRepository channelUserRepository;
     private FeedItemRepository feedItemRepository;
     private FeedItemUserRepository feedItemUserRepository;
+
+    private static  final int PAGE_SIZE = 10;
 
     public FeedsService(ChannelUserRepository channelUserRepository, FeedItemRepository feedItemRepository,
             FeedItemUserRepository feedItemUserRepository) {
@@ -111,22 +118,17 @@ public class FeedsService {
         }
     }
 
-    public List<FeedItem> sortFeedsByLatest(List<FeedItem> feeds) {
-        // create and index on feed items publishdate
-        // easier whith native sql?
-        // TODO
-        return null;
-    }
+    public List<FeedItem> FindAllFeeds(User user, String period, String order, int pageNumber) {
 
-    public List<FeedItem> sortFeedsByOldest() {
-        return null;
-        // TODO
 
-    }
+        Pageable pageable = PageRequest.of(pageNumber , PAGE_SIZE);
+        Page<FeedItemUser> page = feedItemUserRepository.findByUser(user.getId(), pageable);
+        List<FeedItem> feedItems = page.getContent()
+                                        .stream()
+                                        .map((FeedItemUser e) -> e.getUser().equals(user)? e.getFeedItem(): null)
+                                        .collect(Collectors.toList());
 
-    public List<FeedItem> showRecentlyReadFeeds() {
-        // TODO
-        return null;
+        return feedItems;
     }
 
 }
