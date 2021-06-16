@@ -6,6 +6,7 @@ import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NoFeedAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -32,6 +34,9 @@ public class FeedsService {
         this.channelUserRepository = channelUserRepository;
         this.feedItemRepository = feedItemRepository;
         this.feedItemUserRepository = feedItemUserRepository;
+    }
+
+    public FeedsService() {
     }
 
     // Error messages
@@ -118,16 +123,32 @@ public class FeedsService {
         }
     }
 
-    public List<FeedItem> FindAllFeeds(User user, String period, String order, int pageNumber) {
 
-
+    public List<FeedItem> findAllFeeds(User user, String period, String order, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber , PAGE_SIZE);
-        Page<FeedItemUser> page = feedItemUserRepository.findByUser(user.getId(), pageable);
-        List<FeedItem> feedItems = page.getContent()
-                                        .stream()
-                                        .map((FeedItemUser e) -> e.getUser().equals(user)? e.getFeedItem(): null)
-                                        .collect(Collectors.toList());
+        Calendar calendar = Calendar.getInstance();
+        Page<FeedItem> page = null;
 
+        int day = calendar.get(Calendar.DATE);
+        //Note: +1 the month for current month
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+
+
+        switch (period){
+            case "today":
+                switch (order){
+                    case "OrderByLatest":
+                        page = feedItemRepository.findByUsersIsAndPublishDate_YearAndPublishDate_MonthAndPublishDate_DayOfMonthOrderByPublishDateAsc
+                                (user, year, month, day, pageable);
+                        break;
+                    default:
+                        break;
+                }
+            default:
+                break;
+        }
+        List<FeedItem> feedItems = page.getContent();
         return feedItems;
     }
 
