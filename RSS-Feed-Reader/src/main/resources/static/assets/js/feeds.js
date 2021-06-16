@@ -110,16 +110,16 @@ function handleViewAndPeriodAndOrder(
       selectedView,
       feedsContainer
     );
-  else if (selectedPeriod == "this-week")
+  else if (selectedPeriod == "last-seven-days")
     handleOrderAndView(
-      url + "?period=this-week",
+      url + "?period=last-seven-days",
       slectedOrder,
       selectedView,
       feedsContainer
     );
-  else if (selectedPeriod == "this-month")
+  else if (selectedPeriod == "last-thirty-days")
     handleOrderAndView(
-      url + "?period=this-month",
+      url + "?period=last-thirty-days",
       slectedOrder,
       selectedView,
       feedsContainer

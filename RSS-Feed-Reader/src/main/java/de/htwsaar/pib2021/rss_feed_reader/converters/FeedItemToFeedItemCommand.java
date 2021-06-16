@@ -43,7 +43,6 @@ public class FeedItemToFeedItemCommand implements Converter<FeedItem, FeedItemCo
             feedItemCommand.setElapsedPublishHoures(calculateElapsedPublishHoures(source.getPublishDate()));
             feedItemCommand.setElapsedPublishDays(calculateElapsedPublishDay(source.getPublishDate()));
         }
-       
 
         return feedItemCommand;
     }
@@ -58,9 +57,9 @@ public class FeedItemToFeedItemCommand implements Converter<FeedItem, FeedItemCo
         return duration.toHoursPart();
     }
 
-    public Integer calculateElapsedPublishDay(LocalDateTime publishDate) {
-        Period period = Period.between(publishDate.toLocalDate(), LocalDateTime.now().toLocalDate());
-        return period.getDays();
+    public Long calculateElapsedPublishDay(LocalDateTime publishDate) {
+        Duration duration = Duration.between(publishDate, LocalDateTime.now());
+        return duration.toDaysPart();
     }
 
 }

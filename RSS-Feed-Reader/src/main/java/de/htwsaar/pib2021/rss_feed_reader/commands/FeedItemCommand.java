@@ -14,6 +14,6 @@ public class FeedItemCommand {
     private String channelCategory;
     private Integer elapsedPublishMinutes;
     private Integer elapsedPublishHoures;
-    private Integer elapsedPublishDays;
+    private Long elapsedPublishDays;
 
 }

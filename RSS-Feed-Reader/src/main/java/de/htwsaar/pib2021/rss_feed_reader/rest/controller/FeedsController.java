@@ -1,5 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
+import static de.htwsaar.pib2021.rss_feed_reader.constants.Constants.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +73,7 @@ public class FeedsController {
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-            feeds = getFilteredAndOrderedFeeds(securityUser, "all", "latest");
+            feeds = getFilteredAndOrderedFeeds(securityUser, "all", "latest", 1);
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feeds);
         }
@@ -101,7 +103,7 @@ public class FeedsController {
     private String getFilteredAndOrderedFeedsAsCards(SecurityUser securityUser, Model model, String period,
             String order) {
         List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-        feeds = getFilteredAndOrderedFeeds(securityUser, period, order);
+        feeds = getFilteredAndOrderedFeeds(securityUser, period, order, 1);
         model.addAttribute("view", "cards");
         model.addAttribute("feeds", feeds);
         return "layouts/feeds-cards :: feeds-cards";
@@ -110,7 +112,7 @@ public class FeedsController {
     private String getFilteredAndOrderedFeedsAsList(SecurityUser securityUser, Model model, String period,
             String order) {
         List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-        feeds = getFilteredAndOrderedFeeds(securityUser, period, order);
+        feeds = getFilteredAndOrderedFeeds(securityUser, period, order, 1);
         model.addAttribute("view", "list");
         model.addAttribute("feeds", feeds);
         return "layouts/feeds-list :: feeds-list";
@@ -143,7 +145,7 @@ public class FeedsController {
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-            feeds = getFilteredAndOrderedFeeds(securityUser, "all", "latest");
+            feeds = getFilteredAndOrderedFeeds(securityUser, "all", "latest", 1);
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feeds);
         }
@@ -167,7 +169,7 @@ public class FeedsController {
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-            feeds = getFilteredAndOrderedFeeds(securityUser, "all", "latest");
+            feeds = getFilteredAndOrderedFeeds(securityUser, "all", "latest", 1);
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feeds);
         }
@@ -216,27 +218,15 @@ public class FeedsController {
     // return "all-feeds";
     // }
 
-    private List<FeedItemCommand> getFilteredAndOrderedFeeds(SecurityUser securityUser, String period, String order) {
-        List<FeedItemCommand> feedItemCommands = Collections.emptyList();
-
-        if ("all".equals(period)) {
-            feedItemCommands = getFeedItemCommands(securityUser.getUser());
-        } else if ("latest".equals(order)) {
-
-        } else if ("most-relevant".equals(order)) {
-
-        }
-        return feedItemCommands;
-    }
-
-    private List<FeedItemCommand> getFeedItemCommands(User user) {
-        List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-        List<FeedItem> feedItems = feedsService.findAllFeeds(user);
+    private List<FeedItemCommand> getFilteredAndOrderedFeeds(SecurityUser securityUser, String period, String order,
+            int pageNumber) {
+        List<FeedItemCommand> feedItemCommands = new ArrayList<>();
+        List<FeedItem> feedItems = feedsService.findAllFeeds(securityUser.getUser(), period, order, pageNumber);
         feedItems.stream().forEach(f -> {
             // convert feedItem to feedItemCommand
             FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
-            Category category = channelService.findChannelCategory(user, f.getChannel());
-            feedItemToFeedItemCommand.setUser(user);
+            Category category = channelService.findChannelCategory(securityUser.getUser(), f.getChannel());
+            feedItemToFeedItemCommand.setUser(securityUser.getUser());
             feedItemToFeedItemCommand.setChannelCategory(category.getName());
             feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
         });
