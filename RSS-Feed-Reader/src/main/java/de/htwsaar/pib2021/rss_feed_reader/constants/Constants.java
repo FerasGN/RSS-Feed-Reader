@@ -14,7 +14,7 @@ public class Constants {
     public final static String ORDER_BY_CATEGORY = "category";
     public final static String ORDER_BY_UNREAD = "unread";
     public final static String ORDER_BY_CHANNEL = "channel";
-    public final static String ORDER_BY_OLDEST = "oLdest";
+    public final static String ORDER_BY_OLDEST = "oldest";
 
     public static final int PAGE_SIZE = 11;
 

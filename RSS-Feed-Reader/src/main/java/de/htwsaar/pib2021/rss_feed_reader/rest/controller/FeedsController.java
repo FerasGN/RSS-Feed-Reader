@@ -3,7 +3,6 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 import static de.htwsaar.pib2021.rss_feed_reader.constants.Constants.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -69,7 +68,6 @@ public class FeedsController {
             if (VIEW_CARDS.equalsIgnoreCase(view)) {
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, "none", period, order,
                         0);
-                System.out.println("View ---> " + view);
             } else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, "none", period, order,
                         0);
@@ -106,7 +104,7 @@ public class FeedsController {
             @AuthenticationPrincipal SecurityUser securityUser) {
 
         String filteredAndOrderedFeeds = "";
-        System.out.println("\n\nfeeds-pages pageNumber =" + pageNumber);
+
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             if (VIEW_CARDS.equalsIgnoreCase(view))
                 if (category == null)

@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,8 @@ public class FeedItem extends BaseEntity {
 	private String author;
 	@Column(name = "publish_date", nullable = false)
 	private LocalDateTime publishDate;
-
+	@Column(name = "publish_local_date", nullable = true)
+	private LocalDate publishLocalDate;
 
 	@ToString.Exclude
 	@ManyToOne
@@ -41,7 +43,6 @@ public class FeedItem extends BaseEntity {
 	@ToString.Exclude
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FeedItemUser> users = new ArrayList<FeedItemUser>();
-
 
 	public void setCategories(List<Category> categories) {
 		for (Category category : categories)

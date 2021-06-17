@@ -26,4 +26,5 @@ public interface ChannelUserRepository extends JpaRepository<ChannelUser, Channe
     List<ChannelUser> findAllByUserAndFavorite(User user, Boolean bool);
 
     Optional<ChannelUser> findByUserAndChannel_channelUrl(User user, String url);
+
 }

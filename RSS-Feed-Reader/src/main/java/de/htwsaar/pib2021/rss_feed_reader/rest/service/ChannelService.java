@@ -418,6 +418,7 @@ public class ChannelService {
         LocalDateTime publishDate = syndEntry.getPublishedDate().toInstant().atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
         feedItem.setPublishDate(publishDate);
+        feedItem.setPublishLocalDate(publishDate.toLocalDate());
 
         // set categories of feed item
         // If category is not yet available, create one and link the feed item to it.
