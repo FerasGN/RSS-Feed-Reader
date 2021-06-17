@@ -6,8 +6,8 @@
                 <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                 <div class="submenu-link submenu-toggle">
                     <div class="text-count-arrow d-flex mb-1">
-                        <a class="submenu-item-link submenu-item-text w-75" th:href="@{/all-feeds}"
-                            th:text="${category}"></a>
+                        <a class="submenu-item-link submenu-item-text w-75"
+                            th:href="@{'/category/' + ${#strings.toLowerCase(category)}}" th:text="${category}"></a>
                         <span class="count">15</span>
                         <!--//count-->
                         <span class="submenu-toggle" data-bs-toggle="collapse"

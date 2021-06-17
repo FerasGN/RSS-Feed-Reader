@@ -1,23 +1,21 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
+import static de.htwsaar.pib2021.rss_feed_reader.constants.Constants.*;
+
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
-import de.htwsaar.pib2021.rss_feed_reader.exceptions.NoFeedAvailableException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,16 +25,11 @@ public class FeedsService {
     private FeedItemRepository feedItemRepository;
     private FeedItemUserRepository feedItemUserRepository;
 
-    private static  final int PAGE_SIZE = 10;
-
     public FeedsService(ChannelUserRepository channelUserRepository, FeedItemRepository feedItemRepository,
             FeedItemUserRepository feedItemUserRepository) {
         this.channelUserRepository = channelUserRepository;
         this.feedItemRepository = feedItemRepository;
         this.feedItemUserRepository = feedItemUserRepository;
-    }
-
-    public FeedsService() {
     }
 
     // Error messages
@@ -56,15 +49,16 @@ public class FeedsService {
         return feedItemRepository.findAllByChannel(channel);
     }
 
-    public List<FeedItem> showCategoryFeeds(User user, String category) {
-        List<ChannelUser> list1 = channelUserRepository.findAllByUserAndCategory(user, category);
-        List<FeedItem> list2 = new ArrayList<>();
+    // public List<FeedItem> showCategoryFeeds(User user, String category) {
+    // List<ChannelUser> list1 =
+    // channelUserRepository.findAllByUserAndCategory(user, category);
+    // List<FeedItem> list2 = new ArrayList<>();
 
-        for (ChannelUser channelUser : list1) {
-            list2.addAll(feedItemRepository.findAllByChannel(channelUser.getChannel()));
-        }
-        return list2;
-    }
+    // for (ChannelUser channelUser : list1) {
+    // list2.addAll(feedItemRepository.findAllByChannel(channelUser.getChannel()));
+    // }
+    // return list2;
+    // }
 
     public List<FeedItem> showReadLaterFeeds(User user) {
         List<FeedItemUser> list = feedItemUserRepository.findAllByUserAndReadLater(user, true);
@@ -123,32 +117,106 @@ public class FeedsService {
         }
     }
 
-
     public List<FeedItem> findAllFeeds(User user, String period, String order, int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber , PAGE_SIZE);
-        Calendar calendar = Calendar.getInstance();
-        Page<FeedItem> page = null;
+        List<FeedItem> feedItems = Collections.emptyList();
+        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
-        int day = calendar.get(Calendar.DATE);
-        //Note: +1 the month for current month
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year = calendar.get(Calendar.YEAR);
+        Page<FeedItemUser> page = feedItemUserRepository.findAllByUser(user, pageable);
 
+        if (!page.isEmpty())
+            feedItems = getFeedItemsPage(period, page);
 
-        switch (period){
-            case "today":
-                switch (order){
-                    case "OrderByLatest":
-                        page = feedItemRepository.findByUsersIsAndPublishDate_YearAndPublishDate_MonthAndPublishDate_DayOfMonthOrderByPublishDateAsc
-                                (user, year, month, day, pageable);
-                        break;
-                    default:
-                        break;
-                }
+        return feedItems;
+    }
+
+    private List<FeedItem> getFeedItemsPage(String period, Page<FeedItemUser> page) {
+        List<FeedItem> feedItems = Collections.emptyList();
+        switch (period) {
+            case PERIOD_ALL:
+                feedItems = page.getContent()
+                                .stream()
+                                .map((FeedItemUser e) -> e.getFeedItem())
+                                .collect(Collectors.toList());
+                break;
+
+                case PERIOD_TODAY:
+                LocalDate today = LocalDate.now();
+                feedItems = page.getContent()
+                                .stream()
+                                .filter(e -> {
+                                            LocalDate dateOfFeedItem = e.getFeedItem()
+                                                                        .getPublishDate()
+                                                                        .toLocalDate();
+                                            return dateOfFeedItem.isEqual(today); })
+                                         .map((FeedItemUser e) -> e.getFeedItem())
+                                         .collect(Collectors.toList());
+                break;
+                
+                case PERIOD_LAST_SEVEN_DAYS:
+                LocalDate dateBeforeSevenDays = LocalDate.now().minusDays(7L);
+                feedItems = page.getContent()
+                                .stream()
+                                .filter(e -> {
+                                            LocalDate dateOfFeedItem = e.getFeedItem()
+                                                                        .getPublishDate()
+                                                                        .toLocalDate();
+                                            return dateOfFeedItem.isEqual(dateBeforeSevenDays) 
+                                            || dateOfFeedItem.isAfter(dateBeforeSevenDays);})
+                                .map((FeedItemUser e) -> e.getFeedItem())
+                                .collect(Collectors.toList());
+                break;
+
+                case PERIOD_LAST_THIRTY_DAYS:
+                LocalDate dateBeforeThirtyDays = LocalDate.now().minusDays(30L);
+                feedItems = page.getContent()
+                                .stream()
+                                .filter(e -> {
+                                            LocalDate dateOfFeedItem = e.getFeedItem()
+                                                                        .getPublishDate()
+                                                                        .toLocalDate();
+                                            return dateOfFeedItem.isEqual(dateBeforeThirtyDays) 
+                                            || dateOfFeedItem.isAfter(dateBeforeThirtyDays);})
+                                .map((FeedItemUser e) -> e.getFeedItem())
+                                .collect(Collectors.toList());
+                break;
+
             default:
                 break;
         }
-        List<FeedItem> feedItems = page.getContent();
+        return feedItems;
+    }
+
+    public List<FeedItem> findAllFeedsByChannelCategory(User user, String categoryName, String period, String order,
+            int pageNumber) {
+        List<FeedItem> feedItems = new ArrayList<>();
+        Pageable pageable = PageRequest.of(pageNumber, 2);
+
+        Page<ChannelUser> page = channelUserRepository.findAllByUserAndCategory_Name(user,
+                categoryName.trim().toLowerCase(), pageable);
+
+        if (!page.isEmpty()) {
+            switch (period) {
+                case PERIOD_ALL:
+                    page.getContent()
+                        .stream()
+                        .forEach(channelUser -> feedItems.addAll(channelUser.getChannel().getFeedItems()));
+                    break;
+                
+                case PERIOD_TODAY:
+                break;
+
+                case PERIOD_LAST_SEVEN_DAYS:
+                break;
+                
+                case PERIOD_LAST_THIRTY_DAYS:
+                break;
+
+                default:
+                break;
+            }
+
+        }
+
         return feedItems;
     }
 

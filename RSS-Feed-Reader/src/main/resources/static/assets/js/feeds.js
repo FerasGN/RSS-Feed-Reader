@@ -1,7 +1,7 @@
 "use strict";
 
 /* ===== Ajax ====== */
-function get(url, container) {
+function getAllFeeds(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
@@ -17,6 +17,29 @@ function get(url, container) {
     }
   };
 
+  request.onerror = function () {
+    // There was a connection error of some sort
+  };
+
+  request.send();
+}
+
+var pageNumber = 1;
+
+function getAllFeedsOfPage(url, container) {
+  let request = new XMLHttpRequest();
+  request.open("GET", url, true);
+
+  request.onload = function () {
+    if (this.status >= 200 && this.status < 400) {
+      // Success!
+      let resp = this.response;
+      container.innerHTML += request.responseText;
+      pageNumber++;
+    } else {
+      // We reached our target server, but it returned an error
+    }
+  };
   request.onerror = function () {
     // There was a connection error of some sort
   };
@@ -149,23 +172,25 @@ function handleOrderAndView(url, slectedOrder, selectedView, feedsContainer) {
 }
 
 function handleView(url, selectedView, feedsContainer) {
-  if (selectedView == "view-cards") get(url + "&view=cards", feedsContainer);
-  else if (selectedView == "view-title-only")
-    get(url + "&view=title-only", feedsContainer);
+  if (selectedView == "cards") getAllFeeds(url + "&view=cards", feedsContainer);
+  else if (selectedView == "title-only")
+    getAllFeeds(url + "&view=title-only", feedsContainer);
 }
 
 function handleSelect(selectedView, selectedPeriod, selectedOrder) {
+  pageNumber = 1;
+  console.log("Page number in handleSelect= " + pageNumber);
   // delete list contianer, if it exists
-  const listItemsContainer = document.getElementById("list-items-container");
-  const cardsContainer = document.getElementById("cards-container");
+  let listItemsContainer = document.getElementById("list-items-container");
+  let cardsContainer = document.getElementById("cards-container");
 
   if (document.body.contains(listItemsContainer)) listItemsContainer.remove();
 
   if (document.body.contains(cardsContainer)) cardsContainer.remove();
 
-  if (selectedView == "view-cards") {
-    const mainContainer = document.getElementById("main-container");
-    const cardsContainer = document.createElement("div");
+  if (selectedView == "cards") {
+    let mainContainer = document.getElementById("main-container");
+    let cardsContainer = document.createElement("div");
     cardsContainer.id = "cards-container";
     mainContainer.appendChild(cardsContainer);
     handleViewAndPerieodAndOrderSelect(
@@ -174,9 +199,9 @@ function handleSelect(selectedView, selectedPeriod, selectedOrder) {
       selectedOrder,
       cardsContainer
     );
-  } else if (selectedView == "view-title-only") {
-    const mainContainer = document.getElementById("main-container");
-    const listItemsContainer = document.createElement("div");
+  } else if (selectedView == "title-only") {
+    let mainContainer = document.getElementById("main-container");
+    let listItemsContainer = document.createElement("div");
     listItemsContainer.id = "list-items-container";
     mainContainer.appendChild(listItemsContainer);
     handleViewAndPerieodAndOrderSelect(
@@ -197,8 +222,8 @@ viewSelect.addEventListener("change", function (e) {
   let selectedOrder = document.getElementById("order-select").value;
 
   console.log(
-    "Selected view =" + selectedView + ", period = " + selectedPeriod,
-    " and order = " + selectedOrder
+    "Selected view= " + selectedView + ", period= " + selectedPeriod,
+    " and order= " + selectedOrder
   );
   handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
@@ -210,8 +235,8 @@ periodSelect.addEventListener("change", function (e) {
   let selectedOrder = document.getElementById("order-select").value;
 
   console.log(
-    "Selected view =" + selectedView + ", period = " + selectedPeriod,
-    " and order = " + selectedOrder
+    "Selected view= " + selectedView + ", period= " + selectedPeriod,
+    " and order= " + selectedOrder
   );
   handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
@@ -229,6 +254,85 @@ orederSelect.addEventListener("change", function (e) {
   handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
 
+/* ===== Load feeds on scroll ====== */
+
+function loadFeeds() {
+  let selectedView = document.getElementById("view-select").value;
+  let selectedPeriod = document.getElementById("period-select").value;
+  let selectedOrder = document.getElementById("order-select").value;
+
+  const listItemsContainer = document.getElementById("list-items-container");
+  const cardsContainer = document.querySelector("#cards-container");
+  if (document.body.contains(cardsContainer)) {
+    if (window.location.href.indexOf("/category/") > -1) {
+      let category = window.location.pathname.split("/").pop();
+      getAllFeedsOfPage(
+        "http://localhost:8080/feeds-page?category=" +
+          category +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        cardsContainer
+      );
+    } else {
+      getAllFeedsOfPage(
+        "http://localhost:8080/feeds-page?view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        cardsContainer
+      );
+    }
+  } else if (document.body.contains(listItemsContainer)) {
+    if (window.location.href.indexOf("/category/") > -1) {
+      let category = window.location.pathname.split("/").pop();
+      getAllFeedsOfPage(
+        "http://localhost:8080/feeds-page?category=" +
+          category +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        listItemsContainer
+      );
+    } else {
+      getAllFeedsOfPage(
+        "http://localhost:8080/feeds-page?view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        listItemsContainer
+      );
+    }
+  }
+}
+
+// listen for scroll event and load more feeds if we reach the bottom of window
+window.addEventListener("scroll", () => {
+  if (
+    window.scrollY + window.innerHeight >=
+    document.documentElement.scrollHeight
+  ) {
+    loadFeeds();
+  }
+});
 /* ===== sse-notifications ====== */
 const eventSource = new EventSource("http://localhost:8080/sse-notifications");
 eventSource.onmessage = function (e) {
