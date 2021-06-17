@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -459,6 +460,8 @@ public class ChannelService {
         channelUserRepository.findAll().stream().forEach(cu -> {
             try {
                 saveFeedItems(cu.getUser(), cu.getChannel());
+            } catch (UnknownHostException e) {
+                System.out.println("Your Internet connection may have been interrupted");
             } catch (IllegalArgumentException | FeedException | IOException e) {
                 e.printStackTrace();
             }

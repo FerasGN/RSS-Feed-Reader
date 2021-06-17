@@ -2,18 +2,14 @@ package de.htwsaar.pib2021.rss_feed_reader.converters;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.Category;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
-import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
 import lombok.Data;
 
 @Component

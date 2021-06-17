@@ -140,7 +140,6 @@ public class FeedsController {
         if ("none".equals(categoryName))
             feeds = getFilteredAndOrderedFeeds(securityUser, period, order, pageNumber);
         else {
-            System.out.println("getFeedsOfChannelCategoryFilteredAndOrderedFeeds Was called....");
             feeds = getFeedsOfChannelCategoryFilteredAndOrderedFeeds(securityUser, categoryName, period, order,
                     pageNumber);
         }
@@ -253,6 +252,7 @@ public class FeedsController {
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feeds);
             model.addAttribute("categoryName", categoryName);
+            model.addAttribute("url", "/category");
 
         }
         return "all-feeds";
