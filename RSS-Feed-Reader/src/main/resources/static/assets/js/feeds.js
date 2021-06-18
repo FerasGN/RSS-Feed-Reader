@@ -1,14 +1,15 @@
 "use strict";
 
 /* ===== Ajax ====== */
-function getAllFeeds(url, container) {
+async function getAllFeeds(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
-  request.onload = async function () {
+  request.onload = function () {
     if (this.status >= 200 && this.status < 400) {
       // Success!
-      await showPreloader();
+      const preloader = document.getElementById("loader");
+      preloader.style.cssText = "display:none !important";
 
       let resp = this.response;
       container.innerHTML = request.responseText;
@@ -21,20 +22,24 @@ function getAllFeeds(url, container) {
     // There was a connection error of some sort
   };
 
+  // await showPreloader();
   request.send();
 }
 
 var pageNumber = 1;
 
-function getAllFeedsOfPage(url, container) {
+async function getAllFeedsOfPage(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
   request.onload = function () {
     if (this.status >= 200 && this.status < 400) {
       // Success!
+      const preloader = document.getElementById("loader");
+      preloader.style.cssText = "display:none !important";
+
       let resp = this.response;
-      container.innerHTML += request.responseText;
+      if (resp !== "") container.innerHTML += request.responseText;
       pageNumber++;
     } else {
       // We reached our target server, but it returned an error
@@ -44,6 +49,7 @@ function getAllFeedsOfPage(url, container) {
     // There was a connection error of some sort
   };
 
+  // await showPreloader();
   request.send();
 }
 
