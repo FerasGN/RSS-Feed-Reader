@@ -30,6 +30,8 @@ public class FeedItem extends BaseEntity {
 	private LocalDateTime publishDate;
 	@Column(name = "publish_local_date", nullable = true)
 	private LocalDate publishLocalDate;
+	@Column(name = "language", nullable = true, columnDefinition = "TEXT")
+	private String language;
 
 	@ToString.Exclude
 	@ManyToOne

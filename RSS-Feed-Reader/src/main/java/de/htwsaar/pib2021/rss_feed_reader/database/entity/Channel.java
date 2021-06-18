@@ -27,6 +27,8 @@ public class Channel extends BaseEntity {
 	private String websiteLink;
 	@Column(name = "description", nullable = true, columnDefinition = "TEXT")
 	private String description;
+	@Column(name = "language", nullable = true, columnDefinition = "TEXT")
+	private String language;
 
 	// @Lob
 	// private Byte[] image;

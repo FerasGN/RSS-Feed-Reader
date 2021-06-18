@@ -314,7 +314,7 @@ public class ChannelService {
      *
      * @param user
      * @param url
-     * @param category
+     * @param categoryName
      * @return
      * @throws ChannelAlreadyExistException
      * @throws NotValidURLException
