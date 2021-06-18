@@ -9,6 +9,8 @@ import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.FeedsService;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.SortingFeedsService;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -30,6 +32,9 @@ public class FeedItemUserTest {
     private ChannelUserRepository channelUserRepo;
     @Autowired
     private FeedItemUserRepository feedItemUserRepo;
+
+    @Autowired
+    private FeedsService feedService;
     private static final String DESC = "A short story";
     private LocalDateTime ldt = LocalDateTime.now();
 
@@ -112,7 +117,6 @@ public class FeedItemUserTest {
     @Test
     public void checkFeed(){
         User user = userRepo.findById(1L).get();
-        FeedsService feedsService = new FeedsService(channelUserRepo, feedItemRepo, feedItemUserRepo);
         //List<FeedItem> feeds =  feedsService.findAllFeeds(user, "today", "OrderByLatest", 0);
         assertEquals(user.getUsername(), "rochelle");
 
