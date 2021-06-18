@@ -176,4 +176,15 @@ public class FeedsService {
         return feedItems;
     }
 
+    // public List<FeedItem> findAllFeedsByAllCategories(User user, String
+    // categoryName, String period, String order,
+    // int pageNumber) {
+
+    // List<FeedItem> feedItems =
+    // sortingFeedsService.findFeedItemsByCategoryAndPeriodAndOrderAndPageNumber(user,
+    // categoryName, period, order, pageNumber);
+
+    // return feedItems;
+    // }
+
 }

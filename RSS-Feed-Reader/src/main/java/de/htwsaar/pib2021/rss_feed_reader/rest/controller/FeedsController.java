@@ -66,11 +66,11 @@ public class FeedsController {
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             String filteredAndOrderedFeeds = "";
             if (VIEW_CARDS.equalsIgnoreCase(view)) {
-                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, "none", period, order,
-                        0);
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model,
+                        ORDER_BY_ALL_CATEGORIES, period, order, 0);
             } else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
-                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, "none", period, order,
-                        0);
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, ORDER_BY_ALL_CATEGORIES,
+                        period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
@@ -108,21 +108,21 @@ public class FeedsController {
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             if (VIEW_CARDS.equalsIgnoreCase(view))
                 if (category == null)
-                    filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, "none", period,
-                            order, pageNumber);
+                    filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model,
+                            ORDER_BY_ALL_CATEGORIES, period, order, pageNumber);
                 else
                     filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, category, period,
                             order, pageNumber);
             else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
                 if (category == null)
-                    filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, "none", period,
-                            order, pageNumber);
+                    filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model,
+                            ORDER_BY_ALL_CATEGORIES, period, order, pageNumber);
                 else
                     filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, category, period,
                             order, pageNumber);
         } else {
-            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, "none", PERIOD_ALL,
-                    ORDER_BY_LATEST, pageNumber);
+            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, ORDER_BY_ALL_CATEGORIES,
+                    PERIOD_ALL, ORDER_BY_LATEST, pageNumber);
         }
 
         return filteredAndOrderedFeeds;
@@ -137,12 +137,15 @@ public class FeedsController {
     public String getFilteredAndOrderedFeedsAsCards(SecurityUser securityUser, Model model, String categoryName,
             String period, String order, int pageNumber) {
         List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-        if ("none".equals(categoryName))
-            feeds = getFilteredAndOrderedFeeds(securityUser, period, order, pageNumber);
-        else {
+        if (ORDER_BY_ALL_CATEGORIES.equals(categoryName) && ORDER_BY_CATEGORY.equals(order))
             feeds = getFeedsOfChannelCategoryFilteredAndOrderedFeeds(securityUser, categoryName, period, order,
                     pageNumber);
-        }
+        else if (ORDER_BY_ALL_CATEGORIES.equals(categoryName))
+            feeds = getFilteredAndOrderedFeeds(securityUser, period, order, pageNumber);
+        else
+            feeds = getFeedsOfChannelCategoryFilteredAndOrderedFeeds(securityUser, categoryName, period, order,
+                    pageNumber);
+
         model.addAttribute("view", "cards");
         model.addAttribute("feeds", feeds);
         return "layouts/feeds-cards :: feeds-cards";
@@ -151,7 +154,10 @@ public class FeedsController {
     public String getFilteredAndOrderedFeedsAsList(SecurityUser securityUser, Model model, String categoryName,
             String period, String order, int pageNumber) {
         List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
-        if ("none".equals(categoryName))
+        if (ORDER_BY_ALL_CATEGORIES.equals(categoryName) && ORDER_BY_CATEGORY.equals(order))
+            feeds = getFeedsOfChannelCategoryFilteredAndOrderedFeeds(securityUser, categoryName, period, order,
+                    pageNumber);
+        else if (ORDER_BY_ALL_CATEGORIES.equals(categoryName))
             feeds = getFilteredAndOrderedFeeds(securityUser, period, order, pageNumber);
         else
             feeds = getFeedsOfChannelCategoryFilteredAndOrderedFeeds(securityUser, categoryName, period, order,
@@ -182,11 +188,11 @@ public class FeedsController {
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             String filteredAndOrderedFeeds = "";
             if (VIEW_CARDS.equalsIgnoreCase(view))
-                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, "none", period, order,
-                        0);
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model,
+                        ORDER_BY_ALL_CATEGORIES, period, order, 0);
             else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
-                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, "none", period, order,
-                        0);
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, ORDER_BY_ALL_CATEGORIES,
+                        period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
@@ -208,11 +214,11 @@ public class FeedsController {
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             String filteredAndOrderedFeeds = "";
             if ("cards".equalsIgnoreCase(view))
-                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model, "none", period, order,
-                        0);
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser, model,
+                        ORDER_BY_ALL_CATEGORIES, period, order, 0);
             else if ("title-only".equalsIgnoreCase(view))
-                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, "none", period, order,
-                        0);
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser, model, ORDER_BY_ALL_CATEGORIES,
+                        period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feeds = new ArrayList<FeedItemCommand>();
@@ -342,7 +348,7 @@ public class FeedsController {
         this.emitters.forEach((username, emitter) -> {
             try {
                 // send the notification to its associated user only
-                if (username.equals(sseNotification.getUsername()))
+                if (username.equalsIgnoreCase(sseNotification.getUsername()))
                     emitter.send(sseNotification);
             } catch (Exception e) {
                 deadEmitters.add(emitter);

@@ -17,6 +17,8 @@ public interface ChannelUserRepository extends JpaRepository<ChannelUser, Channe
 
     ChannelUser findByUserAndChannel(User user, Channel channel);
 
+    List<ChannelUser> findAllByUserOrderByCategory_Name(User user);
+
     List<ChannelUser> findAllByUserAndCategory_NameOrderByCategory_Name(User user, String category);
 
     List<ChannelUser> findAllByUser(User user);

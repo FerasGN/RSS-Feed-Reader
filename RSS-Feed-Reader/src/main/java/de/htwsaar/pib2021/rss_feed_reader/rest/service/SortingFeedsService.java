@@ -131,26 +131,52 @@ public class SortingFeedsService {
      */
     private List<FeedItem> findFeedItemsByStartDateAndOrderAndPageNumber(User user, String categoryName,
             LocalDate startDate, String order, Integer pageNumber) {
-        List<FeedItem> feedItems = Collections.emptyList();
         List<FeedItemUser> feedItemsUsers = Collections.emptyList();
+        List<FeedItem> feedItems = Collections.emptyList();
 
         if (categoryName != null) {
-            feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, categoryName, startDate, order, pageNumber);
-            feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem()).collect(Collectors.toList());
-
-            double lastPage = Math.ceil(feedItems.size() / (double) PAGE_SIZE);
-
-            if (pageNumber < lastPage && feedItems.size() < PAGE_SIZE)
-                return feedItems;
-            else if (pageNumber < lastPage)
-                feedItems = feedItems.subList(pageNumber * PAGE_SIZE, (pageNumber * PAGE_SIZE) + PAGE_SIZE);
-            else
-                feedItems = Collections.emptyList();
-
+            feedItems = findFilteredAndSortedByCategoryNameFeedItems(user, categoryName, startDate, order, pageNumber);
         } else {
             feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, startDate, order, pageNumber);
             feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem()).collect(Collectors.toList());
         }
+
+        return feedItems;
+    }
+
+    /**
+     * @param user
+     * @param categoryName
+     * @param startDate
+     * @param order
+     * @param pageNumber
+     * @return List<FeedItem>
+     */
+    private List<FeedItem> findFilteredAndSortedByCategoryNameFeedItems(User user, String categoryName,
+            LocalDate startDate, String order, Integer pageNumber) {
+        List<FeedItemUser> feedItemsUsers = Collections.emptyList();
+        List<FeedItem> feedItems = Collections.emptyList();
+
+        if (ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(categoryName))
+            feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, ORDER_BY_ALL_CATEGORIES, startDate, order);
+        else
+            feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, categoryName, startDate, order);
+        feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem()).collect(Collectors.toList());
+
+        double lastPage = Math.ceil(feedItems.size() / (double) PAGE_SIZE);
+        int nextPage = (pageNumber * PAGE_SIZE) + PAGE_SIZE;
+
+        // feeds number is less than the page size
+        if (pageNumber < lastPage && feedItems.size() < PAGE_SIZE)
+            return feedItems;
+        // next feeds page index is greater than feeditems last index
+        else if (pageNumber < lastPage && nextPage > feedItems.size())
+            feedItems = feedItems.subList(pageNumber * PAGE_SIZE, feedItems.size());
+        else if (pageNumber < lastPage)
+            feedItems = feedItems.subList(pageNumber * PAGE_SIZE, (pageNumber * PAGE_SIZE) + PAGE_SIZE);
+
+        else
+            feedItems = Collections.emptyList();
 
         return feedItems;
     }
@@ -199,11 +225,6 @@ public class SortingFeedsService {
                 break;
             } // end case
 
-            case ORDER_BY_CATEGORY: {
-
-                break;
-            } // end case
-
             default:
 
                 break;
@@ -220,19 +241,10 @@ public class SortingFeedsService {
      * @return List<FeedItemUser>
      */
     private List<FeedItemUser> findFilteredAndSortedFeedItemsUsers(User user, String categoryName, LocalDate startDate,
-            String order, int pageNumber) {
-        List<ChannelUser> channelsUser = channelUserRepository.findAllByUserAndCategory_NameOrderByCategory_Name(user,
-                categoryName.trim().toLowerCase());
-        List<FeedItemUser> feedItemsUser = new ArrayList<>();
+            String order) {
 
-        // no start date means we need all feeds of a category
-        if (startDate == null)
-            channelsUser.forEach(cu -> feedItemsUser
-                    .addAll(feedItemUserRepository.findByUserAndFeedItem_Channel(user, cu.getChannel())));
-        else
-            channelsUser.forEach(cu -> feedItemsUser.addAll(
-                    feedItemUserRepository.findByUserAndFeedItem_ChannelAndFeedItem_publishLocalDateGreaterThanEqual(
-                            user, cu.getChannel(), startDate)));
+        List<FeedItemUser> feedItemsUser = findSortedByCategoryNameAndPublishLocalDateFeedItemUsers(user, categoryName,
+                startDate);
 
         switch (order) {
             case ORDER_BY_LATEST: {
@@ -269,10 +281,38 @@ public class SortingFeedsService {
             } // end case
 
             default:
-
+                Collections.sort(feedItemsUser,
+                        (a, b) -> b.getFeedItem().getPublishDate().compareTo(a.getFeedItem().getPublishDate()));
                 break;
         }// end switch
 
+        return feedItemsUser;
+    }
+
+    /**
+     * @param user
+     * @param categoryName
+     * @param startDate
+     * @return List<FeedItemUser>
+     */
+    private List<FeedItemUser> findSortedByCategoryNameAndPublishLocalDateFeedItemUsers(User user, String categoryName,
+            LocalDate startDate) {
+        List<ChannelUser> channelsUser;
+        if (ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(categoryName))
+            channelsUser = channelUserRepository.findAllByUserOrderByCategory_Name(user);
+        else
+            channelsUser = channelUserRepository.findAllByUserAndCategory_NameOrderByCategory_Name(user,
+                    categoryName.trim().toLowerCase());
+        List<FeedItemUser> feedItemsUser = new ArrayList<>();
+
+        // no start date means we need all feeds of a category
+        if (startDate == null)
+            channelsUser.forEach(cu -> feedItemsUser
+                    .addAll(feedItemUserRepository.findByUserAndFeedItem_Channel(user, cu.getChannel())));
+        else
+            channelsUser.forEach(cu -> feedItemsUser.addAll(
+                    feedItemUserRepository.findByUserAndFeedItem_ChannelAndFeedItem_publishLocalDateGreaterThanEqual(
+                            user, cu.getChannel(), startDate)));
         return feedItemsUser;
     }
 }

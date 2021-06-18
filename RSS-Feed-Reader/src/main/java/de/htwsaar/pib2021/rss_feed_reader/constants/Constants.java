@@ -12,6 +12,7 @@ public class Constants {
 
     public final static String ORDER_BY_LATEST = "latest";
     public final static String ORDER_BY_CATEGORY = "category";
+    public final static String ORDER_BY_ALL_CATEGORIES = "all-categories";
     public final static String ORDER_BY_UNREAD = "unread";
     public final static String ORDER_BY_CHANNEL = "channel";
     public final static String ORDER_BY_OLDEST = "oldest";
