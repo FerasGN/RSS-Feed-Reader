@@ -225,10 +225,25 @@ public class SortingFeedsService {
                 break;
             } // end case
 
-            default:
+            case ORDER_BY_CHANNEL: {
+                pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+         
+                if (startDate == null)
+                    page = feedItemUserRepository
+                            .findByUserOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(user, pageable);
+                else
+                    page = feedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
+                                    user, startDate, pageable);
 
+                feedItemsUsers = page.getContent();
                 break;
+            } // end case
+
+            default:
+                return feedItemsUsers;
         }// end switch
+
         return feedItemsUsers;
     }
 
@@ -281,8 +296,6 @@ public class SortingFeedsService {
             } // end case
 
             default:
-                Collections.sort(feedItemsUser,
-                        (a, b) -> b.getFeedItem().getPublishDate().compareTo(a.getFeedItem().getPublishDate()));
                 break;
         }// end switch
 
