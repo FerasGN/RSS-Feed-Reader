@@ -28,7 +28,7 @@ async function getAllFeeds(url, container) {
 
 var pageNumber = 1;
 
-async function getAllFeedsOfPage(url, container) {
+function getAllFeedsOfPage(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
@@ -40,7 +40,6 @@ async function getAllFeedsOfPage(url, container) {
 
       let resp = this.response;
       if (resp !== "") container.innerHTML += request.responseText;
-      pageNumber++;
     } else {
       // We reached our target server, but it returned an error
     }
@@ -333,12 +332,14 @@ function loadFeeds() {
 // listen for scroll event and load more feeds if we reach the bottom of window
 window.addEventListener("scroll", () => {
   if (
-    window.scrollY + window.innerHeight >=
-    document.documentElement.scrollHeight
+    window.scrollY + 0.5 + window.innerHeight >=
+    document.documentElement.scrollHeight - 5
   ) {
     loadFeeds();
+    pageNumber++;
   }
 });
+
 /* ===== sse-notifications ====== */
 const eventSource = new EventSource("http://localhost:8080/sse-notifications");
 eventSource.onmessage = function (e) {

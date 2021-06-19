@@ -11,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,6 +55,7 @@ public class FeedsController {
      * @param model
      * @return String
      */
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/all-feeds")
     public String showAllFeeds(@RequestParam(value = "view", required = false) String view,
             @RequestParam(value = "period", required = false) String period,
@@ -95,6 +97,7 @@ public class FeedsController {
         return model;
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/feeds-page")
     public String getFeedPage(@RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "view", required = false) String view,
@@ -322,6 +325,7 @@ public class FeedsController {
      * @param securityUser
      * @return SseEmitter
      */
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/sse-notifications")
     public SseEmitter getSseNotification(@AuthenticationPrincipal SecurityUser securityUser) {
         SseEmitter emitter = new SseEmitter();
