@@ -8,11 +8,11 @@
                             th:text="${feed.title}"></a></h6>
                     <!--//col-->
                     <div class="row justify-content-between">
-                        <div class="col-auto feed-category  m-auto position-relative" style="top: -1.5px"><span
+                        <div class="col-auto feed-category m-auto position-relative" style="top: -1.5px"><span
                                 class="badge bg-success m-auto" th:text="${feed.channelCategory}">category</span>
                         </div>
                         <!--//col-->
-                        <ul class="col text-start feed-meta  m-auto list-inline ">
+                        <ul class="col text-start feed-meta mt-auto mb-auto list-inline ">
                             <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}"
                                     th:text="${feed.channelTitle}">Spiegel</a></li>
                             <li class="list-inline-item">|</li>
@@ -31,7 +31,7 @@
                         <!--//col-->
 
 
-                        <div class="col-auto toolbar m-auto position-relative" style="top: -1.5px">
+                        <div class="col-auto toolbar position-relative" style="top: -1.5px">
                             <div class="animated-icon heart  ms-0" data-bs-toggle="tooltip" title="like">
                                 <input type="checkbox" th:id="'heart-' + ${i.index + 1}" />
                                 <label th:for="'heart-' + ${i.index + 1}"></label>
