@@ -1,7 +1,11 @@
 "use strict";
+/* ===== Variables ====== */
+var SEARCH_CHANNEL_URL = "/search-channel";
+var REFRESH_HEADER_URL = "/refresh-header";
+var FIND_CATEGORIES_URL = "/findCategories";
+var SAVE_CHANNEL_URL = "/save-channel";
 
 /* ===== Responsive Sidepanel ====== */
-
 initSidePanel();
 
 function initSidePanel() {
@@ -64,7 +68,7 @@ function searchChannel() {
     "Searching...";
   var subscribeModal = document.getElementById("subscribe-modal");
   var channelUrl = document.getElementById("channel-url").value;
-  searchForChannel("/search-channel?url=" + channelUrl, subscribeModal);
+  searchForChannel(SEARCH_CHANNEL_URL + "?url=" + channelUrl, subscribeModal);
 }
 
 /* ===== Search for channel AJAX ====== */
@@ -121,7 +125,7 @@ function refreshHeader(url, headerContainer) {
   request.send();
 }
 
-/* =====  save  channel AJAXl ====== */
+/* =====  save channel AJAX====== */
 function postChannel(url, data, container) {
   let request = new XMLHttpRequest();
   request.open("POST", url, true);
@@ -135,7 +139,7 @@ function postChannel(url, data, container) {
         container.innerHTML += request.responseText;
 
         var headerContainer = document.getElementById("header-container");
-        refreshHeader("/refresh-header", headerContainer);
+        refreshHeader(REFRESH_HEADER_URL, headerContainer);
       }
       hideModal();
     } else {
@@ -203,7 +207,7 @@ function initModalCategories() {
     }
   };
 
-  request.open("GET", "/findCategories", true);
+  request.open("GET", FIND_CATEGORIES_URL, true);
   request.send();
 }
 
@@ -237,9 +241,9 @@ function addSubscribeButton() {
     const cardsContainer = document.getElementById("cards-container");
 
     if (document.body.contains(cardsContainer)) {
-      postChannel("/save-channel", data, cardsContainer);
+      postChannel(SAVE_CHANNEL_URL, data, cardsContainer);
     } else {
-      postChannel("/save-channel", data, listItemsContainer);
+      postChannel(SAVE_CHANNEL_URL, data, listItemsContainer);
     }
     let searchChannelButton = document.getElementById("search-channel-button");
     let dismissModal = document.getElementById("dismiss-modal");

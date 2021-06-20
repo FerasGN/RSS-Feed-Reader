@@ -84,7 +84,7 @@ public class ChannelController {
         return mav;
     }
 
-    @GetMapping(value = "/findCategories")
+    @GetMapping(value = "/find-categories")
     @ResponseBody
     public List<String> findCategories(@AuthenticationPrincipal SecurityUser securityUser) {
         List<String> allCategories = new ArrayList<String>();

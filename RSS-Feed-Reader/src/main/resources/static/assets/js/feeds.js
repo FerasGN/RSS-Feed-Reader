@@ -1,4 +1,15 @@
 "use strict";
+/* ===== Variables ====== */
+var HOST = "http://localhost:8080/";
+var ALL_FEEDS_URL = "/all-feeds";
+var READ_LATER_URL = "/read-later";
+var LIKED_FEEDS_URL = "/liked-feeds";
+var FAVORITE_CHANNELS_URL = "/favorite-channels";
+var RECENTLY_READ_URL = "/recently-read";
+var CATEGORY_URL = "/category/";
+var CHANNEL_URL = "/channel/";
+var FEEDS_PAGE_URL = HOST + "feeds-page";
+var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
 
 /* ===== Ajax ====== */
 async function getAllFeeds(url, container) {
@@ -63,59 +74,59 @@ function handleViewAndPerieodAndOrderSelect(
   selectedOrder,
   feedsContainer
 ) {
-  if (window.location.href.indexOf("/all-feeds") > -1)
+  if (window.location.href.indexOf(ALL_FEEDS_URL) > -1)
     handleViewAndPeriodAndOrder(
-      "/all-feeds",
+      ALL_FEEDS_URL,
       selectedView,
       selectedPeriod,
       selectedOrder,
       feedsContainer
     );
-  else if (window.location.href.indexOf("/read-later") > -1)
+  else if (window.location.href.indexOf(READ_LATER_URL) > -1)
     handleViewAndPeriodAndOrder(
-      "/read-later",
+      READ_LATER_URL,
       selectedView,
       selectedPeriod,
       selectedOrder,
       feedsContainer
     );
-  else if (window.location.href.indexOf("/liked-feeds") > -1)
+  else if (window.location.href.indexOf(LIKED_FEEDS_URL) > -1)
     handleViewAndPeriodAndOrder(
-      "/liked-feeds",
+      LIKED_FEEDS_URL,
       selectedView,
       selectedPeriod,
       selectedOrder,
       feedsContainer
     );
-  else if (window.location.href.indexOf("/favorite-channels") > -1)
+  else if (window.location.href.indexOf(FAVORITE_CHANNELS_URL) > -1)
     handleViewAndPeriodAndOrder(
-      "/favorite-channels",
+      FAVORITE_CHANNELS_URL,
       selectedView,
       selectedPeriod,
       selectedOrder,
       feedsContainer
     );
-  else if (window.location.href.indexOf("/recently-read") > -1)
+  else if (window.location.href.indexOf(RECENTLY_READ_URL) > -1)
     handleViewAndPeriodAndOrder(
-      "/recently-read",
+      RECENTLY_READ_URL,
       selectedView,
       selectedPeriod,
       selectedOrder,
       feedsContainer
     );
-  else if (window.location.href.indexOf("/category/") > -1) {
+  else if (window.location.href.indexOf(CATEGORY_URL) > -1) {
     const categoryPathVariable = window.location.pathname.split("/").pop();
     handleViewAndPeriodAndOrder(
-      "/category/" + categoryPathVariable,
+      CATEGORY_URL + categoryPathVariable,
       selectedView,
       selectedPeriod,
       selectedOrder,
       feedsContainer
     );
-  } else if (window.location.href.indexOf("/channel/") > -1) {
+  } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
     const categoryPathVariable = window.location.pathname.split("/").pop();
     handleViewAndPeriodAndOrder(
-      "/channel/" + categoryPathVariable,
+      CHANNEL_URL + categoryPathVariable,
       selectedView,
       selectedPeriod,
       selectedOrderm,
@@ -269,10 +280,11 @@ function loadFeeds() {
   const listItemsContainer = document.getElementById("list-items-container");
   const cardsContainer = document.getElementById("cards-container");
   if (document.body.contains(cardsContainer)) {
-    if (window.location.href.indexOf("/category/") > -1) {
+    if (window.location.href.indexOf(CATEGORY_URL) > -1) {
       let category = window.location.pathname.split("/").pop();
       getAllFeedsOfPage(
-        "http://localhost:8080/feeds-page?category=" +
+        FEEDS_PAGE_URL +
+          "?category=" +
           category +
           "&view=" +
           selectedView +
@@ -286,7 +298,8 @@ function loadFeeds() {
       );
     } else {
       getAllFeedsOfPage(
-        "http://localhost:8080/feeds-page?view=" +
+        FEEDS_PAGE_URL +
+          "?view=" +
           selectedView +
           "&period=" +
           selectedPeriod +
@@ -298,10 +311,11 @@ function loadFeeds() {
       );
     }
   } else if (document.body.contains(listItemsContainer)) {
-    if (window.location.href.indexOf("/category/") > -1) {
+    if (window.location.href.indexOf(CATEGORY_URL) > -1) {
       let category = window.location.pathname.split("/").pop();
       getAllFeedsOfPage(
-        "http://localhost:8080/feeds-page?category=" +
+        FEEDS_PAGE_URL +
+          "?category=" +
           category +
           "&view=" +
           selectedView +
@@ -315,7 +329,8 @@ function loadFeeds() {
       );
     } else {
       getAllFeedsOfPage(
-        "http://localhost:8080/feeds-page?view=" +
+        FEEDS_PAGE_URL +
+          "?view=" +
           selectedView +
           "&period=" +
           selectedPeriod +
@@ -341,7 +356,7 @@ window.addEventListener("scroll", () => {
 });
 
 /* ===== sse-notifications ====== */
-const eventSource = new EventSource("http://localhost:8080/sse-notifications");
+const eventSource = new EventSource(SSE_NOTIFICATIONS_URL);
 eventSource.onmessage = function (e) {
   let notification = JSON.parse(e.data);
 

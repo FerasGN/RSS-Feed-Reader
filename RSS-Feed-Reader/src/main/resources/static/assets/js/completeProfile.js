@@ -1,5 +1,8 @@
 "use strict";
 
+/* ===== Variables ====== */
+var SAVE_INTERESTS_URL = "/save-interests";
+
 /* ===== complete Interestes ====== */
 function postInterests(url, interests) {
   let request = new XMLHttpRequest();
@@ -27,5 +30,5 @@ saveInterestsBtn.addEventListener("click", function (e) {
   let allTags = document.getElementsByClassName("tag");
   let tags = new Array();
   for (let i = 0; i < allTags.length; i++) tags[i] = allTags[i].firstChild.data;
-  postInterests("/save-interests", tags);
+  postInterests(SAVE_INTERESTS_URL, tags);
 });
