@@ -28,6 +28,7 @@ public class FeedItemToFeedItemCommand implements Converter<FeedItem, FeedItemCo
         final FeedItemCommand feedItemCommand = new FeedItemCommand();
         feedItemCommand.setTitle(source.getTitle());
         feedItemCommand.setDescription(source.getDescription());
+        feedItemCommand.setImageUrl(source.getImageUrl());
         feedItemCommand.setLink(source.getLink());
         feedItemCommand.setChannelTitle(source.getChannel().getTitle());
         feedItemCommand.setWebsiteLink(source.getChannel().getWebsiteLink());

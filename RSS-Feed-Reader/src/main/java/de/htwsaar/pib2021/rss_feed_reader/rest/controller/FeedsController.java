@@ -83,6 +83,13 @@ public class FeedsController {
         return "all-feeds";
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/refresh-header")
+    public String refreshSidePanel(Model model, @AuthenticationPrincipal SecurityUser securityUser) {
+        model = initSidePanelFeedsInfo(model, securityUser);
+        return "layouts/header :: header";
+    }
+
     private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {
         List<String> categories = channelService.findAllChannelsCategoriesByUser(securityUser.getUser());
         List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory();

@@ -13,7 +13,9 @@
 	<name>RSS-Feed-Reader</name>
 	<description>Rss Feed Reader</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<passay.version>1.6.0</passay.version>
 	</properties>
 	<dependencies>
@@ -90,6 +92,11 @@
 			<artifactId>rome</artifactId>
 			<version>1.15.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.shekhargulati</groupId>
+			<artifactId>image-resolver</artifactId>
+			<version>0.1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -106,15 +113,14 @@
 					</excludes>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
-            </plugin>
-        </plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>

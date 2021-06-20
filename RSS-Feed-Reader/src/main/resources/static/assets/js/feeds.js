@@ -267,7 +267,7 @@ function loadFeeds() {
   let selectedOrder = document.getElementById("order-select").value;
 
   const listItemsContainer = document.getElementById("list-items-container");
-  const cardsContainer = document.querySelector("#cards-container");
+  const cardsContainer = document.getElementById("cards-container");
   if (document.body.contains(cardsContainer)) {
     if (window.location.href.indexOf("/category/") > -1) {
       let category = window.location.pathname.split("/").pop();

@@ -31,11 +31,15 @@
         <!--//app-content-->
 
         <div id="subscribe-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscribe-modal-title"
-            aria-hidden="true" th:insert="layouts/subscribe-modal :: subscribe-modal"></div>
+            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+            th:insert="layouts/subscribe-modal :: subscribe-modal"></div>
     </div>
     <!--//app-wrapper-->
     <thymeleaf th:replace="layouts/scripts :: scripts" />
     <script type="text/javascript" th:src="@{/assets/js/preloader.js}"></script>
+    <script th:inline="javascript">
+        var csrfToken =  /*[[${_csrf.token}]]*/ '';
+    </script>
     <script type="text/javascript" th:src="@{/assets/js/sidePanel.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/feeds.js}"></script>
 

@@ -7,6 +7,7 @@ public class FeedItemCommand {
 
     private String title;
     private String description;
+    private String imageUrl;
     private String link;
     private String channelTitle;
     private String websiteLink;

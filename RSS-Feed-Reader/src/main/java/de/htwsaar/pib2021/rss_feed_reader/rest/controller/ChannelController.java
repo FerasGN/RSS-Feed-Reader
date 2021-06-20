@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -66,11 +67,11 @@ public class ChannelController {
      * @param channelCommand
      * @return ModelAndView
      */
-    @PostMapping(value = { "/save-channel" })
-    public ModelAndView saveChannel(ModelAndView mav, ChannelCommand channelCommand,
+    @PostMapping(value = { "/save-channel" }, consumes = "application/json")
+    public ModelAndView saveChannel(ModelAndView mav, @RequestBody List<String[]> data,
             @AuthenticationPrincipal SecurityUser securityUser) {
-        String url = channelCommand.getUrl();
-        String categoryName = channelCommand.getCategoryCommand().getName();
+        String url = data.get(0)[0];
+        String categoryName = data.get(0)[1];
 
         try {
             Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, categoryName);
@@ -78,7 +79,8 @@ public class ChannelController {
         } catch (Exception e) {
 
         }
-        mav.setViewName("redirect:/all-feeds");
+        mav.setViewName("redirect:/feeds-page?view=" + data.get(1)[0] + "&period=" + data.get(1)[1] + "&orderBy="
+                + data.get(1)[2] + "&pageNumber=0");
         return mav;
     }
 

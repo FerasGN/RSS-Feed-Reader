@@ -16,6 +16,8 @@ import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserReposi
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
+import imageresolver.MainImageResolver;
+
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -286,6 +288,7 @@ public class ChannelService {
      * @param url
      * @return Optional<Channel>
      */
+    @Transactional
     private Optional<Channel> createAChannel(User user, SyndFeed feed, String url) {
 
         Optional<Channel> channelOptional = channelRepository.findByChannelUrl(url);
@@ -410,16 +413,20 @@ public class ChannelService {
      * @param syndEntry
      */
     private FeedItem createFeedItem(User user, Channel channel, SyndEntry syndEntry) {
+
         FeedItem feedItem = new FeedItem();
         feedItem.setChannel(channel);
         feedItem.setTitle(syndEntry.getTitle());
-        feedItem.setDescription(syndEntry.getDescription().getValue());
+        if (syndEntry.getDescription() != null)
+            feedItem.setDescription(syndEntry.getDescription().getValue());
         feedItem.setAuthor(syndEntry.getAuthor());
         feedItem.setLink(syndEntry.getLink());
-        LocalDateTime publishDate = syndEntry.getPublishedDate().toInstant().atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        feedItem.setPublishDate(publishDate);
-        feedItem.setPublishLocalDate(publishDate.toLocalDate());
+        if (syndEntry.getPublishedDate() != null) {
+            LocalDateTime publishDate = syndEntry.getPublishedDate().toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            feedItem.setPublishDate(publishDate);
+            feedItem.setPublishLocalDate(publishDate.toLocalDate());
+        }
 
         // set categories of feed item
         // If category is not yet available, create one and link the feed item to it.
@@ -441,7 +448,14 @@ public class ChannelService {
         channel.addFeedItem(feedItem);
         feedItem = feedItemRepository.save(feedItem);
 
-        categoryRepository.saveAll(categories);
+        if (!categories.isEmpty())
+            categoryRepository.saveAll(categories);
+
+
+        // extract the main image of a feed item
+        Optional<String> mainImage = MainImageResolver.resolveMainImage(syndEntry.getLink());
+        if (mainImage.isPresent())
+            feedItem.setImageUrl(mainImage.get());
 
         FeedItemUser feedItemUser = new FeedItemUser();
         feedItemUser.setUser(user);

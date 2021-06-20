@@ -2,7 +2,7 @@
 
 /* ===== complete Interestes ====== */
 function postInterests(url, interests) {
-  var request = new XMLHttpRequest();
+  let request = new XMLHttpRequest();
   request.open("POST", url, true);
   request.setRequestHeader("X-CSRF-TOKEN", csrfToken);
   request.setRequestHeader("Content-Type", "application/json");
@@ -11,7 +11,7 @@ function postInterests(url, interests) {
       // Success!
       await showPreloader();
 
-      var resp = this.response;
+      let resp = this.response;
       history.pushState({}, null, "/all-feeds");
       document.write(request.responseText);
     } else {
@@ -21,11 +21,11 @@ function postInterests(url, interests) {
   request.send(JSON.stringify(interests));
 }
 
-var saveInterestsBtn = document.getElementById("save-interests");
+let saveInterestsBtn = document.getElementById("save-interests");
 saveInterestsBtn.addEventListener("click", function (e) {
   e.preventDefault;
-  var allTags = document.getElementsByClassName("tag");
-  var tags = new Array();
-  for (var i = 0; i < allTags.length; i++) tags[i] = allTags[i].firstChild.data;
+  let allTags = document.getElementsByClassName("tag");
+  let tags = new Array();
+  for (let i = 0; i < allTags.length; i++) tags[i] = allTags[i].firstChild.data;
   postInterests("/save-interests", tags);
 });

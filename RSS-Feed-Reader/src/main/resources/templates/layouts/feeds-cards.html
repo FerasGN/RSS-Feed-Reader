@@ -5,7 +5,9 @@
             <div class="app-card-header px-4 py-3">
                 <div class="row g-3 align-items-center">
                     <div class="col-12 col-lg-auto text-center text-lg-start">
-                        <img class="feed-image" th:src="@{/assets/images/question-mark.png}" alt="">
+                        <img class="feed-image"
+                            th:src="${(feed.imageUrl!= null && !#strings.isEmpty(feed.imageUrl)) ? feed.imageUrl : '/assets/images/question-mark.png'}"
+                            alt="">
                     </div>
                     <!--//col-->
                     <div class="col text-center text-lg-start">

@@ -227,7 +227,7 @@ public class SortingFeedsService {
 
             case ORDER_BY_CHANNEL: {
                 pageable = PageRequest.of(pageNumber, PAGE_SIZE);
-         
+
                 if (startDate == null)
                     page = feedItemUserRepository
                             .findByUserOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(user, pageable);
@@ -263,21 +263,29 @@ public class SortingFeedsService {
 
         switch (order) {
             case ORDER_BY_LATEST: {
-                Collections.sort(feedItemsUser,
-                        (a, b) -> b.getFeedItem().getPublishDate().compareTo(a.getFeedItem().getPublishDate()));
+                Collections.sort(feedItemsUser, (a, b) -> {
+                    if (b.getFeedItem().getPublishDate() != null && a.getFeedItem().getPublishDate() != null)
+                        return b.getFeedItem().getPublishDate().compareTo(a.getFeedItem().getPublishDate());
+                    else
+                        return 0;
+                });
                 break;
             } // end case
 
             case ORDER_BY_OLDEST: {
-                Collections.sort(feedItemsUser,
-                        (a, b) -> a.getFeedItem().getPublishDate().compareTo(b.getFeedItem().getPublishDate()));
+                Collections.sort(feedItemsUser, (a, b) -> {
+                    if (a.getFeedItem().getPublishDate() != null && b.getFeedItem().getPublishDate() != null)
+                        return a.getFeedItem().getPublishDate().compareTo(b.getFeedItem().getPublishDate());
+                    else
+                        return 0;
+                });
                 break;
             } // end case
 
             case ORDER_BY_UNREAD: {
                 Comparator<FeedItemUser> compareByUnread = Comparator.comparing(f -> f.isRead());
-                Comparator<FeedItemUser> compareByPublishDate = Comparator
-                        .comparing(f -> f.getFeedItem().getPublishDate(), Comparator.reverseOrder());
+                Comparator<FeedItemUser> compareByPublishDate = Comparator.comparing(
+                        f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
                 Comparator<FeedItemUser> compareByUnreadAndPublishDate = compareByUnread
                         .thenComparing(compareByPublishDate);
                 Collections.sort(feedItemsUser, compareByUnreadAndPublishDate);
@@ -287,8 +295,8 @@ public class SortingFeedsService {
             case ORDER_BY_CHANNEL: {
                 Comparator<FeedItemUser> compareByChannelTitle = Comparator
                         .comparing(f -> f.getFeedItem().getChannel().getTitle());
-                Comparator<FeedItemUser> compareByPublishDate = Comparator
-                        .comparing(f -> f.getFeedItem().getPublishDate(), Comparator.reverseOrder());
+                Comparator<FeedItemUser> compareByPublishDate = Comparator.comparing(
+                        f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
                 Comparator<FeedItemUser> compareByChannelTitleAndPublishDate = compareByChannelTitle
                         .thenComparing(compareByPublishDate);
                 Collections.sort(feedItemsUser, compareByChannelTitleAndPublishDate);

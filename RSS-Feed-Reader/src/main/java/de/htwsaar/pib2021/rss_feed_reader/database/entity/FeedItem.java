@@ -22,11 +22,13 @@ public class FeedItem extends BaseEntity {
 	private String link;
 	@Column(name = "description", nullable = true, columnDefinition = "TEXT")
 	private String description;
+	@Column(name = "image_url", nullable = true, columnDefinition = "TEXT")
+	private String imageUrl;
 	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
 	@Column(name = "author", nullable = true, columnDefinition = "TEXT")
 	private String author;
-	@Column(name = "publish_date", nullable = false)
+	@Column(name = "publish_date", nullable = true)
 	private LocalDateTime publishDate;
 	@Column(name = "publish_local_date", nullable = true)
 	private LocalDate publishLocalDate;
