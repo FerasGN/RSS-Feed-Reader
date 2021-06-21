@@ -29,9 +29,6 @@ public class Channel extends BaseEntity {
 	@Column(name = "language", nullable = true, columnDefinition = "TEXT")
 	private String language;
 
-	// @Lob
-	// private Byte[] image;
-
 	@ToString.Exclude
 	@OneToMany(mappedBy = "channel", cascade = CascadeType.REMOVE)
 	private List<FeedItem> feedItems = new ArrayList<FeedItem>();

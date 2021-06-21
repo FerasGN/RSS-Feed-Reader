@@ -271,6 +271,7 @@ public class ChannelService {
             channel.setChannelUrl(url);
             channel.setWebsiteLink(feed.getLink());
             channel.setDescription(feed.getDescription());
+            channel.setLanguage(feed.getLanguage());
 
             try {
                 List<URL> links = faviconExtractorService.findFaviconLinks(feed.getLink());
@@ -398,6 +399,7 @@ public class ChannelService {
         FeedItem feedItem = new FeedItem();
         feedItem.setChannel(channel);
         feedItem.setTitle(syndEntry.getTitle());
+        feedItem.setLanguage(channel.getLanguage());
         if (syndEntry.getDescription() != null)
             feedItem.setDescription(syndEntry.getDescription().getValue());
         feedItem.setAuthor(syndEntry.getAuthor());
