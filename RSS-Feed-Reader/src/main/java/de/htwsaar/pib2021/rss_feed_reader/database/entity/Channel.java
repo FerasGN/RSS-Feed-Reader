@@ -4,9 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +22,8 @@ public class Channel extends BaseEntity {
 	private String channelUrl;
 	@Column(name = "website_link", nullable = true, columnDefinition = "TEXT")
 	private String websiteLink;
+	@Column(name = "favicon_link", nullable = true, columnDefinition = "TEXT")
+	private String faviconLink;
 	@Column(name = "description", nullable = true, columnDefinition = "TEXT")
 	private String description;
 	@Column(name = "language", nullable = true, columnDefinition = "TEXT")

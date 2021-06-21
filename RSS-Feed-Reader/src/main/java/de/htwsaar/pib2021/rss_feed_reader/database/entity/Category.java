@@ -24,7 +24,7 @@ public class Category extends BaseEntity {
         private List<FeedItem> feedItems = new ArrayList<FeedItem>();
 
         @ToString.Exclude
-	@OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+        @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
         private List<ChannelUser> channelUsers = new ArrayList<ChannelUser>();
 
 }

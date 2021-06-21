@@ -10,9 +10,8 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-
     Optional<Category> findByName(String name);
 
-    @Query(value = "SELECT DISTINCT UPPER(c.name) FROM channel_user cu INNER JOIN category c on cu.category_id = c.id AND cu.user_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT c.name FROM channel_user cu INNER JOIN category c on cu.category_id = c.id AND cu.user_id = ?1", nativeQuery = true)
     List<String> findAllChannelsCategoriesByUser(@Param("userId") Long userId);
 }

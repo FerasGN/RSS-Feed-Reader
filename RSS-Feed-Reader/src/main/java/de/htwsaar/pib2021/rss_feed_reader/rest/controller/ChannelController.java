@@ -1,5 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,14 +21,17 @@ import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Channel;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.FaviconExtractorService;
 
 @Controller
 public class ChannelController {
 
     private ChannelService channelService;
+    private FaviconExtractorService faviconExtractorService;
 
-    public ChannelController(ChannelService channelService) {
+    public ChannelController(ChannelService channelService, FaviconExtractorService faviconExtractorService) {
         this.channelService = channelService;
+        this.faviconExtractorService = faviconExtractorService;
     }
 
     /**
@@ -50,8 +55,15 @@ public class ChannelController {
         } else {
             SyndFeed feed = parsedRssFeedFromURL.get();
             mav.addObject("channelInfo", feed.getTitle());
-            mav.addObject("channelImage",
-                    "//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391");
+
+            try {
+                List<URL> links = faviconExtractorService.findFaviconLinks(feed.getLink());
+                if (!links.isEmpty())
+                    mav.addObject("faviconLink", links.get(0).toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
         ChannelCommand channelCommand = new ChannelCommand();

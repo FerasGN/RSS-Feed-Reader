@@ -25,6 +25,7 @@ import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemToFeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Category;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Sse.SseNotification;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.FeedsService;
@@ -91,12 +92,12 @@ public class FeedsController {
     }
 
     private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {
-        List<String> categories = channelService.findAllChannelsCategoriesByUser(securityUser.getUser());
-        List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory();
+        User user = securityUser.getUser();
+        List<String> categories = channelService.findAllChannelsCategoriesByUser(user);
+        List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory(user);
         ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(channelService);
         List<ChannelCommand> channelCommands = channelUser.stream().map(cu -> channelUserToChannelCommand.convert(cu))
                 .collect(Collectors.toList());
-
         model.addAttribute("channelCommand", new ChannelCommand());
         model.addAttribute("categories", categories);
         model.addAttribute("channelCommands", channelCommands);
@@ -114,7 +115,7 @@ public class FeedsController {
             @AuthenticationPrincipal SecurityUser securityUser) {
 
         String filteredAndOrderedFeeds = "";
-
+        System.out.println("Page Number = " + pageNumber);
         if (existVieAndPeriodAbdOrderParams(view, period, order)) {
             if (VIEW_CARDS.equalsIgnoreCase(view))
                 if (category == null)

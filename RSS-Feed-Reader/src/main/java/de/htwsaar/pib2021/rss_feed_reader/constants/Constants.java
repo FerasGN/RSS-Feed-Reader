@@ -19,4 +19,13 @@ public class Constants {
 
     public static final int PAGE_SIZE = 12;
 
+    /**
+     * User agent header to be used by the Jsoup connection
+     */
+    public static final String USER_AGENT = "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6";
+
+    /**
+     * name of location header
+     */
+    public static final String LOCATION = "location";
 }

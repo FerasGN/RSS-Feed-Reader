@@ -6,6 +6,8 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
+
+import static de.htwsaar.pib2021.rss_feed_reader.constants.SseNotificationMessages.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Sse.SseNotification;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.CategoryRepository;
@@ -17,7 +19,6 @@ import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelAlreadyExistExceptio
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
 import imageresolver.MainImageResolver;
-
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -42,6 +43,7 @@ public class ChannelService {
     private FeedItemRepository feedItemRepository;
     private FeedItemUserRepository feedItemUserRepository;
     private ChannelUserRepository channelUserRepository;
+    private FaviconExtractorService faviconExtractorService;
 
     private ApplicationEventPublisher eventPublisher;
 
@@ -56,12 +58,14 @@ public class ChannelService {
 
     public ChannelService(ChannelRepository channelRepository, CategoryRepository categoryRepository,
             FeedItemRepository feedItemRepository, FeedItemUserRepository feedItemUserRepository,
-            ChannelUserRepository channelUserRepository, ApplicationEventPublisher eventPublisher) {
+            ChannelUserRepository channelUserRepository, FaviconExtractorService faviconExtractorService,
+            ApplicationEventPublisher eventPublisher) {
         this.channelRepository = channelRepository;
         this.categoryRepository = categoryRepository;
         this.feedItemRepository = feedItemRepository;
         this.feedItemUserRepository = feedItemUserRepository;
         this.channelUserRepository = channelUserRepository;
+        this.faviconExtractorService = faviconExtractorService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -165,46 +169,8 @@ public class ChannelService {
     /**
      * @return List<ChannelUser>
      */
-    public List<ChannelUser> findAllChannelUserOrderedByCategory() {
-        // Channel c1 = new Channel();
-        // c1.setTitle("Politik1");
-        // Channel c2 = new Channel();
-        // c2.setTitle("Politik2");
-
-        // Channel c3 = new Channel();
-        // c3.setTitle("Tech1");
-        // Channel c4 = new Channel();
-        // c4.setTitle("Tech2");
-
-        // Channel c5 = new Channel();
-        // c5.setTitle("Sport1");
-        // Channel c6 = new Channel();
-        // c6.setTitle("Sport2");
-
-        // ChannelUser cu1 = new ChannelUser();
-        // cu1.setChannel(c1);
-        // cu1.setCategory("Politik");
-        // ChannelUser cu2 = new ChannelUser();
-        // cu2.setChannel(c2);
-        // cu2.setCategory("Politik");
-
-        // ChannelUser cu3 = new ChannelUser();
-        // cu3.setChannel(c3);
-        // cu3.setCategory("Tech");
-        // ChannelUser cu4 = new ChannelUser();
-        // cu4.setChannel(c4);
-        // cu4.setCategory("Tech");
-
-        // ChannelUser cu5 = new ChannelUser();
-        // cu5.setChannel(c5);
-        // cu5.setCategory("Sport");
-        // ChannelUser cu6 = new ChannelUser();
-        // cu6.setChannel(c6);
-        // cu6.setCategory("Sport");
-
-        // List<ChannelUser> channels =Arrays.asList(cu1, cu2, cu3, cu4, cu5, cu6);
-        List<ChannelUser> channels = new ArrayList<ChannelUser>();
-
+    public List<ChannelUser> findAllChannelUserOrderedByCategory(User user) {
+        List<ChannelUser> channels = channelUserRepository.findAllByUserOrderByCategory_Name(user);
         return channels;
     }
 
@@ -287,9 +253,13 @@ public class ChannelService {
      * @param feed
      * @param url
      * @return Optional<Channel>
+     * @throws IOException
+     * @throws FeedException
+     * @throws IllegalArgumentException
      */
     @Transactional
-    private Optional<Channel> createAChannel(User user, SyndFeed feed, String url) {
+    private Optional<Channel> createAChannel(User user, SyndFeed feed, String url)
+            throws IllegalArgumentException, FeedException, IOException {
 
         Optional<Channel> channelOptional = channelRepository.findByChannelUrl(url);
         Channel channel = null;
@@ -301,13 +271,19 @@ public class ChannelService {
             channel.setChannelUrl(url);
             channel.setWebsiteLink(feed.getLink());
             channel.setDescription(feed.getDescription());
-            channelRepository.save(channel);
-        }
 
-        // Extract feedItems
-        List<SyndEntry> syndFeedItems = feed.getEntries();
-        for (SyndEntry syndEntry : syndFeedItems) {
-            createFeedItem(user, channel, syndEntry);
+            try {
+                List<URL> links = faviconExtractorService.findFaviconLinks(feed.getLink());
+                if (!links.isEmpty())
+                    channel.setFaviconLink(links.get(0).toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            channel = channelRepository.save(channel);
+
+            // extract feed items
+            saveFeedItems(user, channel, feed.getEntries());
         }
 
         return Optional.of(channel);
@@ -372,13 +348,20 @@ public class ChannelService {
      * @throws FeedException
      * @throws IOException
      */
-    public void saveFeedItems(User user, Channel channel) throws IllegalArgumentException, FeedException, IOException {
+    public boolean saveFeedItems(User user, Channel channel)
+            throws IllegalArgumentException, FeedException, IOException {
         URL feedSource = new URL(channel.getChannelUrl());
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(new XmlReader(feedSource));
 
         // Extract feedItems
         List<SyndEntry> syndFeedItems = feed.getEntries();
+        return saveFeedItems(user, channel, syndFeedItems);
+    }
+
+    public boolean saveFeedItems(User user, Channel channel, List<SyndEntry> syndFeedItems)
+            throws IllegalArgumentException, FeedException, IOException {
+        boolean saved = false;
         // Save feedItems
         for (SyndEntry syndEntry : syndFeedItems) {
             String feedItemLink = syndEntry.getLink();
@@ -397,14 +380,12 @@ public class ChannelService {
                     // if feed item doesn't exit create new one and add it to the user
                     createFeedItem(user, channel, syndEntry);
                 }
-
-                // notify user that a new feed has been added
-                this.eventPublisher
-                        .publishEvent(new SseNotification(user.getUsername(), "New Feed item has been added"));
+                saved = true;
             }
 
         }
 
+        return saved;
     }
 
     /**
@@ -451,7 +432,6 @@ public class ChannelService {
         if (!categories.isEmpty())
             categoryRepository.saveAll(categories);
 
-
         // extract the main image of a feed item
         Optional<String> mainImage = MainImageResolver.resolveMainImage(syndEntry.getLink());
         if (mainImage.isPresent())
@@ -473,7 +453,12 @@ public class ChannelService {
     public void reloadChannel() {
         channelUserRepository.findAll().stream().forEach(cu -> {
             try {
-                saveFeedItems(cu.getUser(), cu.getChannel());
+                User user = cu.getUser();
+                boolean saved = saveFeedItems(user, cu.getChannel());
+                // notify user that a new feed has been added
+                if (saved)
+                    this.eventPublisher.publishEvent(new SseNotification(user.getUsername(), NEW_FEED_MESSAGE));
+
             } catch (UnknownHostException e) {
                 System.out.println("Your Internet connection may have been interrupted");
             } catch (IllegalArgumentException | FeedException | IOException e) {

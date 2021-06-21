@@ -7,7 +7,8 @@
                 <div class="submenu-link submenu-toggle">
                     <div class="text-count-arrow d-flex mb-1">
                         <a class="submenu-item-link submenu-item-text w-75"
-                            th:href="@{'/category/' + ${#strings.toLowerCase(category)}}" th:text="${category}"></a>
+                            th:href="@{'/category/' + ${#strings.toLowerCase(category)}}"
+                            th:text="${#strings.toUpperCase(category)}"></a>
                         <span class="count">15</span>
                         <!--//count-->
                         <span class="submenu-toggle" data-bs-toggle="collapse"
@@ -29,11 +30,11 @@
                 <div th:id="'sub-submenu' + ${i.index + 1}" class="collapse sub-submenu sub-submenu-1">
                     <ul class="sub-submenu-list list-unstyled">
                         <th:block th:each="channelCommand,j : ${channelCommands}">
-                            <th:block th:if="${channelCommand.category == category }">
+                            <th:block th:if="${channelCommand.categoryCommand.name == category }">
                                 <li th:id="'channel' + ${i.index + 1} + ${j.index + 1}" class="sub-submenu-item">
                                     <a class="submenu-link" href="#">
                                         <img alt="" class="channel-image"
-                                            src="//storage.googleapis.com/site-assets/UteRlEWI7AuSWrnzo0700y72vv9UnxO7o4qDzhto5xA_icon-16f89735391">
+                                            th:src="${(channelCommand.faviconLink != null && !#strings.isEmpty(channelCommand.faviconLink)) ? channelCommand.faviconLink : 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='}">
                                         <span class="category-item" th:text="${channelCommand.title}"></span>
                                         <span class="count" th:text="${channelCommand.numberOfUnreadFeeds}"></span>
                                         <!--//count-->

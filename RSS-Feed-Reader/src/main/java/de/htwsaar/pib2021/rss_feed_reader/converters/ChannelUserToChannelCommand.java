@@ -11,9 +11,9 @@ import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
 public class ChannelUserToChannelCommand implements Converter<ChannelUser, ChannelCommand> {
 
     private ChannelService channelService;
-    
-    public ChannelUserToChannelCommand(ChannelService channelService){
-        this.channelService = channelService;      
+
+    public ChannelUserToChannelCommand(ChannelService channelService) {
+        this.channelService = channelService;
     }
 
     @Nullable
@@ -25,10 +25,12 @@ public class ChannelUserToChannelCommand implements Converter<ChannelUser, Chann
 
         final ChannelCommand channelCommand = new ChannelCommand();
         channelCommand.setTitle(source.getChannel().getTitle());
+        channelCommand.setFaviconLink(source.getChannel().getFaviconLink());
         CategoryCommand categoryCommand = new CategoryCommand();
         categoryCommand.setName(source.getCategory().getName());
         channelCommand.setCategoryCommand(categoryCommand);
-        Long numberOfUnreadFeeds = channelService.findNumberOfUnreadFeedsOfChannel(source.getUser(), source.getChannel());
+        Long numberOfUnreadFeeds = channelService.findNumberOfUnreadFeedsOfChannel(source.getUser(),
+                source.getChannel());
         channelCommand.setNumberOfUnreadFeeds(numberOfUnreadFeeds);
 
         return channelCommand;

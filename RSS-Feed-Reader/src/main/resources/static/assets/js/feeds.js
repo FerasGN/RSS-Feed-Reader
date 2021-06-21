@@ -11,6 +11,8 @@ var CHANNEL_URL = "/channel/";
 var FEEDS_PAGE_URL = HOST + "feeds-page";
 var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
 
+var pageNumber = 1;
+
 /* ===== Ajax ====== */
 async function getAllFeeds(url, container) {
   let request = new XMLHttpRequest();
@@ -37,8 +39,6 @@ async function getAllFeeds(url, container) {
   request.send();
 }
 
-var pageNumber = 1;
-
 function getAllFeedsOfPage(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
@@ -51,6 +51,7 @@ function getAllFeedsOfPage(url, container) {
 
       let resp = this.response;
       if (resp !== "") container.innerHTML += request.responseText;
+      console.log("PageNumber = " + pageNumber);
     } else {
       // We reached our target server, but it returned an error
     }
@@ -348,7 +349,7 @@ function loadFeeds() {
 window.addEventListener("scroll", () => {
   if (
     window.scrollY + 0.5 + window.innerHeight >=
-    document.documentElement.scrollHeight - 5
+    document.documentElement.scrollHeight - 0.1
   ) {
     loadFeeds();
     pageNumber++;
@@ -361,8 +362,7 @@ eventSource.onmessage = function (e) {
   let notification = JSON.parse(e.data);
 
   // refresh the feed items list
-  if (notification.message === "New Feed item has been added") {
-    console.log(notification);
+  if (notification.message === "New Feed") {
     let selectedView = document.getElementById("view-select").value;
     let selectedPeriod = document.getElementById("period-select").value;
     let selectedOrder = document.getElementById("order-select").value;

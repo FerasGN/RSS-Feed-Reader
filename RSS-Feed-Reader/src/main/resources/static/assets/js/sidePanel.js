@@ -2,7 +2,7 @@
 /* ===== Variables ====== */
 var SEARCH_CHANNEL_URL = "/search-channel";
 var REFRESH_HEADER_URL = "/refresh-header";
-var FIND_CATEGORIES_URL = "/findCategories";
+var FIND_CATEGORIES_URL = "/find-categories";
 var SAVE_CHANNEL_URL = "/save-channel";
 
 /* ===== Responsive Sidepanel ====== */
@@ -266,11 +266,17 @@ function addSubscribeButton() {
   var warpChannelImage = document.getElementById("warp-channel-image");
   warpChannelImage.classList.add("warp-channel-image-no-after");
 
-  // bind save channel button to the channel url input
+  // bind save channel button and channel image to the channel url input
   var channelUrl = document.getElementById("channel-url");
   channelUrl.addEventListener("input", (e) => {
+    const channelInfo = document.getElementById("channel-info");
     const categoryContainer = document.getElementById("category-container");
     const saveChannelButton = document.getElementById("save-channel-button");
+    const warpChannelImage = document.getElementById("warp-channel-image");
+    const faviconLink = document.getElementById("favicon-link");
+
+    channelInfo.innerText = "";
+
     if (typeof saveChannelButton != "undefined" && saveChannelButton != null) {
       saveChannelButton.parentNode.removeChild(saveChannelButton);
     }
@@ -278,6 +284,9 @@ function addSubscribeButton() {
     if (typeof categoryContainer != "undefined" && categoryContainer != null) {
       categoryContainer.parentNode.removeChild(categoryContainer);
     }
+
+    warpChannelImage.classList.remove("warp-channel-image-no-after");
+    faviconLink.src = "//:0";
   });
 }
 
@@ -286,6 +295,15 @@ function hideModal() {
   var myModalEl = document.getElementById("subscribe-modal");
   var modal = bootstrap.Modal.getInstance(myModalEl);
   modal.hide();
+
+  const warpChannelImage = document.getElementById("warp-channel-image");
+  const faviconLink = document.getElementById("favicon-link");
+  warpChannelImage.classList.remove("warp-channel-image-no-after");
+  faviconLink.src = "//:0";
+
+  const dismissModal = document.getElementById("dismiss-modal");
+  dismissModal.setAttribute("data-bs-dismiss", "modal");
+  dismissModal.href = "#";
 
   const channelInfo = document.getElementById("channel-info");
   const channelUrl = document.getElementById("channel-url");
