@@ -135,9 +135,9 @@ public class SortingFeedsService {
         List<FeedItem> feedItems = Collections.emptyList();
 
         if (categoryName != null) {
-            feedItems = findFilteredAndSortedByCategoryNameFeedItems(user, categoryName, startDate, order, pageNumber);
+            feedItems = findFilteredAndOrderedByCategoryNameFeedItems(user, categoryName, startDate, order, pageNumber);
         } else {
-            feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, startDate, order, pageNumber);
+            feedItemsUsers = findFilteredAndOrderedFeedItemsUsers(user, startDate, order, pageNumber);
             feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem()).collect(Collectors.toList());
         }
 
@@ -152,15 +152,15 @@ public class SortingFeedsService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    private List<FeedItem> findFilteredAndSortedByCategoryNameFeedItems(User user, String categoryName,
+    private List<FeedItem> findFilteredAndOrderedByCategoryNameFeedItems(User user, String categoryName,
             LocalDate startDate, String order, Integer pageNumber) {
         List<FeedItemUser> feedItemsUsers = Collections.emptyList();
         List<FeedItem> feedItems = Collections.emptyList();
 
         if (ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(categoryName))
-            feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, ORDER_BY_ALL_CATEGORIES, startDate, order);
+            feedItemsUsers = findFilteredAndOrderedFeedItemsUsers(user, ORDER_BY_ALL_CATEGORIES, startDate, order);
         else
-            feedItemsUsers = findFilteredAndSortedFeedItemsUsers(user, categoryName, startDate, order);
+            feedItemsUsers = findFilteredAndOrderedFeedItemsUsers(user, categoryName, startDate, order);
         feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem()).collect(Collectors.toList());
 
         double lastPage = Math.ceil(feedItems.size() / (double) PAGE_SIZE);
@@ -188,7 +188,7 @@ public class SortingFeedsService {
      * @param pageNumber
      * @return List<FeedItemUser>
      */
-    private List<FeedItemUser> findFilteredAndSortedFeedItemsUsers(User user, LocalDate startDate, String order,
+    private List<FeedItemUser> findFilteredAndOrderedFeedItemsUsers(User user, LocalDate startDate, String order,
             Integer pageNumber) {
 
         List<FeedItemUser> feedItemsUsers = Collections.emptyList();
@@ -255,10 +255,10 @@ public class SortingFeedsService {
      * @param pageNumber
      * @return List<FeedItemUser>
      */
-    private List<FeedItemUser> findFilteredAndSortedFeedItemsUsers(User user, String categoryName, LocalDate startDate,
+    private List<FeedItemUser> findFilteredAndOrderedFeedItemsUsers(User user, String categoryName, LocalDate startDate,
             String order) {
 
-        List<FeedItemUser> feedItemsUser = findSortedByCategoryNameAndPublishLocalDateFeedItemUsers(user, categoryName,
+        List<FeedItemUser> feedItemsUser = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, categoryName,
                 startDate);
 
         switch (order) {
@@ -316,7 +316,7 @@ public class SortingFeedsService {
      * @param startDate
      * @return List<FeedItemUser>
      */
-    private List<FeedItemUser> findSortedByCategoryNameAndPublishLocalDateFeedItemUsers(User user, String categoryName,
+    private List<FeedItemUser> findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(User user, String categoryName,
             LocalDate startDate) {
         List<ChannelUser> channelsUser;
         if (ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(categoryName))
