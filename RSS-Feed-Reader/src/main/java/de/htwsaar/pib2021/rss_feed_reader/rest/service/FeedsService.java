@@ -1,9 +1,13 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
+import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
+import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemToFeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.sorting.SortingFeedsService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,30 +22,16 @@ public class FeedsService {
     private FeedItemRepository feedItemRepository;
     private FeedItemUserRepository feedItemUserRepository;
     private SortingFeedsService sortingFeedsService;
+    private ChannelService channelService;
 
     public FeedsService(ChannelUserRepository channelUserRepository, FeedItemRepository feedItemRepository,
-            FeedItemUserRepository feedItemUserRepository, SortingFeedsService sortingFeedsService) {
+            FeedItemUserRepository feedItemUserRepository, SortingFeedsService sortingFeedsService,
+            ChannelService channelService) {
         this.channelUserRepository = channelUserRepository;
         this.feedItemRepository = feedItemRepository;
         this.feedItemUserRepository = feedItemUserRepository;
         this.sortingFeedsService = sortingFeedsService;
-    }
-
-    // Error messages
-    private static final String NO_FEED_ITEM_AVAILABLE = "No feed item found.";
-
-    /**
-     * @param user
-     * @return List<FeedItem>
-     */
-    public List<FeedItem> findAllFeeds(User user) {
-        List<FeedItemUser> list = feedItemUserRepository.findAllByUser(user);
-        List<FeedItem> list2 = new ArrayList<>();
-
-        for (FeedItemUser feedItemUser : list) {
-            list2.add(feedItemUser.getFeedItem());
-        }
-        return list2;
+        this.channelService = channelService;
     }
 
     /**
@@ -143,6 +133,26 @@ public class FeedsService {
         }
     }
 
+    public List<FeedItemCommand> findAllFeedItemsCommands(User user, String period, String order, int pageNumber) {
+
+        List<FeedItem> feedItems = Collections.emptyList();
+
+        feedItems = findAllFeedItems(user, period, order, pageNumber);
+
+        List<FeedItemCommand> feedItemCommands = new ArrayList<>();
+
+        feedItems.stream().forEach(f -> {
+            // convert feedItem to feedItemCommand
+            FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
+            Category category = channelService.findChannelCategory(user, f.getChannel());
+            feedItemToFeedItemCommand.setUser(user);
+            feedItemToFeedItemCommand.setChannelCategory(category.getName());
+            feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
+        });
+
+        return feedItemCommands;
+    }
+
     /**
      * @param user
      * @param period
@@ -150,14 +160,62 @@ public class FeedsService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findAllFeeds(User user, String period, String order, int pageNumber) {
+    public List<FeedItem> findAllFeedItems(User user, String period, String order, int pageNumber) {
         List<FeedItem> feedItems = Collections.emptyList();
-        feedItems = sortingFeedsService.findFeedItemsByPeriodAndOrderAndPageNumber(user, period, order, pageNumber);
+        feedItems = sortingFeedsService.findAllFeedItemsByPeriodAndOrderAndPageNumber(user, period, order, pageNumber);
 
         return feedItems;
     }
 
-    int i = 0;
+    public List<FeedItemCommand> findReadLaterFeedItemsCommands(User user, String period, String order,
+            int pageNumber) {
+
+        List<FeedItem> feedItems = Collections.emptyList();
+
+        feedItems = findReadLaterFeedItems(user, period, order, pageNumber);
+
+        List<FeedItemCommand> feedItemCommands = new ArrayList<>();
+
+        feedItems.stream().forEach(f -> {
+            // convert feedItem to feedItemCommand
+            FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
+            Category category = channelService.findChannelCategory(user, f.getChannel());
+            feedItemToFeedItemCommand.setUser(user);
+            feedItemToFeedItemCommand.setChannelCategory(category.getName());
+            feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
+        });
+
+        return feedItemCommands;
+    }
+
+    public List<FeedItem> findReadLaterFeedItems(User user, String period, String order, int pageNumber) {
+        List<FeedItem> feedItems = Collections.emptyList();
+        feedItems = sortingFeedsService.findReadLaterFeedItemsByPeriodAndOrderAndPageNumber(user, period, order,
+                pageNumber);
+
+        return feedItems;
+    }
+
+    public List<FeedItemCommand> findCategoryFeedItemCommands(User user, String categoryName, String period,
+            String order, int pageNumber) {
+
+        List<FeedItem> feedItems = Collections.emptyList();
+
+        feedItems = findCategoryFeedItems(user, categoryName, period, order, pageNumber);
+
+        List<FeedItemCommand> feedItemCommands = new ArrayList<>();
+
+        feedItems.stream().forEach(f -> {
+            // convert feedItem to feedItemCommand
+            FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
+            Category category = channelService.findChannelCategory(user, f.getChannel());
+            feedItemToFeedItemCommand.setUser(user);
+            feedItemToFeedItemCommand.setChannelCategory(category.getName());
+            feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
+        });
+
+        return feedItemCommands;
+    }
 
     /**
      * @param user
@@ -167,10 +225,10 @@ public class FeedsService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findAllFeedsByChannelCategory(User user, String categoryName, String period, String order,
+    public List<FeedItem> findCategoryFeedItems(User user, String categoryName, String period, String order,
             int pageNumber) {
 
-        List<FeedItem> feedItems = sortingFeedsService.findFeedItemsByCategoryAndPeriodAndOrderAndPageNumber(user,
+        List<FeedItem> feedItems = sortingFeedsService.findCategoryFeedItemsByPeriodAndOrderAndPageNumber(user,
                 categoryName, period, order, pageNumber);
 
         return feedItems;

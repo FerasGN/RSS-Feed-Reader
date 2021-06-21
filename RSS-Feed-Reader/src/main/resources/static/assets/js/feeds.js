@@ -10,6 +10,8 @@ var CATEGORY_URL = "/category/";
 var CHANNEL_URL = "/channel/";
 var FEEDS_PAGE_URL = HOST + "feeds-page";
 var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
+var currentFeedsUrl =
+  "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
 
 var pageNumber = 1;
 
@@ -39,7 +41,7 @@ async function getAllFeeds(url, container) {
   request.send();
 }
 
-function getAllFeedsOfPage(url, container) {
+function getFeedsPage(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
@@ -184,8 +186,8 @@ function handleOrderAndView(url, slectedOrder, selectedView, feedsContainer) {
     handleView(url + "&orderBy=unread", selectedView, feedsContainer);
   else if (slectedOrder == "channel")
     handleView(url + "&orderBy=channel", selectedView, feedsContainer);
-  else if (slectedOrder == "category")
-    handleView(url + "&orderBy=category", selectedView, feedsContainer);
+  else if (slectedOrder == "all-categories")
+    handleView(url + "&orderBy=all-categories", selectedView, feedsContainer);
 }
 
 function handleView(url, selectedView, feedsContainer) {
@@ -283,9 +285,12 @@ function loadFeeds() {
   if (document.body.contains(cardsContainer)) {
     if (window.location.href.indexOf(CATEGORY_URL) > -1) {
       let category = window.location.pathname.split("/").pop();
-      getAllFeedsOfPage(
+      console.log("current feeds url =" + currentFeedsUrl);
+      getFeedsPage(
         FEEDS_PAGE_URL +
-          "?category=" +
+          "?currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&category=" +
           category +
           "&view=" +
           selectedView +
@@ -298,9 +303,12 @@ function loadFeeds() {
         cardsContainer
       );
     } else {
-      getAllFeedsOfPage(
+      console.log("current feeds url =" + currentFeedsUrl);
+      getFeedsPage(
         FEEDS_PAGE_URL +
-          "?view=" +
+          "?currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&view=" +
           selectedView +
           "&period=" +
           selectedPeriod +
@@ -314,9 +322,11 @@ function loadFeeds() {
   } else if (document.body.contains(listItemsContainer)) {
     if (window.location.href.indexOf(CATEGORY_URL) > -1) {
       let category = window.location.pathname.split("/").pop();
-      getAllFeedsOfPage(
+      getFeedsPage(
         FEEDS_PAGE_URL +
-          "?category=" +
+          "?currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&category=" +
           category +
           "&view=" +
           selectedView +
@@ -329,9 +339,11 @@ function loadFeeds() {
         listItemsContainer
       );
     } else {
-      getAllFeedsOfPage(
+      getFeedsPage(
         FEEDS_PAGE_URL +
-          "?view=" +
+          "?currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&view=" +
           selectedView +
           "&period=" +
           selectedPeriod +

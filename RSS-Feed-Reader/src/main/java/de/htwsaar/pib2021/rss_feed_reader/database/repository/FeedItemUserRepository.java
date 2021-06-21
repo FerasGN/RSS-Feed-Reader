@@ -34,6 +34,31 @@ public interface FeedItemUserRepository extends JpaRepository<FeedItemUser, Feed
 
         Page<FeedItemUser> findByUserOrderByFeedItem_PublishDateAsc(User user, Pageable pageable);
 
+        /********* Read Later ************/
+        Page<FeedItemUser> findByUserAndReadLaterOrderByFeedItem_PublishDateDesc(User user, Boolean readLater,
+                        Pageable pageable);
+
+        Page<FeedItemUser> findByUserAndReadLaterOrderByFeedItem_PublishDateAsc(User user, Boolean readLater,
+                        Pageable pageable);
+
+        Page<FeedItemUser> findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
+                        User user, Boolean readLater, LocalDate publishLocalDate, Pageable pageable);
+
+        Page<FeedItemUser> findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateAsc(
+                        User user, Boolean readLater, LocalDate publishLocalDate, Pageable pageable);
+
+        Page<FeedItemUser> findByUserAndReadLaterOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(User user,
+                        Boolean readLater, Pageable pageable);
+
+        Page<FeedItemUser> findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
+                        User user, Boolean readLater, LocalDate publishLocalDate, Pageable pageable);
+
+        List<FeedItemUser> findByUserAndReadLaterAndFeedItem_Channel(User user, Boolean readLater, Channel channel);
+
+        List<FeedItemUser> findByUserAndReadLaterAndFeedItem_ChannelAndFeedItem_publishLocalDateGreaterThanEqual(
+                        User user, Boolean readLater, Channel channel, LocalDate publishLocalDate);
+
+        /**  */
         Page<FeedItemUser> findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
                         User user, LocalDate publishLocalDate, Pageable pageable);
 
