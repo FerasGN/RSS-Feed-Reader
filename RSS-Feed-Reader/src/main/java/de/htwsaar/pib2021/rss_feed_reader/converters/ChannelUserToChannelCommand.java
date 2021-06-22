@@ -26,6 +26,7 @@ public class ChannelUserToChannelCommand implements Converter<ChannelUser, Chann
         final ChannelCommand channelCommand = new ChannelCommand();
         channelCommand.setTitle(source.getChannel().getTitle());
         channelCommand.setFaviconLink(source.getChannel().getFaviconLink());
+        channelCommand.setChannelUrl(source.getChannel().getChannelUrl());
         CategoryCommand categoryCommand = new CategoryCommand();
         categoryCommand.setName(source.getCategory().getName());
         channelCommand.setCategoryCommand(categoryCommand);

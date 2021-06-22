@@ -67,7 +67,7 @@ public class ChannelController {
         }
 
         ChannelCommand channelCommand = new ChannelCommand();
-        channelCommand.setUrl(url);
+        channelCommand.setChannelUrl(url);
 
         mav.addObject("channelCommand", channelCommand);
         mav.setViewName("layouts/subscribe-modal :: subscribe-modal");

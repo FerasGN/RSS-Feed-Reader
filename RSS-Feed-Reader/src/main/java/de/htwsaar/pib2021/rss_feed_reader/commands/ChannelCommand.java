@@ -7,7 +7,7 @@ public class ChannelCommand {
 
     private String title;
     private CategoryCommand categoryCommand = new CategoryCommand();
-    private String url;
+    private String channelUrl;
     private String faviconLink;
     private Long numberOfUnreadFeeds;
 }

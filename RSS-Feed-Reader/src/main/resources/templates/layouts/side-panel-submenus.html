@@ -32,7 +32,7 @@
                         <th:block th:each="channelCommand,j : ${channelCommands}">
                             <th:block th:if="${channelCommand.categoryCommand.name == category }">
                                 <li th:id="'channel' + ${i.index + 1} + ${j.index + 1}" class="sub-submenu-item">
-                                    <a class="submenu-link" href="#">
+                                    <a class="submenu-link" th:href="@{'/channel/' + ${channelCommand.title}}">
                                         <img alt="" class="channel-image"
                                             th:src="${(channelCommand.faviconLink != null && !#strings.isEmpty(channelCommand.faviconLink)) ? channelCommand.faviconLink : 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='}">
                                         <span class="category-item" th:text="${channelCommand.title}"></span>

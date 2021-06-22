@@ -3,6 +3,8 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 import static de.htwsaar.pib2021.rss_feed_reader.constants.Constants.*;
 import static de.htwsaar.pib2021.rss_feed_reader.constants.Endpoints.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,10 +67,10 @@ public class FeedsController {
             String filteredAndOrderedFeeds = "";
             if (VIEW_CARDS.equalsIgnoreCase(view)) {
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model,
-                        ALL_FEEDS_URL, null, period, order, 0);
+                        ALL_FEEDS_URL, null, null, period, order, 0);
             } else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model, ALL_FEEDS_URL,
-                        null, period, order, 0);
+                        null, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
@@ -90,6 +92,7 @@ public class FeedsController {
     @GetMapping("/feeds-page")
     public String getFeedPage(@RequestParam(value = "currentFeedsUrl", required = false) String currentFeedsUrl,
             @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "channelTitle", required = false) String channelTitle,
             @RequestParam(value = "view", required = false) String view,
             @RequestParam(value = "period", required = false) String period,
             @RequestParam(value = "orderBy", required = false) String order,
@@ -99,32 +102,29 @@ public class FeedsController {
         String filteredAndOrderedFeeds = "";
 
         if (existViewAndPeriodAbdOrderParams(view, period, order)) { // if params exist use them
-            filteredAndOrderedFeeds = getFeedPage(currentFeedsUrl, category, view, period, order, pageNumber, model,
-                    securityUser.getUser());
+            filteredAndOrderedFeeds = getFeedPage(currentFeedsUrl, category, channelTitle, view, period, order,
+                    pageNumber, model, securityUser.getUser());
 
         } else { // use default params
-            filteredAndOrderedFeeds = getFeedPage(currentFeedsUrl, null, VIEW_CARDS, PERIOD_ALL, ORDER_BY_LATEST,
+            filteredAndOrderedFeeds = getFeedPage(currentFeedsUrl, null, null, VIEW_CARDS, PERIOD_ALL, ORDER_BY_LATEST,
                     pageNumber, model, securityUser.getUser());
         }
 
         return filteredAndOrderedFeeds;
     }
 
-    private String getFeedPage(String currentFeedsUrl, String category, String view, String period, String order,
-            int pageNumber, Model model, User user) {
+    private String getFeedPage(String currentFeedsUrl, String category, String channelTitle, String view, String period,
+            String order, int pageNumber, Model model, User user) {
+
         String filteredAndOrderedFeeds = "";
-        if (VIEW_CARDS.equalsIgnoreCase(view) && category == null) {
-            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(user, model, currentFeedsUrl, null, period,
-                    order, pageNumber);
-        } else if (VIEW_CARDS.equalsIgnoreCase(view) && category != null)
-            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(user, model, currentFeedsUrl, category, period,
-                    order, pageNumber);
-        else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view) && category == null)
-            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(user, model, currentFeedsUrl, null, period,
-                    order, pageNumber);
-        else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view) && category != null)
-            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(user, model, currentFeedsUrl, category, period,
-                    order, pageNumber);
+        if (VIEW_CARDS.equalsIgnoreCase(view))
+            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(user, model, currentFeedsUrl, category,
+                    channelTitle, period, order, pageNumber);
+
+        else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
+            filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(user, model, currentFeedsUrl, category,
+                    channelTitle, period, order, pageNumber);
+
         return filteredAndOrderedFeeds;
     }
 
@@ -140,10 +140,10 @@ public class FeedsController {
             String filteredAndOrderedFeeds = "";
             if (VIEW_CARDS.equalsIgnoreCase(view))
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model,
-                        READ_LATER_URL, ORDER_BY_ALL_CATEGORIES, period, order, 0);
+                        READ_LATER_URL, null, null, period, order, 0);
             else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model,
-                        READ_LATER_URL, ORDER_BY_ALL_CATEGORIES, period, order, 0);
+                        READ_LATER_URL, null, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
@@ -154,36 +154,31 @@ public class FeedsController {
         return "read-later";
     }
 
-    // @GetMapping("/liked-feeds")
-    // public String showLikedFeeds(@RequestParam(value = "view", required = false)
-    // String view,
-    // @RequestParam(value = "period", required = false) String period,
-    // @RequestParam(value = "orderBy", required = false) String order, Model model,
-    // @AuthenticationPrincipal SecurityUser securityUser) {
-    // // add categories, channels and the number of unread feeds
-    // model = initSidePanelFeedsInfo(model, securityUser);
+    @GetMapping(LIKED_FEEDS_URL)
+    public String showLikedFeeds(@RequestParam(value = "view", required = false) String view,
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "orderBy", required = false) String order, Model model,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+        // add categories, channels and the number of unread feeds
+        model = initSidePanelFeedsInfo(model, securityUser);
 
-    // if (existViewAndPeriodAbdOrderParams(view, period, order)) {
-    // String filteredAndOrderedFeeds = "";
-    // if ("cards".equalsIgnoreCase(view))
-    // filteredAndOrderedFeeds =
-    // getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model,
-    // ORDER_BY_ALL_CATEGORIES, period, order, 0);
-    // else if ("title-only".equalsIgnoreCase(view))
-    // filteredAndOrderedFeeds =
-    // getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model,
-    // ORDER_BY_ALL_CATEGORIES, period, order, 0);
-    // return filteredAndOrderedFeeds;
-    // } else {
-    // List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-    // feedItemCommands =
-    // getFeedItemCommandsFilteredAndOrdered(securityUser.getUser(), null, "all",
-    // "latest", 0);
-    // model.addAttribute("view", "cards");
-    // model.addAttribute("feeds", feedItemCommands);
-    // }
-    // return "liked-feeds";
-    // }
+        if (existViewAndPeriodAbdOrderParams(view, period, order)) {
+            String filteredAndOrderedFeeds = "";
+            if (VIEW_CARDS.equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model,
+                        LIKED_FEEDS_URL, null, null, period, order, 0);
+            else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model,
+                        LIKED_FEEDS_URL, null, null, period, order, 0);
+            return filteredAndOrderedFeeds;
+        } else {
+            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
+            feedItemCommands = findLikedFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
+            model.addAttribute("view", "cards");
+            model.addAttribute("feeds", feedItemCommands);
+        }
+        return "read-later";
+    }
 
     /**
      * @return List<FeedItem>
@@ -202,10 +197,10 @@ public class FeedsController {
             String filteredAndOrderedFeeds = "";
             if (VIEW_CARDS.equalsIgnoreCase(view)) {
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model, CATEGORY_URL,
-                        categoryName, period, order, 0);
+                        categoryName, null, period, order, 0);
             } else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
                 filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model, CATEGORY_URL,
-                        categoryName, period, order, 0);
+                        categoryName, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
             List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
@@ -220,27 +215,44 @@ public class FeedsController {
         return "all-feeds";
     }
 
-    // @GetMapping("/channel/{channelName}")
-    // public String showAllFeedsofAChannel(@PathVariable(value = "channelName")
-    // String channelName,
-    // @RequestParam(value = "view", required = false) String view,
-    // @RequestParam(value = "period", required = false) String period,
-    // @RequestParam(value = "orderBy", required = false) String order, Model model,
-    // @AuthenticationPrincipal SecurityUser securityUser) {
-    // List<FeedItem> feeds = new ArrayList<FeedItem>();
-    // if (channelName != null && !channelName.trim().isEmpty()) {
-    // if (order != null && !order.trim().isEmpty()) {
-    // feeds = getAllFeedsOrderedBy(order);
-    // model.addAttribute("feeds", feeds);
-    // return "layouts/feeds-cards :: feeds-cards";
-    // } else {
-    // feeds = getAllFeedsOrderedBy("latest");
-    // model.addAttribute("feeds", feeds);
-    // }
-    // }
+    @GetMapping(CHANNEL_URL + "/{channelTitle}")
+    public String showAllFeedsofAChannel(@PathVariable(value = "channelTitle") String channelTitle,
+            @RequestParam(value = "view", required = false) String view,
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "orderBy", required = false) String order, Model model,
+            @AuthenticationPrincipal SecurityUser securityUser) {
 
-    // return "all-feeds";
-    // }
+        // add categories, channels and the number of unread feeds
+        model = initSidePanelFeedsInfo(model, securityUser);
+
+        // decode channel title because it is extracted from a url
+        try {
+            channelTitle = URLDecoder.decode(channelTitle, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        if (existViewAndPeriodAbdOrderParams(view, period, order)) {
+            String filteredAndOrderedFeeds = "";
+            if (VIEW_CARDS.equalsIgnoreCase(view)) {
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model, CHANNEL_URL,
+                        null, channelTitle, period, order, 0);
+            } else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model, CHANNEL_URL,
+                        null, channelTitle, period, order, 0);
+            return filteredAndOrderedFeeds;
+        } else {
+            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
+            feedItemCommands = findChannelFeedItemCommands(securityUser.getUser(), channelTitle, PERIOD_ALL,
+                    ORDER_BY_LATEST, 0);
+            model.addAttribute("view", "cards");
+            model.addAttribute("feeds", feedItemCommands);
+            model.addAttribute("channelTitle", channelTitle);
+            model.addAttribute("url", "/channel");
+
+        }
+        return "all-feeds";
+    }
 
     private boolean existViewAndPeriodAbdOrderParams(String view, String period, String order) {
         return (view != null && !view.trim().isEmpty()) && (order != null && !order.trim().isEmpty())
@@ -268,10 +280,10 @@ public class FeedsController {
      * @return String
      */
     public String getFilteredAndOrderedFeedsAsCards(User user, Model model, String currentFeedsUrl, String categoryName,
-            String period, String order, int pageNumber) {
+            String channelTitle, String period, String order, int pageNumber) {
 
-        List<FeedItemCommand> feedItemCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName, period, order,
-                pageNumber);
+        List<FeedItemCommand> feedItemCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName, channelTitle,
+                period, order, pageNumber);
 
         model.addAttribute("view", "cards");
         model.addAttribute("feeds", feedItemCommands);
@@ -279,10 +291,10 @@ public class FeedsController {
     }
 
     public String getFilteredAndOrderedFeedsAsList(User user, Model model, String currentFeedsUrl, String categoryName,
-            String period, String order, int pageNumber) {
+            String channelTitle, String period, String order, int pageNumber) {
 
-        List<FeedItemCommand> feedItemCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName, period, order,
-                pageNumber);
+        List<FeedItemCommand> feedItemCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName, channelTitle,
+                period, order, pageNumber);
 
         model.addAttribute("view", "list");
         model.addAttribute("feeds", feedItemCommands);
@@ -290,7 +302,7 @@ public class FeedsController {
     }
 
     private List<FeedItemCommand> getFeedItemCommands(User user, String currentFeedsUrl, String categoryName,
-            String period, String order, int pageNumber) {
+            String channelTitle, String period, String order, int pageNumber) {
         List<FeedItemCommand> feeds = Collections.emptyList();
 
         if (ALL_FEEDS_URL.equalsIgnoreCase(currentFeedsUrl))
@@ -299,8 +311,14 @@ public class FeedsController {
         else if (READ_LATER_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findReadLaterFeedItemCommands(user, period, order, pageNumber);
 
+        else if (LIKED_FEEDS_URL.equalsIgnoreCase(currentFeedsUrl))
+            feeds = findLikedFeedItemCommands(user, period, order, pageNumber);
+
         else if (CATEGORY_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findCategoryFeedItemCommands(user, categoryName, period, order, pageNumber);
+
+        else if (CHANNEL_URL.equalsIgnoreCase(currentFeedsUrl))
+            feeds = findChannelFeedItemCommands(user, channelTitle, period, order, pageNumber);
 
         return feeds;
     }
@@ -318,9 +336,24 @@ public class FeedsController {
         return feedItemCommands;
     }
 
+    private List<FeedItemCommand> findLikedFeedItemCommands(User user, String period, String order, int pageNumber) {
+        List<FeedItemCommand> feedItemCommands = feedsService.findLikedFeedItemsCommands(user, period, order,
+                pageNumber);
+
+        return feedItemCommands;
+    }
+
     private List<FeedItemCommand> findCategoryFeedItemCommands(User user, String categoryName, String period,
             String order, int pageNumber) {
         List<FeedItemCommand> feedItemCommands = feedsService.findCategoryFeedItemCommands(user, categoryName, period,
+                order, pageNumber);
+
+        return feedItemCommands;
+    }
+
+    private List<FeedItemCommand> findChannelFeedItemCommands(User user, String channelTitle, String period,
+            String order, int pageNumber) {
+        List<FeedItemCommand> feedItemCommands = feedsService.findChannelFeedItemCommands(user, channelTitle, period,
                 order, pageNumber);
 
         return feedItemCommands;

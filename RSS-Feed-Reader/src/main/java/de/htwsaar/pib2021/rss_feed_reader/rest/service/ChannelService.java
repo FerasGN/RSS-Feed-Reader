@@ -215,6 +215,59 @@ public class ChannelService {
     }
 
     /**
+     *
+     * @param user
+     * @param url
+     * @param categoryName
+     * @return
+     * @throws ChannelAlreadyExistException
+     * @throws NotValidURLException
+     * @throws IOException
+     * @throws Exception
+     */
+    public Optional<Channel> subscribeToChannel(User user, String url, String categoryName)
+            throws ChannelAlreadyExistException, NotValidURLException, IOException, Exception {
+
+        // Add Channel to user
+        try {
+            URL feedSource = new URL(url);
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed feed = input.build(new XmlReader(feedSource));
+
+            Optional<Channel> channel = createAChannel(user, feed, url);
+            ChannelUser channelUser = new ChannelUser();
+            channelUser.setChannel(channel.get());
+            channelUser.setUser(user);
+            channelUser.setFavorite(false);
+
+            // Check if category is already available in database
+            Optional<Category> category = categoryRepository.findByName(categoryName.trim().toLowerCase());
+            if (category.isPresent()) {
+                channelUser.setCategory(category.get());
+            } else {
+                Category newCategory = new Category();
+                newCategory.setName(categoryName.trim().toLowerCase());
+                categoryRepository.save(newCategory);
+                channelUser.setCategory(newCategory);
+            }
+
+            channelUser = channelUserRepository.save(channelUser);
+
+            return Optional.of(channelUser.getChannel());
+
+        } catch (MalformedURLException e) {
+            throw new NotValidURLException(NOT_VALID_URL);
+        } catch (FeedException e) {
+            throw new FeedException(FEED_PARSING_ERROR);
+        } catch (IOException e) {
+            throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
+        } catch (Exception e) {
+            throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
+        }
+
+    }
+
+    /**
      * @param url
      * @return Optional<SyndFeed>
      */
@@ -288,59 +341,6 @@ public class ChannelService {
         }
 
         return Optional.of(channel);
-    }
-
-    /**
-     *
-     * @param user
-     * @param url
-     * @param categoryName
-     * @return
-     * @throws ChannelAlreadyExistException
-     * @throws NotValidURLException
-     * @throws IOException
-     * @throws Exception
-     */
-    public Optional<Channel> subscribeToChannel(User user, String url, String categoryName)
-            throws ChannelAlreadyExistException, NotValidURLException, IOException, Exception {
-
-        // Add Channel to user
-        try {
-            URL feedSource = new URL(url);
-            SyndFeedInput input = new SyndFeedInput();
-            SyndFeed feed = input.build(new XmlReader(feedSource));
-
-            Optional<Channel> channel = createAChannel(user, feed, url);
-            ChannelUser channelUser = new ChannelUser();
-            channelUser.setChannel(channel.get());
-            channelUser.setUser(user);
-            channelUser.setFavorite(false);
-
-            // Check if category is already available in database
-            Optional<Category> category = categoryRepository.findByName(categoryName.trim().toLowerCase());
-            if (category.isPresent()) {
-                channelUser.setCategory(category.get());
-            } else {
-                Category newCategory = new Category();
-                newCategory.setName(categoryName.trim().toLowerCase());
-                categoryRepository.save(newCategory);
-                channelUser.setCategory(newCategory);
-            }
-
-            channelUser = channelUserRepository.save(channelUser);
-
-            return Optional.of(channelUser.getChannel());
-
-        } catch (MalformedURLException e) {
-            throw new NotValidURLException(NOT_VALID_URL);
-        } catch (FeedException e) {
-            throw new FeedException(FEED_PARSING_ERROR);
-        } catch (IOException e) {
-            throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
-        } catch (Exception e) {
-            throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
-        }
-
     }
 
     /**

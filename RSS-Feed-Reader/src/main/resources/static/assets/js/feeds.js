@@ -127,12 +127,12 @@ function handleViewAndPerieodAndOrderSelect(
       feedsContainer
     );
   } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
-    const categoryPathVariable = window.location.pathname.split("/").pop();
+    const channelPathVariable = window.location.pathname.split("/").pop();
     handleViewAndPeriodAndOrder(
-      CHANNEL_URL + categoryPathVariable,
+      CHANNEL_URL + channelPathVariable,
       selectedView,
       selectedPeriod,
-      selectedOrderm,
+      selectedOrder,
       feedsContainer
     );
   }
@@ -198,7 +198,6 @@ function handleView(url, selectedView, feedsContainer) {
 
 function handleSelect(selectedView, selectedPeriod, selectedOrder) {
   pageNumber = 1;
-  console.log("Page number in handleSelect= " + pageNumber);
   // delete list contianer, if it exists
   let listItemsContainer = document.getElementById("list-items-container");
   let cardsContainer = document.getElementById("cards-container");
@@ -285,7 +284,6 @@ function loadFeeds() {
   if (document.body.contains(cardsContainer)) {
     if (window.location.href.indexOf(CATEGORY_URL) > -1) {
       let category = window.location.pathname.split("/").pop();
-      console.log("current feeds url =" + currentFeedsUrl);
       getFeedsPage(
         FEEDS_PAGE_URL +
           "?currentFeedsUrl=" +
@@ -302,8 +300,25 @@ function loadFeeds() {
           pageNumber,
         cardsContainer
       );
+    } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+      let channelTitle = decodeURI(window.location.pathname.split("/").pop());
+      getFeedsPage(
+        FEEDS_PAGE_URL +
+          "?currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&channelTitle=" +
+          channelTitle +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        cardsContainer
+      );
     } else {
-      console.log("current feeds url =" + currentFeedsUrl);
       getFeedsPage(
         FEEDS_PAGE_URL +
           "?currentFeedsUrl=" +
@@ -328,6 +343,24 @@ function loadFeeds() {
           currentFeedsUrl +
           "&category=" +
           category +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        listItemsContainer
+      );
+    } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+      let channelTitle = decodeURI(window.location.pathname.split("/").pop());
+      getFeedsPage(
+        FEEDS_PAGE_URL +
+          "?currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&channelTitle=" +
+          channelTitle +
           "&view=" +
           selectedView +
           "&period=" +

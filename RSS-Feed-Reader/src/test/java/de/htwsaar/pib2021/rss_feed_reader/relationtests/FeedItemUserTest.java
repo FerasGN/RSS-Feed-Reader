@@ -9,7 +9,7 @@ import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.FeedsService;
-import de.htwsaar.pib2021.rss_feed_reader.rest.service.sorting.SortingFeedsService;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering.SortingAndFilteringFeedsService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

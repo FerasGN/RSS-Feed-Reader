@@ -1,4 +1,4 @@
-package de.htwsaar.pib2021.rss_feed_reader.rest.service.sorting;
+package de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering;
 
 import static de.htwsaar.pib2021.rss_feed_reader.constants.Constants.*;
 
@@ -17,19 +17,22 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
+import de.htwsaar.pib2021.rss_feed_reader.database.repository.AllFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
 
 @Service
-public class ReadLaterFeedsSortService {
+public class AllFeedsSortAndFilterService {
 
     private ChannelUserRepository channelUserRepository;
-    private FeedItemUserRepository feedItemUserRepository;
+    private AllFeedItemUserRepository allFeedItemUserRepository;
+    private CustomPagination customPagination;
 
-    public ReadLaterFeedsSortService(ChannelUserRepository channelUserRepository,
-            FeedItemUserRepository feedItemUserRepository) {
+    public AllFeedsSortAndFilterService(ChannelUserRepository channelUserRepository,
+            AllFeedItemUserRepository allFeedItemUserRepository, CustomPagination customPagination) {
         this.channelUserRepository = channelUserRepository;
-        this.feedItemUserRepository = feedItemUserRepository;
+        this.allFeedItemUserRepository = allFeedItemUserRepository;
+        this.customPagination = customPagination;
     }
 
     /**
@@ -39,37 +42,34 @@ public class ReadLaterFeedsSortService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findReadLaterFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
-            int pageNumber) {
+    public List<FeedItem> findFeedItems(User user, String period, String order, int pageNumber) {
 
         List<FeedItem> feedItems = Collections.emptyList();
 
         switch (period) {
             case PERIOD_ALL:
                 // set start date to null when all feeds are needed
-                feedItems = findReadLaterFeedItemsByStartDateAndOrderAndPageNumber(user, null, order, pageNumber);
+                feedItems = findFilteredAndOrderedFeedItems(user, null, order, pageNumber);
                 break;
 
             case PERIOD_TODAY:
                 LocalDate today = LocalDate.now();
-                feedItems = findReadLaterFeedItemsByStartDateAndOrderAndPageNumber(user, today, order, pageNumber);
+                feedItems = findFilteredAndOrderedFeedItems(user, today, order, pageNumber);
                 break;
 
             case PERIOD_LAST_SEVEN_DAYS:
                 LocalDate dateBeforeSevenDays = LocalDate.now().minusDays(7L);
-                feedItems = findReadLaterFeedItemsByStartDateAndOrderAndPageNumber(user, dateBeforeSevenDays, order,
-                        pageNumber);
+                feedItems = findFilteredAndOrderedFeedItems(user, dateBeforeSevenDays, order, pageNumber);
                 break;
 
             case PERIOD_LAST_THIRTY_DAYS:
                 LocalDate dateBeforeThirtyDays = LocalDate.now().minusDays(30L);
-                feedItems = findReadLaterFeedItemsByStartDateAndOrderAndPageNumber(user, dateBeforeThirtyDays, order,
-                        pageNumber);
+                feedItems = findFilteredAndOrderedFeedItems(user, dateBeforeThirtyDays, order, pageNumber);
                 break;
 
             default: {
-                // find all read later feeds with the given page number
-                feedItems = findReadLaterFeedItemsByStartDateAndOrderAndPageNumber(user, null, order, pageNumber);
+                // find all feeds with the given page number
+                feedItems = findFilteredAndOrderedFeedItems(user, null, order, pageNumber);
                 break;
             }
         }
@@ -81,24 +81,9 @@ public class ReadLaterFeedsSortService {
      * @param startDate
      * @param order
      * @param pageNumber
-     * @return List<FeedItem>
-     */
-    private List<FeedItem> findReadLaterFeedItemsByStartDateAndOrderAndPageNumber(User user, LocalDate startDate,
-            String order, Integer pageNumber) {
-
-        List<FeedItem> feedItems = findFilteredAndOrderedReadLaterFeedItems(user, startDate, order, pageNumber);
-
-        return feedItems;
-    }
-
-    /**
-     * @param user
-     * @param startDate
-     * @param order
-     * @param pageNumber
      * @return List<FeedItemUser>
      */
-    private List<FeedItem> findFilteredAndOrderedReadLaterFeedItems(User user, LocalDate startDate, String order,
+    private List<FeedItem> findFilteredAndOrderedFeedItems(User user, LocalDate startDate, String order,
             Integer pageNumber) {
 
         List<FeedItemUser> feedItemsUsers = Collections.emptyList();
@@ -112,12 +97,11 @@ public class ReadLaterFeedsSortService {
 
                 // no start date means we need all feeds
                 if (startDate == null)
-                    page = feedItemUserRepository.findByUserAndReadLaterOrderByFeedItem_PublishDateDesc(user, true,
-                            pageable);
+                    page = allFeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user, pageable);
                 else
-                    page = feedItemUserRepository
-                            .findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
-                                    user, true, startDate, pageable);
+                    page = allFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(user,
+                                    startDate, pageable);
 
                 feedItemsUsers = page.getContent();
                 feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
@@ -129,16 +113,19 @@ public class ReadLaterFeedsSortService {
                 pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
                 if (startDate == null)
-                    page = feedItemUserRepository.findByUserAndReadLaterOrderByFeedItem_PublishDateAsc(user, true,
-                            pageable);
+                    page = allFeedItemUserRepository.findByUserOrderByFeedItem_PublishDateAsc(user, pageable);
                 else
-                    page = feedItemUserRepository
-                            .findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateAsc(
-                                    user, true, startDate, pageable);
+                    page = allFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateAsc(user,
+                                    startDate, pageable);
 
                 feedItemsUsers = page.getContent();
                 feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
                         .collect(Collectors.toList());
+                break;
+            } // end case
+            case ORDER_BY_UNREAD: {
+
                 break;
             } // end case
 
@@ -146,13 +133,12 @@ public class ReadLaterFeedsSortService {
                 pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
                 if (startDate == null)
-                    page = feedItemUserRepository
-                            .findByUserAndReadLaterOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(user, true,
-                                    pageable);
+                    page = allFeedItemUserRepository
+                            .findByUserOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(user, pageable);
                 else
-                    page = feedItemUserRepository
-                            .findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
-                                    user, true, startDate, pageable);
+                    page = allFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
+                                    user, startDate, pageable);
 
                 feedItemsUsers = page.getContent();
                 feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
@@ -164,35 +150,13 @@ public class ReadLaterFeedsSortService {
                 // order by specific category or all categories is complex -> we implement the
                 // paging for it ourselves
                 feedItemsUsers = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, startDate);
-                feedItems = getNextPageOfFeedItemsManually(pageNumber, feedItemsUsers);
+                feedItems = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUsers);
                 break;
             } // end case
 
             default:
                 return feedItems;
         }// end switch
-
-        return feedItems;
-    }
-
-    private List<FeedItem> getNextPageOfFeedItemsManually(Integer pageNumber, List<FeedItemUser> feedItemsUsers) {
-        List<FeedItem> feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                .collect(Collectors.toList());
-
-        double lastPage = Math.ceil(feedItems.size() / (double) PAGE_SIZE);
-        int nextPage = (pageNumber * PAGE_SIZE) + PAGE_SIZE;
-
-        // feeds number is less than the page size
-        if (pageNumber < lastPage && feedItems.size() < PAGE_SIZE)
-            return feedItems;
-        // next feeds page index is greater than feeditems last index
-        else if (pageNumber < lastPage && nextPage > feedItems.size())
-            feedItems = feedItems.subList(pageNumber * PAGE_SIZE, feedItems.size());
-        else if (pageNumber < lastPage)
-            feedItems = feedItems.subList(pageNumber * PAGE_SIZE, (pageNumber * PAGE_SIZE) + PAGE_SIZE);
-
-        else
-            feedItems = Collections.emptyList();
 
         return feedItems;
     }
@@ -213,12 +177,13 @@ public class ReadLaterFeedsSortService {
 
         // no start date means we need all feeds of a category
         if (startDate == null)
+            channelsUser.forEach(cu -> feedItemsUser
+                    .addAll(allFeedItemUserRepository.findByUserAndFeedItem_Channel(user, cu.getChannel())));
+        else {
             channelsUser.forEach(cu -> feedItemsUser.addAll(
-                    feedItemUserRepository.findByUserAndReadLaterAndFeedItem_Channel(user, true, cu.getChannel())));
-        else
-            channelsUser.forEach(cu -> feedItemsUser.addAll(feedItemUserRepository
-                    .findByUserAndReadLaterAndFeedItem_ChannelAndFeedItem_publishLocalDateGreaterThanEqual(user, true,
-                            cu.getChannel(), startDate)));
+                    allFeedItemUserRepository.findByUserAndFeedItem_ChannelAndFeedItem_publishLocalDateGreaterThanEqual(
+                            user, cu.getChannel(), startDate)));
+        }
         return feedItemsUser;
     }
 }
