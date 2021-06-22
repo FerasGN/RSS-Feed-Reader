@@ -117,7 +117,10 @@ function handleViewAndPerieodAndOrderSelect(
       selectedOrder,
       feedsContainer
     );
-  else if (window.location.href.indexOf(CATEGORY_URL) > -1) {
+  else if (
+    window.location.href.indexOf(CATEGORY_URL) > -1 &&
+    window.location.href.indexOf(CHANNEL_URL) == -1
+  ) {
     const categoryPathVariable = window.location.pathname.split("/").pop();
     handleViewAndPeriodAndOrder(
       CATEGORY_URL + categoryPathVariable,
@@ -127,9 +130,10 @@ function handleViewAndPerieodAndOrderSelect(
       feedsContainer
     );
   } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+    const categoryPathVariable = window.location.pathname.split("/")[2];
     const channelPathVariable = window.location.pathname.split("/").pop();
     handleViewAndPeriodAndOrder(
-      CHANNEL_URL + channelPathVariable,
+      CATEGORY_URL + categoryPathVariable + CHANNEL_URL + channelPathVariable,
       selectedView,
       selectedPeriod,
       selectedOrder,
@@ -300,12 +304,15 @@ function loadFeeds() {
           pageNumber,
         cardsContainer
       );
-    } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+    } else if (
+      window.location.href.indexOf(CATEGORY_URL) > -1 &&
+      window.location.href.indexOf(CHANNEL_URL) == -1
+    ) {
       let channelTitle = decodeURI(window.location.pathname.split("/").pop());
       getFeedsPage(
         FEEDS_PAGE_URL +
           "?currentFeedsUrl=" +
-          currentFeedsUrl +
+          "/channel" +
           "&channelTitle=" +
           channelTitle +
           "&view=" +
@@ -335,7 +342,10 @@ function loadFeeds() {
       );
     }
   } else if (document.body.contains(listItemsContainer)) {
-    if (window.location.href.indexOf(CATEGORY_URL) > -1) {
+    if (
+      window.location.href.indexOf(CATEGORY_URL) > -1 &&
+      window.location.href.indexOf(CHANNEL_URL) == -1
+    ) {
       let category = window.location.pathname.split("/").pop();
       getFeedsPage(
         FEEDS_PAGE_URL +
@@ -358,7 +368,7 @@ function loadFeeds() {
       getFeedsPage(
         FEEDS_PAGE_URL +
           "?currentFeedsUrl=" +
-          currentFeedsUrl +
+          "/channel" +
           "&channelTitle=" +
           channelTitle +
           "&view=" +

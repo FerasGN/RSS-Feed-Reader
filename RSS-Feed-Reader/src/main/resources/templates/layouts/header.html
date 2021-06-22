@@ -101,7 +101,7 @@
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link"  th:href="@{/all-feeds}">
+                            <a class="nav-link" th:classappend="${allFeedsUrl} ? active : ''" th:href="@{/all-feeds}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-rss" viewBox="0 0 16 16">
@@ -122,7 +122,7 @@
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link" th:href="@{/read-later}">
+                            <a class="nav-link" th:classappend="${readLaterUrl} ? active : ''" th:href="@{/read-later}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-bookmark" viewBox="0 0 16 16">
@@ -138,7 +138,8 @@
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link" th:href="@{/liked-feeds}">
+                            <a class="nav-link" th:classappend="${likedFeedsUrl} ? active : ''"
+                                th:href="@{/liked-feeds}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-heart" viewBox="0 0 16 16">
@@ -154,7 +155,7 @@
                         <!--//nav-item-->
                         <li class="nav-item">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" th:classappend="${favoriteChannelUrl} ? active : ''" href="#">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-star" viewBox="0 0 16 16">
@@ -192,8 +193,8 @@
                         <!--//nav-item-->
                         <li class="nav-item has-submenu">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                            <a class="nav-link submenu-toggle" data-bs-toggle="collapse"
-                                data-bs-target="#submenus" aria-expanded="false" aria-controls="submenus">
+                            <a class="nav-link submenu-toggle" data-bs-toggle="collapse" data-bs-target="#submenus"
+                                aria-expanded="false" aria-controls="submenus">
                                 <span class="nav-icon">
                                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -222,6 +223,7 @@
                             </a>
                             <!--//nav-link-->
                             <div id="submenus" class="collapse submenu submenus"
+                                th:classappend="${categoryUrl != null} ? show : ''"
                                 th:insert="layouts/side-panel-submenus :: side-panel-submenus">
                             </div>
 

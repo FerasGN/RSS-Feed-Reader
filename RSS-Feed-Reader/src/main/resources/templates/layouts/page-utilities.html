@@ -38,8 +38,8 @@
                     <option value="most-relevant">Most Relevant</option>
                     <option value="oldest">Oldest</option>
                     <option value="unread" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
-                    <option value="channel" th:if="${url} != '/channel'">Sort By Channel</option>
-                    <option value="all-categories" th:if="${url} != '/category' and ${url} != '/channel'">Sort By
+                    <option value="channel" th:if="${orderSelectUrl} != '/channel'">Sort By Channel</option>
+                    <option value="all-categories" th:if="${orderSelectUrl} != '/category' and ${orderSelectUrl} != '/channel'">Sort By
                         Category</option>
 
 

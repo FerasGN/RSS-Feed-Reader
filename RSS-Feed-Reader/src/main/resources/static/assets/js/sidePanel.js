@@ -7,6 +7,7 @@ var SAVE_CHANNEL_URL = "/save-channel";
 
 /* ===== Responsive Sidepanel ====== */
 initSidePanel();
+initShowSubMenus();
 
 function initSidePanel() {
   var sidePanelToggler = document.getElementById("sidepanel-toggler");
@@ -56,6 +57,22 @@ function responsiveSidePanel(sidePanel) {
     //console.log('smaller');
     sidePanel.classList.remove("sidepanel-visible");
     sidePanel.classList.add("sidepanel-hidden");
+  }
+}
+
+function initShowSubMenus() {
+  let subSubmenulinks = document.getElementsByClassName("sub-submenu-link");
+  for (let i = 0; i < subSubmenulinks.length; i++) {
+    if (subSubmenulinks[i].classList.contains("active")) {
+      let subSubmenu = subSubmenulinks[i].closest("div");
+      let submenuLink = subSubmenu.closest("li").getElementsByTagName("div")[0];
+      let textCountArrow = submenuLink.getElementsByTagName("div")[0];
+      let submenuToggle = textCountArrow.getElementsByTagName("span")[1];
+      submenuToggle.setAttribute("aria-expanded", "true");
+      subSubmenu.classList.add("show");
+      subSubmenu.classList.remove("collapse");
+      break;
+    }
   }
 }
 

@@ -4,7 +4,9 @@
         <ul th:id="'submenu' + ${i.index + 1}" class="submenu-list list-unstyled">
             <li class="submenu-item has-submenu">
                 <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                <div class="submenu-link submenu-toggle">
+                <div class="submenu-link submenu-toggle"
+                    th:classappend="${categoryUrl} == '/category/' + ${category}  ? active : ''"
+                    th:href="@{/all-feeds}">
                     <div class="text-count-arrow d-flex mb-1">
                         <a class="submenu-item-link submenu-item-text w-75"
                             th:href="@{'/category/' + ${#strings.toLowerCase(category)}}"
@@ -32,7 +34,9 @@
                         <th:block th:each="channelCommand,j : ${channelCommands}">
                             <th:block th:if="${channelCommand.categoryCommand.name == category }">
                                 <li th:id="'channel' + ${i.index + 1} + ${j.index + 1}" class="sub-submenu-item">
-                                    <a class="submenu-link" th:href="@{'/channel/' + ${channelCommand.title}}">
+                                    <a class="sub-submenu-link submenu-link"
+                                        th:classappend="${(categoryUrl !=null) && (channelUrl !=null)  && (categoryUrl + channelUrl == '/category/' + category + '/channel/' + channelCommand.title)} ? active : ''"
+                                        th:href="@{'/category/' + ${category} + '/channel/' + ${channelCommand.title}}">
                                         <img alt="" class="channel-image"
                                             th:src="${(channelCommand.faviconLink != null && !#strings.isEmpty(channelCommand.faviconLink)) ? channelCommand.faviconLink : 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='}">
                                         <span class="category-item" th:text="${channelCommand.title}"></span>

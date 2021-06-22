@@ -76,6 +76,7 @@ public class FeedsController {
             List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
             feedItemCommands = findAllFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
+            model.addAttribute("allFeedsUrl", ALL_FEEDS_URL);
             model.addAttribute("feeds", feedItemCommands);
         }
         return "all-feeds";
@@ -149,6 +150,7 @@ public class FeedsController {
             List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
             feedItemCommands = findReadLaterFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
+            model.addAttribute("readLaterUrl", READ_LATER_URL);
             model.addAttribute("feeds", feedItemCommands);
         }
         return "read-later";
@@ -175,6 +177,7 @@ public class FeedsController {
             List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
             feedItemCommands = findLikedFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
+            model.addAttribute("likedFeedsUrl", LIKED_FEEDS_URL);
             model.addAttribute("feeds", feedItemCommands);
         }
         return "read-later";
@@ -209,14 +212,16 @@ public class FeedsController {
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feedItemCommands);
             model.addAttribute("categoryName", categoryName);
-            model.addAttribute("url", "/category");
+            model.addAttribute("orderSelectUrl", "/category");
+            model.addAttribute("categoryUrl", CATEGORY_URL + "/" + categoryName);
 
         }
         return "all-feeds";
     }
 
-    @GetMapping(CHANNEL_URL + "/{channelTitle}")
-    public String showAllFeedsofAChannel(@PathVariable(value = "channelTitle") String channelTitle,
+    @GetMapping(CATEGORY_URL + "/{categoryName}" + CHANNEL_URL + "/{channelTitle}")
+    public String showAllFeedsofAChannel(@PathVariable(value = "categoryName") String categoryName,
+            @PathVariable(value = "channelTitle") String channelTitle,
             @RequestParam(value = "view", required = false) String view,
             @RequestParam(value = "period", required = false) String period,
             @RequestParam(value = "orderBy", required = false) String order, Model model,
@@ -248,7 +253,9 @@ public class FeedsController {
             model.addAttribute("view", "cards");
             model.addAttribute("feeds", feedItemCommands);
             model.addAttribute("channelTitle", channelTitle);
-            model.addAttribute("url", "/channel");
+            model.addAttribute("orderSelectUrl", "/channel");
+            model.addAttribute("categoryUrl", CATEGORY_URL + "/" + categoryName);
+            model.addAttribute("channelUrl", CHANNEL_URL + "/" + channelTitle);
 
         }
         return "all-feeds";
@@ -317,8 +324,10 @@ public class FeedsController {
         else if (CATEGORY_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findCategoryFeedItemCommands(user, categoryName, period, order, pageNumber);
 
-        else if (CHANNEL_URL.equalsIgnoreCase(currentFeedsUrl))
+        else if (CHANNEL_URL.equalsIgnoreCase(currentFeedsUrl)) {
+           
             feeds = findChannelFeedItemCommands(user, channelTitle, period, order, pageNumber);
+        }
 
         return feeds;
     }
