@@ -2,6 +2,7 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.controller;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.UserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
+import de.htwsaar.pib2021.rss_feed_reader.database.MaterializedViewManager;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.EmailAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.UsernameAlreadyExistException;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.AuthenticationService;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +34,9 @@ public class AuthenticationController {
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
+
+    @Autowired
+    MaterializedViewManager materializedViewManager;
 
     /**
      * @param model
@@ -170,6 +175,8 @@ public class AuthenticationController {
      */
     @GetMapping(value = { "/restore-password" })
     public String restorePassword() {
+        materializedViewManager.creatematerializedViewFeedItemWithIndex();
+        materializedViewManager.createMaterializedViewChannelWithIndex();
         return "authentication/restore-password";
     }
 
