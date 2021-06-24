@@ -84,15 +84,27 @@ public class ChannelController {
             @AuthenticationPrincipal SecurityUser securityUser) {
         String url = data.get(0)[0];
         String categoryName = data.get(0)[1];
-
         try {
             Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, categoryName);
 
         } catch (Exception e) {
 
         }
-        mav.setViewName("redirect:/feeds-page?view=" + data.get(1)[0] + "&period=" + data.get(1)[1] + "&orderBy="
-                + data.get(1)[2] + "&pageNumber=0");
+
+        // if category != null
+        if (data.get(1)[1] != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + data.get(1)[0] + "&category=" + data.get(1)[1]
+                    + "&view=" + data.get(1)[3] + "&period=" + data.get(1)[4] + "&orderBy=" + data.get(1)[5]
+                    + "&pageNumber=0");
+        // if channelTitle != null
+        else if (data.get(1)[2] != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + data.get(1)[0] + "&channelTitle=" + data.get(1)[2]
+                    + "&view=" + data.get(1)[3] + "&period=" + data.get(1)[4] + "&orderBy=" + data.get(1)[5]
+                    + "&pageNumber=0");
+        else
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + data.get(1)[0] + "&view=" + data.get(1)[3]
+                    + "&period=" + data.get(1)[4] + "&orderBy=" + data.get(1)[5] + "&pageNumber=0");
+
         return mav;
     }
 

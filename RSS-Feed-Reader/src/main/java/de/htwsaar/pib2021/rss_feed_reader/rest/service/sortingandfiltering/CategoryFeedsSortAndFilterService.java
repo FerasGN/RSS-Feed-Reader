@@ -75,22 +75,16 @@ public class CategoryFeedsSortAndFilterService {
 
         switch (order) {
             case ORDER_BY_LATEST: {
-                Collections.sort(feedItemsUsers, (a, b) -> {
-                    if (b.getFeedItem().getPublishDate() != null && a.getFeedItem().getPublishDate() != null)
-                        return b.getFeedItem().getPublishDate().compareTo(a.getFeedItem().getPublishDate());
-                    else
-                        return 0;
-                });
+                Comparator<FeedItemUser> compareByPublishDateDesc = Comparator.comparing(
+                        f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
+                Collections.sort(feedItemsUsers, compareByPublishDateDesc);
                 break;
             } // end case
 
             case ORDER_BY_OLDEST: {
-                Collections.sort(feedItemsUsers, (a, b) -> {
-                    if (a.getFeedItem().getPublishDate() != null && b.getFeedItem().getPublishDate() != null)
-                        return a.getFeedItem().getPublishDate().compareTo(b.getFeedItem().getPublishDate());
-                    else
-                        return 0;
-                });
+                Comparator<FeedItemUser> compareByPublishDateAsc = Comparator.comparing(
+                        f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.naturalOrder()));
+                Collections.sort(feedItemsUsers, compareByPublishDateAsc);
                 break;
             } // end case
 

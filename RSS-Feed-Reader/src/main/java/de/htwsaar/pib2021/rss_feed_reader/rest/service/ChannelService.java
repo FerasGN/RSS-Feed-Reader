@@ -326,7 +326,10 @@ public class ChannelService {
             channel = channelOptional.get();
         } else {
             channel = new Channel();
-            channel.setTitle(feed.getTitle());
+            if (feed.getTitle() != null)
+                channel.setTitle(feed.getTitle());
+            else
+                channel.setTitle("No channel title");
             channel.setChannelUrl(url);
             channel.setWebsiteLink(feed.getLink());
             channel.setDescription(feed.getDescription());
@@ -405,8 +408,11 @@ public class ChannelService {
 
         FeedItem feedItem = new FeedItem();
         feedItem.setChannel(channel);
-        feedItem.setTitle(syndEntry.getTitle());
-        feedItem.setLanguage(channel.getLanguage());
+        if (syndEntry.getTitle() != null)
+            feedItem.setTitle(syndEntry.getTitle());
+        else
+            feedItem.setTitle("No title");
+        feedItem.setLanguage("german");
         if (syndEntry.getDescription() != null)
             feedItem.setDescription(syndEntry.getDescription().getValue());
         feedItem.setAuthor(syndEntry.getAuthor());
@@ -465,7 +471,7 @@ public class ChannelService {
                 User user = cu.getUser();
                 boolean saved = saveFeedItems(user, cu.getChannel());
                 // notify user that a new feed has been added
-                if (saved){
+                if (saved) {
                     this.eventPublisher.publishEvent(new SseNotification(user.getUsername(), NEW_FEED_MESSAGE));
                     materializedViewManager.refreshFeedItem();
                 }

@@ -153,12 +153,13 @@ function postChannel(url, data, container) {
       //Success
       let resp = this.response;
       if (resp !== "") {
-        container.innerHTML += request.responseText;
+        container.innerHTML = request.responseText;
 
         var headerContainer = document.getElementById("header-container");
         refreshHeader(REFRESH_HEADER_URL, headerContainer);
       }
       hideModal();
+      pageNumber = 1;
     } else {
       // We reached our target server, but it returned an error
     }
@@ -251,8 +252,22 @@ function addSubscribeButton() {
     let selectedPeriod = document.getElementById("period-select").value;
     let selectedOrder = document.getElementById("order-select").value;
     let channelInfos = [channelUrl.value, category.value];
-    let viewAndFilterAndOrder = [selectedView, selectedPeriod, selectedOrder];
-    let data = [channelInfos, viewAndFilterAndOrder];
+    let currentFeedsUrl =  "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
+    let categoryUrl = undefined;
+    let channelTitle = undefined;
+
+    if ( window.location.href.indexOf(CATEGORY_URL) > -1 &&
+    window.location.href.indexOf(CHANNEL_URL) == -1){
+      categoryUrl = window.location.pathname.split("/").pop();
+      currentFeedsUrl = "/category";
+    }else if(window.location.href.indexOf(CHANNEL_URL) > -1){
+      channelTitle = decodeURI(window.location.pathname.split("/").pop());
+      currentFeedsUrl = "/channel";
+    }
+
+    let feedsPageParameters=[currentFeedsUrl, categoryUrl, channelTitle, selectedView, selectedPeriod, selectedOrder];
+
+    let data = [channelInfos, feedsPageParameters];
 
     const listItemsContainer = document.getElementById("list-items-container");
     const cardsContainer = document.getElementById("cards-container");

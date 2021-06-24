@@ -324,10 +324,8 @@ public class FeedsController {
         else if (CATEGORY_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findCategoryFeedItemCommands(user, categoryName, period, order, pageNumber);
 
-        else if (CHANNEL_URL.equalsIgnoreCase(currentFeedsUrl)) {
-           
+        else if (CHANNEL_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findChannelFeedItemCommands(user, channelTitle, period, order, pageNumber);
-        }
 
         return feeds;
     }

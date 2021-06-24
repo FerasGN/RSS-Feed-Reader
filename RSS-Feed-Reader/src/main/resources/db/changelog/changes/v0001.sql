@@ -72,7 +72,7 @@ create table feed_item
     content            text,
     description        text,
     link               text      not null,
-    publish_date       timestamp not null,
+    publish_date       timestamp ,
     title              text      not null,
     channel_id         bigint
         constraint fks8ye9q5s6dw12cnb10iyoo7f1
