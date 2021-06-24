@@ -16,11 +16,13 @@ public class MaterializedViewManager {
     @Autowired
     private EntityManager entityManager;
 
+    @Modifying
     @Transactional
     public void refreshFeedItem(){
         this.entityManager.createNativeQuery("call feedify.public.refresh_mat_view_feed_item();");
     }
 
+    @Modifying
     @Transactional
     public void refreshChannleView(){
         this.entityManager.createNativeQuery("call feedify.public.refresh_mat_view_channel()");

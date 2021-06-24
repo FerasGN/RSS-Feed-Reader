@@ -8,6 +8,8 @@ import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
 import static de.htwsaar.pib2021.rss_feed_reader.constants.SseNotificationMessages.*;
+
+import de.htwsaar.pib2021.rss_feed_reader.database.MaterializedViewManager;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Sse.SseNotification;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.CategoryRepository;
@@ -20,6 +22,7 @@ import de.htwsaar.pib2021.rss_feed_reader.exceptions.ChannelNotFoundException;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.NotValidURLException;
 import imageresolver.MainImageResolver;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -68,6 +71,9 @@ public class ChannelService {
         this.faviconExtractorService = faviconExtractorService;
         this.eventPublisher = eventPublisher;
     }
+
+    @Autowired
+    MaterializedViewManager materializedViewManager;
 
     /**
      * FEED_PARSING_ERROR
@@ -338,6 +344,8 @@ public class ChannelService {
 
             // extract feed items
             saveFeedItems(user, channel, feed.getEntries());
+            materializedViewManager.refreshFeedItem();
+            materializedViewManager.refreshChannleView();
         }
 
         return Optional.of(channel);
@@ -383,7 +391,6 @@ public class ChannelService {
                 }
                 saved = true;
             }
-
         }
 
         return saved;
@@ -458,9 +465,10 @@ public class ChannelService {
                 User user = cu.getUser();
                 boolean saved = saveFeedItems(user, cu.getChannel());
                 // notify user that a new feed has been added
-                if (saved)
+                if (saved){
                     this.eventPublisher.publishEvent(new SseNotification(user.getUsername(), NEW_FEED_MESSAGE));
-
+                    materializedViewManager.refreshFeedItem();
+                }
             } catch (UnknownHostException e) {
                 System.out.println("Your Internet connection may have been interrupted");
             } catch (IllegalArgumentException | FeedException | IOException e) {
