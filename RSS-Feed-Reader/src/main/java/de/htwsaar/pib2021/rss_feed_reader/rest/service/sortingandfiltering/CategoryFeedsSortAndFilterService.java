@@ -118,7 +118,7 @@ public class CategoryFeedsSortAndFilterService {
         return feedItems;
     }
 
-    private List<FeedItemUser> findFeedItemUsersOrderedyCategoryNameAndPublishLocalDate(User user, String categoryName,
+    public List<FeedItemUser> findFeedItemUsersOrderedyCategoryNameAndPublishLocalDate(User user, String categoryName,
             LocalDate startDate) {
         List<ChannelUser> channelsUser;
 

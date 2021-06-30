@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import de.htwsaar.pib2021.rss_feed_reader.commands.CategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
+import de.htwsaar.pib2021.rss_feed_reader.converters.CategoryToCategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.ChannelUserToChannelCommand;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.Category;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
@@ -268,13 +271,14 @@ public class FeedsController {
 
     private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {
         User user = securityUser.getUser();
-        List<String> categories = channelService.findAllChannelsCategoriesByUser(user);
-        List<ChannelUser> channelUser = channelService.findAllChannelUserOrderedByCategory(user);
-        ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(channelService);
-        List<ChannelCommand> channelCommands = channelUser.stream().map(cu -> channelUserToChannelCommand.convert(cu))
+        List<CategoryCommand> categoryCommands = findCategoryCommands(user);
+        List<ChannelUser> channelsUser = channelService.findAllChannelUserOrderedByCategory(user);
+        ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(feedsService);
+        List<ChannelCommand> channelCommands = channelsUser.stream().map(cu -> channelUserToChannelCommand.convert(cu))
                 .collect(Collectors.toList());
+        model.addAttribute("numberOfUnreadFeeds", feedsService.findNumberOfUnreadFeeds(user));
         model.addAttribute("channelCommand", new ChannelCommand());
-        model.addAttribute("categories", categories);
+        model.addAttribute("categoryCommands", categoryCommands);
         model.addAttribute("channelCommands", channelCommands);
 
         return model;
@@ -364,6 +368,17 @@ public class FeedsController {
                 order, pageNumber);
 
         return feedItemCommands;
+    }
+
+    public List<CategoryCommand> findCategoryCommands(User user) {
+        List<String> categories = channelService.findAllChannelsCategoriesByUser(user);
+        List<CategoryCommand> categoryCommands = categories.stream().map(categroyName -> {
+            CategoryToCategoryCommand categoryToCategoryCommand = new CategoryToCategoryCommand(feedsService);
+            categoryToCategoryCommand.setUser(user);
+            return categoryToCategoryCommand.convert(new Category(categroyName));
+        }).collect(Collectors.toList());
+
+        return categoryCommands;
     }
 
     /**

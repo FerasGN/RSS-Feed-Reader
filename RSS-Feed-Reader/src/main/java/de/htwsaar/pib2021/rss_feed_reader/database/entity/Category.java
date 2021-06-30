@@ -1,6 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "category", uniqueConstraints = { @UniqueConstraint(name = "unique_category_name", columnNames = "name") }
 
@@ -26,5 +28,9 @@ public class Category extends BaseEntity {
         @ToString.Exclude
         @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
         private List<ChannelUser> channelUsers = new ArrayList<ChannelUser>();
+
+        public Category(String name) {
+                this.name = name;
+        }
 
 }

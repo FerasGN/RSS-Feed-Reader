@@ -3,11 +3,14 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemToFeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
+import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering.CategoryFeedsSortAndFilterService;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering.SortingAndFilteringFeedsService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,21 +21,21 @@ import java.util.Optional;
 @Service
 public class FeedsService {
 
+    @Autowired
     private ChannelUserRepository channelUserRepository;
+    @Autowired
     private FeedItemRepository feedItemRepository;
+    @Autowired
     private FeedItemUserRepository feedItemUserRepository;
+    @Autowired
+    private ChannelFeedItemUserRepository channelFeedItemUserRepository;
+    @Autowired
+    private CategoryFeedsSortAndFilterService categoryFeedsSortAndFilterService;
+    @Autowired
     private SortingAndFilteringFeedsService sortingAndFilteringFeedsService;
+    @Autowired
     private ChannelService channelService;
 
-    public FeedsService(ChannelUserRepository channelUserRepository, FeedItemRepository feedItemRepository,
-            FeedItemUserRepository feedItemUserRepository,
-            SortingAndFilteringFeedsService sortingAndFilteringFeedsService, ChannelService channelService) {
-        this.channelUserRepository = channelUserRepository;
-        this.feedItemRepository = feedItemRepository;
-        this.feedItemUserRepository = feedItemUserRepository;
-        this.sortingAndFilteringFeedsService = sortingAndFilteringFeedsService;
-        this.channelService = channelService;
-    }
 
     /**
      * @param channel
@@ -131,6 +134,30 @@ public class FeedsService {
             item.setReadLater(true);
             feedItemUserRepository.save(item);
         }
+    }
+
+    public Long findNumberOfUnreadFeeds(User user) {
+        Long count = feedItemUserRepository.findAllByUserAndReadLater(user, false).stream().count();
+        return count;
+    }
+
+    public Long findNumberOfUnreadFeedsOfCategory(User user, String categoryName) {
+        List<FeedItemUser> feedItemsUser = categoryFeedsSortAndFilterService
+                .findFeedItemUsersOrderedyCategoryNameAndPublishLocalDate(user, categoryName, null);
+
+        Long count = feedItemsUser.stream().filter(f -> !f.isRead()).count();
+        return count;
+    }
+
+    /**
+     * @param user
+     * @param channel
+     * @return Long
+     */
+    public Long findNumberOfUnreadFeedsOfChannel(User user, String channelTitle) {
+        Long count = channelFeedItemUserRepository.countByUserAndFeedItem_Channel_TitleAndRead(user, channelTitle,
+                false);
+        return count;
     }
 
     /**

@@ -6,4 +6,5 @@ import lombok.Data;
 public class CategoryCommand {
     
     private String name;
+    private Long numberOfUnreadFeeds;
 }

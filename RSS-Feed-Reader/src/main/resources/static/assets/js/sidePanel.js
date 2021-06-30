@@ -252,20 +252,30 @@ function addSubscribeButton() {
     let selectedPeriod = document.getElementById("period-select").value;
     let selectedOrder = document.getElementById("order-select").value;
     let channelInfos = [channelUrl.value, category.value];
-    let currentFeedsUrl =  "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
+    let currentFeedsUrl =
+      "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
     let categoryUrl = undefined;
     let channelTitle = undefined;
 
-    if ( window.location.href.indexOf(CATEGORY_URL) > -1 &&
-    window.location.href.indexOf(CHANNEL_URL) == -1){
+    if (
+      window.location.href.indexOf(CATEGORY_URL) > -1 &&
+      window.location.href.indexOf(CHANNEL_URL) == -1
+    ) {
       categoryUrl = window.location.pathname.split("/").pop();
       currentFeedsUrl = "/category";
-    }else if(window.location.href.indexOf(CHANNEL_URL) > -1){
+    } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
       channelTitle = decodeURI(window.location.pathname.split("/").pop());
       currentFeedsUrl = "/channel";
     }
 
-    let feedsPageParameters=[currentFeedsUrl, categoryUrl, channelTitle, selectedView, selectedPeriod, selectedOrder];
+    let feedsPageParameters = [
+      currentFeedsUrl,
+      categoryUrl,
+      channelTitle,
+      selectedView,
+      selectedPeriod,
+      selectedOrder,
+    ];
 
     let data = [channelInfos, feedsPageParameters];
 

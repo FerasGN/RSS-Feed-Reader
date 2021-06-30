@@ -183,24 +183,6 @@ public class ChannelService {
     /**
      * @param user
      * @param channel
-     * @return Long
-     */
-    public Long findNumberOfUnreadFeedsOfChannel(User user, Channel channel) {
-        // ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user,
-        // channel);
-        // Long numberOfUnreadFeeds = channelUser.getUser()
-        // .getFeedItemUsers()
-        // .stream()
-        // .filter(feedItemUser ->
-        // feedItemUser.getFeedItem().getChannel().equals(channel)
-        // && !feedItemUser.isRead())
-        // .count();
-        return 99l;
-    }
-
-    /**
-     * @param user
-     * @param channel
      * @param category
      * @return Long
      */

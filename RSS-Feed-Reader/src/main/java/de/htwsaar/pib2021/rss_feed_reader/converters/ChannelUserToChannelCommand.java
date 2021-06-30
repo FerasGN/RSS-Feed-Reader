@@ -1,19 +1,22 @@
 package de.htwsaar.pib2021.rss_feed_reader.converters;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.CategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
-import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.FeedsService;
 
+@Component
 public class ChannelUserToChannelCommand implements Converter<ChannelUser, ChannelCommand> {
 
-    private ChannelService channelService;
+    private FeedsService feedService;
 
-    public ChannelUserToChannelCommand(ChannelService channelService) {
-        this.channelService = channelService;
+    public ChannelUserToChannelCommand(FeedsService feedService) {
+        this.feedService = feedService;
     }
 
     @Nullable
@@ -30,8 +33,8 @@ public class ChannelUserToChannelCommand implements Converter<ChannelUser, Chann
         CategoryCommand categoryCommand = new CategoryCommand();
         categoryCommand.setName(source.getCategory().getName());
         channelCommand.setCategoryCommand(categoryCommand);
-        Long numberOfUnreadFeeds = channelService.findNumberOfUnreadFeedsOfChannel(source.getUser(),
-                source.getChannel());
+        Long numberOfUnreadFeeds = feedService.findNumberOfUnreadFeedsOfChannel(source.getUser(),
+                source.getChannel().getTitle());
         channelCommand.setNumberOfUnreadFeeds(numberOfUnreadFeeds);
 
         return channelCommand;

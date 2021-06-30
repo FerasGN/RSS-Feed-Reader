@@ -28,14 +28,13 @@ public class RssFeedReaderApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void init() throws InterruptedException {
 
-		materializedViewManager.createMaterializedViewChannelWithIndex();
-		materializedViewManager.creatematerializedViewFeedItemWithIndex();
+		// materializedViewManager.createMaterializedViewChannelWithIndex();
+		// materializedViewManager.creatematerializedViewFeedItemWithIndex();
 
-		// List<Long> l = materializedViewManager.fullTextSeachrFeedItem(");
-		// System.out.println("<-----------------------The ids -------------------->");
-		// System.out.println(l);
-		// System.out.println("End <-----------------------The
-		// ids-------------------->");
+		List<Long> l = materializedViewManager.fullTextSeachrFeedItem("from & the ");
+		System.out.println("<-----------------------The ids -------------------->");
+		System.out.println(l);
+		System.out.println("End <-----------------------The ids-------------------->");
 	}
 
 }
