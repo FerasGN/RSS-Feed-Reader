@@ -185,7 +185,7 @@ function initModalCategories() {
   input.className += "form-control";
   input.setAttribute("type", "text");
   input.setAttribute("list", "categories");
-  input.placeholder = "Add the channel to a a Category...";
+  input.placeholder = "Add the channel to a category...";
   input.autocomplete = "off";
   input.required = true;
   input.name = "categoryCommand.name";

@@ -53,7 +53,6 @@ function getFeedsPage(url, container) {
 
       let resp = this.response;
       if (resp !== "") container.innerHTML += request.responseText;
-      console.log("PageNumber = " + pageNumber);
     } else {
       // We reached our target server, but it returned an error
     }
@@ -286,8 +285,10 @@ function loadFeeds() {
   const listItemsContainer = document.getElementById("list-items-container");
   const cardsContainer = document.getElementById("cards-container");
   if (document.body.contains(cardsContainer)) {
-    if ( window.location.href.indexOf(CATEGORY_URL) > -1 &&
-    window.location.href.indexOf(CHANNEL_URL) == -1) {
+    if (
+      window.location.href.indexOf(CATEGORY_URL) > -1 &&
+      window.location.href.indexOf(CHANNEL_URL) == -1
+    ) {
       let category = window.location.pathname.split("/").pop();
       getFeedsPage(
         FEEDS_PAGE_URL +

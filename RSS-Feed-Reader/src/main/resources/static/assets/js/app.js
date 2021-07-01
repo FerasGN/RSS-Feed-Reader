@@ -22,3 +22,17 @@ var tooltipTriggerList = [].slice.call(
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl);
 });
+
+/* ===== checkbox animation ====== */
+var checkboxes = document.querySelectorAll("input[type=checkbox]");
+for (let i = 0; i < checkboxes.length; i++) {
+  checkboxes[i].addEventListener("change", (event) => {
+    if (!event.currentTarget.checked === false) {
+      checkboxes[i].classList.add("animate-icon");
+      checkboxes[i].labels[0].classList.add("animate-icon");
+    } else {
+      checkboxes[i].classList.remove("animate-icon");
+      checkboxes[i].labels[0].classList.remove("animate-icon");
+    }
+  });
+}

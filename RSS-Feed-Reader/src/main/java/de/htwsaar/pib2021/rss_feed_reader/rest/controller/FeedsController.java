@@ -185,7 +185,7 @@ public class FeedsController {
             model.addAttribute("likedFeedsUrl", LIKED_FEEDS_URL);
             model.addAttribute("feeds", feedItemUserCommands);
         }
-        return "read-later";
+        return "liked-feeds";
     }
 
     /**

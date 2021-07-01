@@ -31,6 +31,7 @@ public class FeedItemUserToFeedItemUserCommand implements Converter<FeedItemUser
         FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
         FeedItem feedItem = source.getFeedItem();
         FeedItemCommand feedItemCommand = feedItemToFeedItemCommand.convert(feedItem);
+        feedItemCommand.setChannelCategory(channelCategory);
         feedItemUserCommand.setUserId(user.getId());
         feedItemUserCommand.setFeedItemId(feedItem.getId());
         feedItemUserCommand.setFeedItemCommand(feedItemCommand);
