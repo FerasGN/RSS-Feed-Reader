@@ -1,7 +1,9 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
+import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemToFeedItemCommand;
+import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemUserToFeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
@@ -35,7 +37,6 @@ public class FeedsService {
     private SortingAndFilteringFeedsService sortingAndFilteringFeedsService;
     @Autowired
     private ChannelService channelService;
-
 
     /**
      * @param channel
@@ -137,7 +138,7 @@ public class FeedsService {
     }
 
     public Long findNumberOfUnreadFeeds(User user) {
-        Long count = feedItemUserRepository.findAllByUserAndReadLater(user, false).stream().count();
+        Long count = feedItemUserRepository.countByUserAndRead(user, false);
         return count;
     }
 
@@ -167,28 +168,25 @@ public class FeedsService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findAllFeedItems(User user, String period, String order, int pageNumber) {
-        List<FeedItem> feedItems = Collections.emptyList();
-        feedItems = sortingAndFilteringFeedsService.findAllFeedItemsByPeriodAndOrderAndPageNumber(user, period, order,
-                pageNumber);
+    public List<FeedItemUser> findAllFeedItemsUser(User user, String period, String order, int pageNumber) {
+        List<FeedItemUser> feedItemsUser = sortingAndFilteringFeedsService
+                .findAllFeedItemsByPeriodAndOrderAndPageNumber(user, period, order, pageNumber);
 
-        return feedItems;
+        return feedItemsUser;
     }
 
-    public List<FeedItem> findReadLaterFeedItems(User user, String period, String order, int pageNumber) {
-        List<FeedItem> feedItems = Collections.emptyList();
-        feedItems = sortingAndFilteringFeedsService.findReadLaterFeedItemsByPeriodAndOrderAndPageNumber(user, period,
-                order, pageNumber);
+    public List<FeedItemUser> findReadLaterFeedItemsUser(User user, String period, String order, int pageNumber) {
+        List<FeedItemUser> feedItemsUser = sortingAndFilteringFeedsService
+                .findReadLaterFeedItemsByPeriodAndOrderAndPageNumber(user, period, order, pageNumber);
 
-        return feedItems;
+        return feedItemsUser;
     }
 
-    public List<FeedItem> findLikedFeedItems(User user, String period, String order, int pageNumber) {
-        List<FeedItem> feedItems = Collections.emptyList();
-        feedItems = sortingAndFilteringFeedsService.findLikedFeedItemsByPeriodAndOrderAndPageNumber(user, period, order,
-                pageNumber);
+    public List<FeedItemUser> findLikedFeedItemsUser(User user, String period, String order, int pageNumber) {
+        List<FeedItemUser> feedItemsUser = sortingAndFilteringFeedsService
+                .findLikedFeedItemsByPeriodAndOrderAndPageNumber(user, period, order, pageNumber);
 
-        return feedItems;
+        return feedItemsUser;
     }
 
     /**
@@ -199,79 +197,85 @@ public class FeedsService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findCategoryFeedItems(User user, String categoryName, String period, String order,
+    public List<FeedItemUser> findCategoryFeedItemsUser(User user, String categoryName, String period, String order,
             int pageNumber) {
-
-        List<FeedItem> feedItems = sortingAndFilteringFeedsService
+        List<FeedItemUser> feedItemsUser = sortingAndFilteringFeedsService
                 .findCategoryFeedItemsByPeriodAndOrderAndPageNumber(user, categoryName, period, order, pageNumber);
 
-        return feedItems;
+        return feedItemsUser;
     }
 
-    public List<FeedItem> findChannelFeedItems(User user, String channelUrl, String period, String order,
+    public List<FeedItemUser> findChannelFeedItemsUser(User user, String channelUrl, String period, String order,
             int pageNumber) {
-
-        List<FeedItem> feedItems = sortingAndFilteringFeedsService
+        List<FeedItemUser> feedItemsUser = sortingAndFilteringFeedsService
                 .findChannelFeedItemsByPeriodAndOrderAndPageNumber(user, channelUrl, period, order, pageNumber);
 
-        return feedItems;
+        return feedItemsUser;
     }
 
-    public List<FeedItemCommand> findAllFeedItemsCommands(User user, String period, String order, int pageNumber) {
-
-        List<FeedItem> feedItems = findAllFeedItems(user, period, order, pageNumber);
-        List<FeedItemCommand> feedItemCommands = convertFeedItemsToFeedItemCommands(user, feedItems);
-
-        return feedItemCommands;
-    }
-
-    public List<FeedItemCommand> findReadLaterFeedItemsCommands(User user, String period, String order,
+    public List<FeedItemUserCommand> findAllFeedItemUserCommands(User user, String period, String order,
             int pageNumber) {
 
-        List<FeedItem> feedItems = findReadLaterFeedItems(user, period, order, pageNumber);
-        List<FeedItemCommand> feedItemCommands = convertFeedItemsToFeedItemCommands(user, feedItems);
+        List<FeedItemUser> feedItemsUser = findAllFeedItemsUser(user, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
 
-        return feedItemCommands;
+        return feedItemsUserCommands;
     }
 
-    public List<FeedItemCommand> findLikedFeedItemsCommands(User user, String period, String order, int pageNumber) {
+    public List<FeedItemUserCommand> findReadLaterFeedItemUserCommands(User user, String period, String order,
+            int pageNumber) {
 
-        List<FeedItem> feedItems = findLikedFeedItems(user, period, order, pageNumber);
-        List<FeedItemCommand> feedItemCommands = convertFeedItemsToFeedItemCommands(user, feedItems);
+        List<FeedItemUser> feedItemsUser = findReadLaterFeedItemsUser(user, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
 
-        return feedItemCommands;
+        return feedItemsUserCommands;
     }
 
-    public List<FeedItemCommand> findCategoryFeedItemCommands(User user, String categoryName, String period,
+    public List<FeedItemUserCommand> findLikedFeedItemUserCommands(User user, String period, String order,
+            int pageNumber) {
+
+        List<FeedItemUser> feedItemsUser = findLikedFeedItemsUser(user, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> findCategoryFeedItemUserCommands(User user, String categoryName, String period,
             String order, int pageNumber) {
 
-        List<FeedItem> feedItems = findCategoryFeedItems(user, categoryName, period, order, pageNumber);
-        List<FeedItemCommand> feedItemCommands = convertFeedItemsToFeedItemCommands(user, feedItems);
+        List<FeedItemUser> feedItemsUser = findCategoryFeedItemsUser(user, categoryName, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
 
-        return feedItemCommands;
+        return feedItemsUserCommands;
     }
 
-    public List<FeedItemCommand> findChannelFeedItemCommands(User user, String channelUrl, String period, String order,
-            int pageNumber) {
+    public List<FeedItemUserCommand> findChannelFeedItemUserCommands(User user, String channelUrl, String period,
+            String order, int pageNumber) {
 
-        List<FeedItem> feedItems = findChannelFeedItems(user, channelUrl, period, order, pageNumber);
-        List<FeedItemCommand> feedItemCommands = convertFeedItemsToFeedItemCommands(user, feedItems);
+        List<FeedItemUser> feedItemsUser = findChannelFeedItemsUser(user, channelUrl, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
 
-        return feedItemCommands;
+        return feedItemsUserCommands;
     }
 
-    private List<FeedItemCommand> convertFeedItemsToFeedItemCommands(User user, List<FeedItem> feedItems) {
-        List<FeedItemCommand> feedItemCommands = new ArrayList<>();
-        feedItems.stream().forEach(f -> {
+    private List<FeedItemUserCommand> convertFeedItemsUserToFeedItemUserCommands(User user,
+            List<FeedItemUser> feedItemsUser) {
+        List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<>();
+        feedItemsUser.stream().forEach(fu -> {
             // convert feedItem to feedItemCommand
-            FeedItemToFeedItemCommand feedItemToFeedItemCommand = new FeedItemToFeedItemCommand();
-            Category category = channelService.findChannelCategory(user, f.getChannel());
-            feedItemToFeedItemCommand.setUser(user);
-            feedItemToFeedItemCommand.setChannelCategory(category.getName());
-            feedItemCommands.add(feedItemToFeedItemCommand.convert(f));
+            FeedItemUserToFeedItemUserCommand feedItemUserToFeedItemUserCommand = new FeedItemUserToFeedItemUserCommand();
+            Category category = channelService.findChannelCategory(user, fu.getFeedItem().getChannel());
+            feedItemUserToFeedItemUserCommand.setUser(user);
+            feedItemUserToFeedItemUserCommand.setChannelCategory(category.getName());
+            feedItemUserCommands.add(feedItemUserToFeedItemUserCommand.convert(fu));
         });
 
-        return feedItemCommands;
+        return feedItemUserCommands;
     }
 
     // public List<FeedItem> findAllFeedsByAllCategories(User user, String

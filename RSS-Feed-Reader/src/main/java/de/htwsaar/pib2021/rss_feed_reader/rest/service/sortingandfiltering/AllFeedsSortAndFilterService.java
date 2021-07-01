@@ -42,38 +42,38 @@ public class AllFeedsSortAndFilterService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findFeedItems(User user, String period, String order, int pageNumber) {
+    public List<FeedItemUser> findFeedItemsUser(User user, String period, String order, int pageNumber) {
 
-        List<FeedItem> feedItems = Collections.emptyList();
+        List<FeedItemUser> feedItemsUser = Collections.emptyList();
 
         switch (period) {
             case PERIOD_ALL:
                 // set start date to null when all feeds are needed
-                feedItems = findFilteredAndOrderedFeedItems(user, null, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, null, order, pageNumber);
                 break;
 
             case PERIOD_TODAY:
                 LocalDate today = LocalDate.now();
-                feedItems = findFilteredAndOrderedFeedItems(user, today, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, today, order, pageNumber);
                 break;
 
             case PERIOD_LAST_SEVEN_DAYS:
                 LocalDate dateBeforeSevenDays = LocalDate.now().minusDays(7L);
-                feedItems = findFilteredAndOrderedFeedItems(user, dateBeforeSevenDays, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, dateBeforeSevenDays, order, pageNumber);
                 break;
 
             case PERIOD_LAST_THIRTY_DAYS:
                 LocalDate dateBeforeThirtyDays = LocalDate.now().minusDays(30L);
-                feedItems = findFilteredAndOrderedFeedItems(user, dateBeforeThirtyDays, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, dateBeforeThirtyDays, order, pageNumber);
                 break;
 
             default: {
                 // find all feeds with the given page number
-                feedItems = findFilteredAndOrderedFeedItems(user, null, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, null, order, pageNumber);
                 break;
             }
         }
-        return feedItems;
+        return feedItemsUser;
     }
 
     /**
@@ -83,11 +83,10 @@ public class AllFeedsSortAndFilterService {
      * @param pageNumber
      * @return List<FeedItemUser>
      */
-    private List<FeedItem> findFilteredAndOrderedFeedItems(User user, LocalDate startDate, String order,
+    private List<FeedItemUser> findFilteredAndOrderedFeedItemsUser(User user, LocalDate startDate, String order,
             Integer pageNumber) {
 
         List<FeedItemUser> feedItemsUsers = Collections.emptyList();
-        List<FeedItem> feedItems = Collections.emptyList();
         Pageable pageable = null;
         Page<FeedItemUser> page = null;
 
@@ -104,8 +103,6 @@ public class AllFeedsSortAndFilterService {
                                     startDate, pageable);
 
                 feedItemsUsers = page.getContent();
-                feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                        .collect(Collectors.toList());
                 break;
             } // end case
 
@@ -120,8 +117,6 @@ public class AllFeedsSortAndFilterService {
                                     startDate, pageable);
 
                 feedItemsUsers = page.getContent();
-                feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                        .collect(Collectors.toList());
                 break;
             } // end case
             case ORDER_BY_UNREAD: {
@@ -141,8 +136,6 @@ public class AllFeedsSortAndFilterService {
                                     user, startDate, pageable);
 
                 feedItemsUsers = page.getContent();
-                feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                        .collect(Collectors.toList());
                 break;
             } // end case
 
@@ -150,15 +143,15 @@ public class AllFeedsSortAndFilterService {
                 // order by specific category or all categories is complex -> we implement the
                 // paging for it ourselves
                 feedItemsUsers = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, startDate);
-                feedItems = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUsers);
+                feedItemsUsers = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUsers);
                 break;
             } // end case
 
             default:
-                return feedItems;
+                return feedItemsUsers;
         }// end switch
 
-        return feedItems;
+        return feedItemsUsers;
     }
 
     /**

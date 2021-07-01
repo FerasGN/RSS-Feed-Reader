@@ -3,19 +3,17 @@ package de.htwsaar.pib2021.rss_feed_reader.converters;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import lombok.Data;
 
 @Component
 @Data
 public class FeedItemToFeedItemCommand implements Converter<FeedItem, FeedItemCommand> {
-    private User user;
     private String channelCategory;
 
     @Nullable

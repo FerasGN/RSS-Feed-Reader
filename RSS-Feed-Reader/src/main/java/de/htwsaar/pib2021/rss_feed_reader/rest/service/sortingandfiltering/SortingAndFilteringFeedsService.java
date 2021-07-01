@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 
 @Service
@@ -28,29 +29,29 @@ public class SortingAndFilteringFeedsService {
         this.channelFeedsSortAndFilterService = channelFeedsSortAndFilterService;
     }
 
-    public List<FeedItem> findAllFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
+    public List<FeedItemUser> findAllFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
             int pageNumber) {
-        return allFeedsSortAndFilterService.findFeedItems(user, period, order, pageNumber);
+        return allFeedsSortAndFilterService.findFeedItemsUser(user, period, order, pageNumber);
     }
 
-    public List<FeedItem> findReadLaterFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
-            int pageNumber) {
-        return readLaterFeedsSortAndFilterService.findFeedItems(user, period, order, pageNumber);
+    public List<FeedItemUser> findReadLaterFeedItemsByPeriodAndOrderAndPageNumber(User user, String period,
+            String order, int pageNumber) {
+        return readLaterFeedsSortAndFilterService.findFeedItemsUser(user, period, order, pageNumber);
     }
 
-    public List<FeedItem> findLikedFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
+    public List<FeedItemUser> findLikedFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
             int pageNumber) {
-        return likedFeedsSortAndFilterService.findFeedItems(user, period, order, pageNumber);
+        return likedFeedsSortAndFilterService.findFeedItemsUser(user, period, order, pageNumber);
     }
 
-    public List<FeedItem> findCategoryFeedItemsByPeriodAndOrderAndPageNumber(User user, String categoryName,
+    public List<FeedItemUser> findCategoryFeedItemsByPeriodAndOrderAndPageNumber(User user, String categoryName,
             String period, String order, int pageNumber) {
-        return categoryFeedsSortAndFilterService.findFeedItems(user, categoryName, period, order, pageNumber);
+        return categoryFeedsSortAndFilterService.findFeedItemsUser(user, categoryName, period, order, pageNumber);
     }
 
-    public List<FeedItem> findChannelFeedItemsByPeriodAndOrderAndPageNumber(User user, String channelTitle,
+    public List<FeedItemUser> findChannelFeedItemsByPeriodAndOrderAndPageNumber(User user, String channelTitle,
             String period, String order, int pageNumber) {
-        return channelFeedsSortAndFilterService.findFeedItems(user, channelTitle, period, order, pageNumber);
+        return channelFeedsSortAndFilterService.findFeedItemsUser(user, channelTitle, period, order, pageNumber);
     }
 
 }

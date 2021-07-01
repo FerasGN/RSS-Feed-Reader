@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.CategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
-import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
+import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.converters.CategoryToCategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.ChannelUserToChannelCommand;
@@ -76,11 +76,11 @@ public class FeedsController {
                         null, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
-            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-            feedItemCommands = findAllFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
+            List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<FeedItemUserCommand>();
+            feedItemUserCommands = findAllFeedItemUserCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
             model.addAttribute("allFeedsUrl", ALL_FEEDS_URL);
-            model.addAttribute("feeds", feedItemCommands);
+            model.addAttribute("feeds", feedItemUserCommands);
         }
         return "all-feeds";
     }
@@ -150,11 +150,12 @@ public class FeedsController {
                         READ_LATER_URL, null, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
-            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-            feedItemCommands = findReadLaterFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
+            List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<FeedItemUserCommand>();
+            feedItemUserCommands = findReadLaterFeedItemUserCommands(securityUser.getUser(), PERIOD_ALL,
+                    ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
             model.addAttribute("readLaterUrl", READ_LATER_URL);
-            model.addAttribute("feeds", feedItemCommands);
+            model.addAttribute("feeds", feedItemUserCommands);
         }
         return "read-later";
     }
@@ -177,11 +178,12 @@ public class FeedsController {
                         LIKED_FEEDS_URL, null, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
-            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-            feedItemCommands = findLikedFeedItemCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST, 0);
+            List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<FeedItemUserCommand>();
+            feedItemUserCommands = findLikedFeedItemUserCommands(securityUser.getUser(), PERIOD_ALL, ORDER_BY_LATEST,
+                    0);
             model.addAttribute("view", "cards");
             model.addAttribute("likedFeedsUrl", LIKED_FEEDS_URL);
-            model.addAttribute("feeds", feedItemCommands);
+            model.addAttribute("feeds", feedItemUserCommands);
         }
         return "read-later";
     }
@@ -209,11 +211,11 @@ public class FeedsController {
                         categoryName, null, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
-            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-            feedItemCommands = findCategoryFeedItemCommands(securityUser.getUser(), categoryName, PERIOD_ALL,
+            List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<FeedItemUserCommand>();
+            feedItemUserCommands = findCategoryFeedItemCommands(securityUser.getUser(), categoryName, PERIOD_ALL,
                     ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
-            model.addAttribute("feeds", feedItemCommands);
+            model.addAttribute("feeds", feedItemUserCommands);
             model.addAttribute("categoryName", categoryName);
             model.addAttribute("orderSelectUrl", "/category");
             model.addAttribute("categoryUrl", CATEGORY_URL + "/" + categoryName);
@@ -250,11 +252,11 @@ public class FeedsController {
                         null, channelTitle, period, order, 0);
             return filteredAndOrderedFeeds;
         } else {
-            List<FeedItemCommand> feedItemCommands = new ArrayList<FeedItemCommand>();
-            feedItemCommands = findChannelFeedItemCommands(securityUser.getUser(), channelTitle, PERIOD_ALL,
+            List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<FeedItemUserCommand>();
+            feedItemUserCommands = findChannelFeedItemCommands(securityUser.getUser(), channelTitle, PERIOD_ALL,
                     ORDER_BY_LATEST, 0);
             model.addAttribute("view", "cards");
-            model.addAttribute("feeds", feedItemCommands);
+            model.addAttribute("feeds", feedItemUserCommands);
             model.addAttribute("channelTitle", channelTitle);
             model.addAttribute("orderSelectUrl", "/channel");
             model.addAttribute("categoryUrl", CATEGORY_URL + "/" + categoryName);
@@ -271,6 +273,7 @@ public class FeedsController {
 
     private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {
         User user = securityUser.getUser();
+
         List<CategoryCommand> categoryCommands = findCategoryCommands(user);
         List<ChannelUser> channelsUser = channelService.findAllChannelUserOrderedByCategory(user);
         ChannelUserToChannelCommand channelUserToChannelCommand = new ChannelUserToChannelCommand(feedsService);
@@ -293,37 +296,37 @@ public class FeedsController {
     public String getFilteredAndOrderedFeedsAsCards(User user, Model model, String currentFeedsUrl, String categoryName,
             String channelTitle, String period, String order, int pageNumber) {
 
-        List<FeedItemCommand> feedItemCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName, channelTitle,
-                period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemUserCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName,
+                channelTitle, period, order, pageNumber);
 
         model.addAttribute("view", "cards");
-        model.addAttribute("feeds", feedItemCommands);
+        model.addAttribute("feeds", feedItemUserCommands);
         return "layouts/feeds-cards :: feeds-cards";
     }
 
     public String getFilteredAndOrderedFeedsAsList(User user, Model model, String currentFeedsUrl, String categoryName,
             String channelTitle, String period, String order, int pageNumber) {
 
-        List<FeedItemCommand> feedItemCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName, channelTitle,
-                period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemUserCommands = getFeedItemCommands(user, currentFeedsUrl, categoryName,
+                channelTitle, period, order, pageNumber);
 
         model.addAttribute("view", "list");
-        model.addAttribute("feeds", feedItemCommands);
+        model.addAttribute("feeds", feedItemUserCommands);
         return "layouts/feeds-list :: feeds-list";
     }
 
-    private List<FeedItemCommand> getFeedItemCommands(User user, String currentFeedsUrl, String categoryName,
+    private List<FeedItemUserCommand> getFeedItemCommands(User user, String currentFeedsUrl, String categoryName,
             String channelTitle, String period, String order, int pageNumber) {
-        List<FeedItemCommand> feeds = Collections.emptyList();
+        List<FeedItemUserCommand> feeds = Collections.emptyList();
 
         if (ALL_FEEDS_URL.equalsIgnoreCase(currentFeedsUrl))
-            feeds = findAllFeedItemCommands(user, period, order, pageNumber);
+            feeds = findAllFeedItemUserCommands(user, period, order, pageNumber);
 
         else if (READ_LATER_URL.equalsIgnoreCase(currentFeedsUrl))
-            feeds = findReadLaterFeedItemCommands(user, period, order, pageNumber);
+            feeds = findReadLaterFeedItemUserCommands(user, period, order, pageNumber);
 
         else if (LIKED_FEEDS_URL.equalsIgnoreCase(currentFeedsUrl))
-            feeds = findLikedFeedItemCommands(user, period, order, pageNumber);
+            feeds = findLikedFeedItemUserCommands(user, period, order, pageNumber);
 
         else if (CATEGORY_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findCategoryFeedItemCommands(user, categoryName, period, order, pageNumber);
@@ -334,40 +337,43 @@ public class FeedsController {
         return feeds;
     }
 
-    private List<FeedItemCommand> findAllFeedItemCommands(User user, String period, String order, int pageNumber) {
-        List<FeedItemCommand> feedItemCommands = feedsService.findAllFeedItemsCommands(user, period, order, pageNumber);
-        return feedItemCommands;
-    }
-
-    private List<FeedItemCommand> findReadLaterFeedItemCommands(User user, String period, String order,
+    private List<FeedItemUserCommand> findAllFeedItemUserCommands(User user, String period, String order,
             int pageNumber) {
-        List<FeedItemCommand> feedItemCommands = feedsService.findReadLaterFeedItemsCommands(user, period, order,
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.findAllFeedItemUserCommands(user, period, order,
                 pageNumber);
-
-        return feedItemCommands;
+        return feedItemUserCommands;
     }
 
-    private List<FeedItemCommand> findLikedFeedItemCommands(User user, String period, String order, int pageNumber) {
-        List<FeedItemCommand> feedItemCommands = feedsService.findLikedFeedItemsCommands(user, period, order,
-                pageNumber);
-
-        return feedItemCommands;
-    }
-
-    private List<FeedItemCommand> findCategoryFeedItemCommands(User user, String categoryName, String period,
-            String order, int pageNumber) {
-        List<FeedItemCommand> feedItemCommands = feedsService.findCategoryFeedItemCommands(user, categoryName, period,
+    private List<FeedItemUserCommand> findReadLaterFeedItemUserCommands(User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.findReadLaterFeedItemUserCommands(user, period,
                 order, pageNumber);
 
-        return feedItemCommands;
+        return feedItemUserCommands;
     }
 
-    private List<FeedItemCommand> findChannelFeedItemCommands(User user, String channelTitle, String period,
-            String order, int pageNumber) {
-        List<FeedItemCommand> feedItemCommands = feedsService.findChannelFeedItemCommands(user, channelTitle, period,
-                order, pageNumber);
+    private List<FeedItemUserCommand> findLikedFeedItemUserCommands(User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.findLikedFeedItemUserCommands(user, period, order,
+                pageNumber);
 
-        return feedItemCommands;
+        return feedItemUserCommands;
+    }
+
+    private List<FeedItemUserCommand> findCategoryFeedItemCommands(User user, String categoryName, String period,
+            String order, int pageNumber) {
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.findCategoryFeedItemUserCommands(user,
+                categoryName, period, order, pageNumber);
+
+        return feedItemUserCommands;
+    }
+
+    private List<FeedItemUserCommand> findChannelFeedItemCommands(User user, String channelTitle, String period,
+            String order, int pageNumber) {
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.findChannelFeedItemUserCommands(user,
+                channelTitle, period, order, pageNumber);
+
+        return feedItemUserCommands;
     }
 
     public List<CategoryCommand> findCategoryCommands(User user) {
@@ -387,13 +393,13 @@ public class FeedsController {
      * @return boolean
      */
 
-    // private List<FeedItemCommand>
+    // private List<FeedItemUserCommand>
     // getFeedsItemCommandsOfChannelCategoryFilteredAndOrdered(User user,
     // String categoryName, String period, String order, int pageNumber) {
-    // List<FeedItemCommand> feedItemCommands =
+    // List<FeedItemUserCommand> feedItemUserCommands =
     // feedsService.findAllFeedItemsCommands(user, categoryName, period,
     // order, pageNumber);
-    // return feedItemCommands;
+    // return feedItemUserCommands;
     // }
 
 }

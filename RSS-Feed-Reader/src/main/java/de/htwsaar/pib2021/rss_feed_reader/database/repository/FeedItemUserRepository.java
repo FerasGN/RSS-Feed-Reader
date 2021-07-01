@@ -18,11 +18,13 @@ import java.util.Optional;
 @Repository
 public interface FeedItemUserRepository extends JpaRepository<FeedItemUser, FeedItemUserId> {
 
-        List<FeedItemUser> findAllByUserAndRead(User user, Boolean bool);
+        List<FeedItemUser> findAllByUserAndRead(User user, boolean read);
 
-        List<FeedItemUser> findAllByUserAndLiked(User user, Boolean bool);
+        List<FeedItemUser> findAllByUserAndLiked(User user, boolean liked);
 
-        List<FeedItemUser> findAllByUserAndReadLater(User user, Boolean bool);
+        List<FeedItemUser> findAllByUserAndReadLater(User user, boolean readLater);
+
+        Long countByUserAndRead(User user, boolean read);
 
         List<FeedItemUser> findAllByUser(User user);
 
@@ -31,7 +33,5 @@ public interface FeedItemUserRepository extends JpaRepository<FeedItemUser, Feed
         Optional<FeedItemUser> findByUserAndFeedItem_Link(User user, String link);
 
         Page<FeedItemUser> findAllByUser(User user, Pageable pageable);
-
-
 
 }

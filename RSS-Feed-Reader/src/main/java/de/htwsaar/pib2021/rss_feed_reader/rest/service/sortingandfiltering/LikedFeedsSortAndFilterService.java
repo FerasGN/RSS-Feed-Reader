@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
@@ -42,38 +40,38 @@ public class LikedFeedsSortAndFilterService {
      * @param pageNumber
      * @return List<FeedItem>
      */
-    public List<FeedItem> findFeedItems(User user, String period, String order, int pageNumber) {
+    public List<FeedItemUser> findFeedItemsUser(User user, String period, String order, int pageNumber) {
 
-        List<FeedItem> feedItems = Collections.emptyList();
+        List<FeedItemUser> feedItemsUser = Collections.emptyList();
 
         switch (period) {
             case PERIOD_ALL:
                 // set start date to null when all feeds are needed
-                feedItems = findFilteredAndOrderedFeedItems(user, null, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, null, order, pageNumber);
                 break;
 
             case PERIOD_TODAY:
                 LocalDate today = LocalDate.now();
-                feedItems = findFilteredAndOrderedFeedItems(user, today, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, today, order, pageNumber);
                 break;
 
             case PERIOD_LAST_SEVEN_DAYS:
                 LocalDate dateBeforeSevenDays = LocalDate.now().minusDays(7L);
-                feedItems = findFilteredAndOrderedFeedItems(user, dateBeforeSevenDays, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, dateBeforeSevenDays, order, pageNumber);
                 break;
 
             case PERIOD_LAST_THIRTY_DAYS:
                 LocalDate dateBeforeThirtyDays = LocalDate.now().minusDays(30L);
-                feedItems = findFilteredAndOrderedFeedItems(user, dateBeforeThirtyDays, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, dateBeforeThirtyDays, order, pageNumber);
                 break;
 
             default: {
                 // find all read later feeds with the given page number
-                feedItems = findFilteredAndOrderedFeedItems(user, null, order, pageNumber);
+                feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, null, order, pageNumber);
                 break;
             }
         }
-        return feedItems;
+        return feedItemsUser;
     }
 
     /**
@@ -83,11 +81,10 @@ public class LikedFeedsSortAndFilterService {
      * @param pageNumber
      * @return List<FeedItemUser>
      */
-    private List<FeedItem> findFilteredAndOrderedFeedItems(User user, LocalDate startDate, String order,
+    private List<FeedItemUser> findFilteredAndOrderedFeedItemsUser(User user, LocalDate startDate, String order,
             Integer pageNumber) {
 
-        List<FeedItemUser> feedItemsUsers = Collections.emptyList();
-        List<FeedItem> feedItems = Collections.emptyList();
+        List<FeedItemUser> feedItemsUser = Collections.emptyList();
         Pageable pageable = null;
         Page<FeedItemUser> page = null;
 
@@ -104,9 +101,7 @@ public class LikedFeedsSortAndFilterService {
                             .findByUserAndLikedAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
                                     user, true, startDate, pageable);
 
-                feedItemsUsers = page.getContent();
-                feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                        .collect(Collectors.toList());
+                feedItemsUser = page.getContent();
                 break;
             } // end case
 
@@ -121,9 +116,7 @@ public class LikedFeedsSortAndFilterService {
                             .findByUserAndLikedAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateAsc(
                                     user, true, startDate, pageable);
 
-                feedItemsUsers = page.getContent();
-                feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                        .collect(Collectors.toList());
+                feedItemsUser = page.getContent();
                 break;
             } // end case
 
@@ -144,25 +137,23 @@ public class LikedFeedsSortAndFilterService {
                             .findByUserAndLikedAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
                                     user, true, startDate, pageable);
 
-                feedItemsUsers = page.getContent();
-                feedItems = feedItemsUsers.stream().map((FeedItemUser e) -> e.getFeedItem())
-                        .collect(Collectors.toList());
+                feedItemsUser = page.getContent();
                 break;
             } // end case
 
             case ORDER_BY_ALL_CATEGORIES: {
                 // order by specific category or all categories is complex -> we implement the
                 // paging for it ourselves
-                feedItemsUsers = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, startDate);
-                feedItems = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUsers);
+                feedItemsUser = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, startDate);
+                feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
                 break;
             } // end case
 
             default:
-                return feedItems;
+                return feedItemsUser;
         }// end switch
 
-        return feedItems;
+        return feedItemsUser;
     }
 
     /**

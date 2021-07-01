@@ -1,37 +1,40 @@
 <thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="feeds-cards"
     th:remove="tag">
-    <th:block th:each="feed,i : ${feeds}" th:id="'feed-card-' + ${i.index + 1}" class="feeds-cards">
+    <th:block th:each="feed : ${feeds}" th:id="'feed-card-' + ${feed.userId + '-' + feed.feedItemId}"
+        class="feeds-cards">
         <div class="app-card app-card-feed shadow-sm mb-4">
             <div class="app-card-header px-4 py-3">
                 <div class="row g-3 align-items-center">
                     <div class="col-12 col-lg-auto text-center text-lg-start">
                         <img class="feed-image"
-                            th:src="${(feed.imageUrl!= null && !#strings.isEmpty(feed.imageUrl)) ? feed.imageUrl : '/assets/images/question-mark.png'}"
+                            th:src="${(feed.feedItemCommand.imageUrl!= null && !#strings.isEmpty(feed.feedItemCommand.imageUrl)) ? feed.feedItemCommand.imageUrl : '/assets/images/question-mark.png'}"
                             alt="">
                     </div>
                     <!--//col-->
                     <div class="col text-center text-lg-start">
                         <div class="feed-category mb-2"><span class="badge bg-success"
-                                th:text="${feed.channelCategory}">category</span></div>
-                        <h4 class="feed-title mb-1" th:text="${feed.title}">Feed title</h4>
+                                th:text="${feed.feedItemCommand.channelCategory}">category</span></div>
+                        <h4 class="feed-title mb-1" th:text="${feed.feedItemCommand.title}">Feed title</h4>
 
                         <ul class="feed-meta list-inline mb-0">
-                            <li class="list-inline-item"><a th:href="@{${feed.websiteLink}}"
-                                    th:text="${feed.channelTitle}"></a></li>
+                            <li class="list-inline-item"><a th:href="@{${feed.feedItemCommand.websiteLink}}"
+                                    th:text="${feed.feedItemCommand.channelTitle}"></a></li>
                             <li class="list-inline-item">|</li>
                             <li class="list-inline-item"
-                                th:if="${feed.elapsedPublishHoures == 0 && feed.elapsedPublishDays == 0 }"><span
-                                    th:text="${feed.elapsedPublishMinutes}"></span> min<th:block
-                                    th:if="${feed.elapsedPublishMinutes != 1}">s</th:block> ago</li>
+                                th:if="${feed.feedItemCommand.elapsedPublishHoures == 0 && feed.feedItemCommand.elapsedPublishDays == 0 }">
+                                <span th:text="${feed.feedItemCommand.elapsedPublishMinutes}"></span> min<th:block
+                                    th:if="${feed.feedItemCommand.elapsedPublishMinutes != 1}">s</th:block> ago
+                            </li>
                             <li class="list-inline-item"
-                                th:if="${feed.elapsedPublishDays == 0 && feed.elapsedPublishHoures > 0 }"><span
-                                    th:text="${feed.elapsedPublishHoures}"></span> hr<th:block
-                                    th:if="${feed.elapsedPublishHoures != 1}">s</th:block> ago</li>
-                            <li class="list-inline-item" th:if="${feed.elapsedPublishDays > 0 }"><span
-                                    th:text="${feed.elapsedPublishDays}"></span> day<th:block
-                                    th:if="${feed.elapsedPublishDays != 1}">s</th:block> ago</li>
+                                th:if="${feed.feedItemCommand.elapsedPublishDays == 0 && feed.feedItemCommand.elapsedPublishHoures > 0 }">
+                                <span th:text="${feed.feedItemCommand.elapsedPublishHoures}"></span> hr<th:block
+                                    th:if="${feed.feedItemCommand.elapsedPublishHoures != 1}">s</th:block> ago
+                            </li>
+                            <li class="list-inline-item" th:if="${feed.feedItemCommand.elapsedPublishDays > 0 }"><span
+                                    th:text="${feed.feedItemCommand.elapsedPublishDays}"></span> day<th:block
+                                    th:if="${feed.feedItemCommand.elapsedPublishDays != 1}">s</th:block> ago</li>
                             <li class="list-inline-item">|</li>
-                            <li class="list-inline-item" th:text="${feed.author}"></li>
+                            <li class="list-inline-item" th:text="${feed.feedItemCommand.author}"></li>
                         </ul>
 
                     </div>
@@ -41,28 +44,32 @@
             </div>
             <!--//app-card-header-->
             <div class="app-card-body p-4">
-                <div class="feed-description overflow-hidden" th:utext="${feed.description}">Feed description</div>
+                <div class="feed-description overflow-hidden" th:utext="${feed.feedItemCommand.description}">Feed
+                    description</div>
             </div>
             <!--//app-card-body-->
             <div class="app-card-footer px-4 py-3">
-                <a class="action-link" th:href="@{${feed.link}}" th:target="_blank">Read more<svg width="1em"
-                        height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right ml-2" fill="currentColor"
+                <a class="action-link" th:href="@{${feed.feedItemCommand.link}}" th:target="_blank">Read more<svg
+                        width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right ml-2" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
                     </svg></a>
                 <div class="toolbar">
                     <div class="animated-icon heart" data-bs-toggle="tooltip" title="like">
-                        <input type="checkbox" th:id="'heart-' + ${i.index + 1}" />
-                        <label th:for="'heart-' + ${i.index + 1}"></label>
+                        <input type="checkbox" th:id="'heart-' + ${feed.userId + '-' + feed.feedItemId}"
+                            th:checked="${feed.liked}" />
+                        <label th:for="'heart-' + ${feed.userId + '-' + feed.feedItemId}"></label>
                     </div>
                     <div class="animated-icon bookmark" data-bs-toggle="tooltip" title="read later">
-                        <input type="checkbox" th:id="'bookmark-' + ${i.index + 1}" />
-                        <label th:for="'bookmark-' + ${i.index + 1}"></label>
+                        <input type="checkbox" th:id="'bookmark-' + ${feed.userId + '-' + feed.feedItemId}"
+                            th:checked="${feed.readLater}" />
+                        <label th:for="'bookmark-' + ${feed.userId + '-' + feed.feedItemId}"></label>
                     </div>
                     <div class="animated-icon read" data-bs-toggle="tooltip" title="mark as read">
-                        <input type="checkbox" th:id="'read-' + ${i.index + 1}" />
-                        <label th:for="'read-' + ${i.index + 1}"></label>
+                        <input type="checkbox" th:id="'read-' + ${feed.userId + '-' + feed.feedItemId}"
+                            th:checked="${feed.read}" />
+                        <label th:for="'read-' + ${feed.userId + '-' + feed.feedItemId}"></label>
                     </div>
                     <!-- <div class="animated-icon star" data-bs-toggle="tooltip" title="favorite">
                             <input type="checkbox" th:id="'star-' + ${i.index + 1}" />
