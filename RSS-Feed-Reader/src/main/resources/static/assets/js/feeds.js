@@ -403,7 +403,7 @@ function loadFeeds() {
 window.addEventListener("scroll", () => {
   if (
     window.scrollY + 0.5 + window.innerHeight >=
-    document.documentElement.scrollHeight - 0.1
+    document.documentElement.scrollHeight - 0.4
   ) {
     loadFeeds();
     pageNumber++;
