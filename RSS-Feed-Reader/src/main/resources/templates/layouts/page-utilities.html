@@ -5,11 +5,11 @@
             <div class="col-auto">
                 <form class="cards-search-form row gx-1 align-items-center">
                     <div class="col-auto">
-                        <input type="text" id="search-feeds" name="search-feeds" class="form-control search-feeds"
-                            placeholder="Search">
+                        <input type="text" id="q" name="q" class="form-control search-feeds" placeholder="Search">
                     </div>
                     <div class="col-auto">
-                        <button type="submit" class="btn app-btn-secondary">Search</button>
+                        <button type="button" onclick="search(); return false;"
+                            class="btn app-btn-secondary">Search</button>
                     </div>
                 </form>
 
@@ -39,7 +39,8 @@
                     <option value="oldest">Oldest</option>
                     <option value="unread" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
                     <option value="channel" th:if="${orderSelectUrl} != '/channel'">Sort By Channel</option>
-                    <option value="all-categories" th:if="${orderSelectUrl} != '/category' and ${orderSelectUrl} != '/channel'">Sort By
+                    <option value="all-categories"
+                        th:if="${orderSelectUrl} != '/category' and ${orderSelectUrl} != '/channel'">Sort By
                         Category</option>
 
 

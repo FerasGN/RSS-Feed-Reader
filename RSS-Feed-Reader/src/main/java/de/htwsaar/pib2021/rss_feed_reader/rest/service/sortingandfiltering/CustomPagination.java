@@ -30,4 +30,16 @@ public class CustomPagination {
 
         return feedItemsUsers;
     }
+
+    public List<Long> getNextPageOfFeedItemsIds(Integer pageNumber, Integer pageSize, List<Long> feedItemsIds) {
+        double lastPage = Math.ceil(feedItemsIds.size() / (double) pageSize);
+
+        // ids number is less than the page size
+        if (pageNumber < lastPage && feedItemsIds.size() < pageSize)
+            return feedItemsIds;
+        else if (pageNumber < lastPage)
+            feedItemsIds = feedItemsIds.subList(0, pageNumber * pageSize);
+
+        return feedItemsIds;
+    }
 }

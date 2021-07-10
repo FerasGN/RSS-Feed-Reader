@@ -149,6 +149,11 @@ public class LikedFeedsSortAndFilterService {
                 break;
             } // end case
 
+            case ORDER_BY_MOST_RELEVANT: {
+
+                break;
+            } // end case
+
             default:
                 return feedItemsUser;
         }// end switch

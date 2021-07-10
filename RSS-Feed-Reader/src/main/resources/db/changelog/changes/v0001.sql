@@ -1,4 +1,4 @@
-create table category
+create table IF NOT EXISTS category
 (
     id   bigserial not null
         constraint category_pkey
@@ -8,7 +8,7 @@ create table category
             unique
 );
 
-create table "user"
+create table IF NOT EXISTS "user"
 (
     id                      bigserial not null
         constraint user_pkey
@@ -32,7 +32,7 @@ create table "user"
 );
 
 
-create table channel
+create table IF NOT EXISTS channel
 (
     id           bigserial not null
         constraint channel_pkey
@@ -47,7 +47,7 @@ create table channel
     favicon_link text
 );
 
-create table channel_user
+create table IF NOT EXISTS channel_user
 (
     channel_id  bigint  not null
         constraint fkicqx3hc23lmqofh36eeyi29nn
@@ -63,7 +63,7 @@ create table channel_user
         primary key (channel_id, user_id)
 );
 
-create table feed_item
+create table IF NOT EXISTS feed_item
 (
     id                 bigserial not null
         constraint feed_item_pkey
@@ -82,7 +82,7 @@ create table feed_item
     image_url          text
 );
 
-create table feed_item_x_category
+create table IF NOT EXISTS feed_item_x_category
 (
     category_id  bigint not null
         constraint fkbpmfgk61nbb1q7ep932kocqap
@@ -92,7 +92,7 @@ create table feed_item_x_category
             references feed_item
 );
 
-create table feed_item_x_user
+create table IF NOT EXISTS feed_item_x_user
 (
     clicks     integer default 0,
     liked      boolean not null,
@@ -108,7 +108,7 @@ create table feed_item_x_user
         primary key (feed_item, "user")
 );
 
-create table user_x_interest
+create table IF NOT EXISTS user_x_interest
 (
     user_id       bigint not null
         constraint fk2iuq0lc7i47l4586x29b379t9
@@ -116,7 +116,7 @@ create table user_x_interest
     user_interest varchar(255)
 );
 
-CREATE MATERIALIZED VIEW search_index_feed_item AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS search_index_feed_item AS
 SELECT id,
        setweight(to_tsvector(language::regconfig, title), 'A')||
        setweight(to_tsvector(language::regconfig, description), 'B') AS document
@@ -129,10 +129,10 @@ Create FUNCTION refresh_mat_view_feed_item()
     RETURNS TRIGGER LANGUAGE plpgsql
 AS $$
 BEGIN
-    REFRESH MATERIALIZED VIEW CONCURRENTLY search_index_feed_item;
+    REFRESH MATERIALIZED VIEW search_index_feed_item;
 END $$;
 
-Create MATERIALIZED VIEW search_index_channel AS
+Create MATERIALIZED VIEW  IF NOT EXISTS search_index_channel AS
 SELECT id,
        setweight(to_tsvector(language::regconfig, title), 'A')||
        setweight(to_tsvector(language::regconfig, description), 'B') AS document
@@ -145,5 +145,5 @@ Create FUNCTION refresh_mat_view_channel()
     RETURNS TRIGGER LANGUAGE plpgsql
 AS $$
 BEGIN
-    REFRESH MATERIALIZED VIEW CONCURRENTLY search_index_channel;
+    REFRESH MATERIALIZED VIEW search_index_channel;
 END $$;

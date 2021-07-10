@@ -1,14 +1,14 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
-import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemCommand;
+
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemUserCommand;
-import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemToFeedItemCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemUserToFeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.search.FeedSearchingService;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering.CategoryFeedsSortAndFilterService;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering.SortingAndFilteringFeedsService;
 
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +34,8 @@ public class FeedsService {
     private CategoryFeedsSortAndFilterService categoryFeedsSortAndFilterService;
     @Autowired
     private SortingAndFilteringFeedsService sortingAndFilteringFeedsService;
+    @Autowired
+    private FeedSearchingService searchingService;
     @Autowired
     private ChannelService channelService;
 
@@ -276,6 +277,54 @@ public class FeedsService {
         });
 
         return feedItemUserCommands;
+    }
+
+    public List<FeedItemUserCommand> searchAllFeedItemCommands(String q, User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUser> feedItemsUser = searchingService.searchAll(q, user, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> searchReadLaterFeedItemCommands(String q, User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUser> feedItemsUser = searchingService.searchReadLater(q, user.getId(), period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> searchLikedFeedItemCommands(String q, User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUser> feedItemsUser = searchingService.searchLikedFeeds(q, user.getId(), period, order,
+                pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> searchCategoryFeedItemCommands(String q, User user, String categoryName,
+            String period, String order, int pageNumber) {
+        List<FeedItemUser> feedItemsUser = searchingService.searchCategory(q, categoryName, user.getId(), period, order,
+                pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> searchChannelFeedItemCommands(String q, User user, String channelTitle,
+            String period, String order, int pageNumber) {
+        List<FeedItemUser> feedItemsUser = searchingService.searchChannel(q, channelTitle, user.getId(), period, order,
+                pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
     }
 
     // public List<FeedItem> findAllFeedsByAllCategories(User user, String

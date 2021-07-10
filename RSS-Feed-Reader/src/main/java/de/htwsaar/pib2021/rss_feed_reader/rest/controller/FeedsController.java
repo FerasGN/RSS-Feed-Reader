@@ -131,6 +131,7 @@ public class FeedsController {
 
         return filteredAndOrderedFeeds;
     }
+    
 
     @GetMapping(READ_LATER_URL)
     public String showReadLaterFeeds(@RequestParam(value = "view", required = false) String view,
@@ -273,7 +274,8 @@ public class FeedsController {
         boolean correctOrder = ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(order)
                 || ORDER_BY_CATEGORY.equalsIgnoreCase(order) || ORDER_BY_CHANNEL.equalsIgnoreCase(order)
                 || ORDER_BY_LATEST.equalsIgnoreCase(order) || ORDER_BY_OLDEST.equalsIgnoreCase(order)
-                || ORDER_BY_UNREAD.equalsIgnoreCase(order);
+                || ORDER_BY_UNREAD.equalsIgnoreCase(order)
+                || ORDER_BY_MOST_RELEVANT.equalsIgnoreCase(order);
         return (correctView && correctPeriod && correctOrder);
     }
 

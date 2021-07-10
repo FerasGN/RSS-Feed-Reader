@@ -9,6 +9,7 @@ var RECENTLY_READ_URL = "/recently-read";
 var CATEGORY_URL = "/category/";
 var CHANNEL_URL = "/channel/";
 var FEEDS_PAGE_URL = HOST + "feeds-page";
+var SEARCH_URL = HOST + "search";
 var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
 var currentFeedsUrl =
   "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
@@ -53,6 +54,29 @@ function getFeedsPage(url, container) {
 
       let resp = this.response;
       if (resp !== "") container.innerHTML += request.responseText;
+    } else {
+      // We reached our target server, but it returned an error
+    }
+  };
+  request.onerror = function () {
+    // There was a connection error of some sort
+  };
+
+  // await showPreloader();
+  request.send();
+}
+
+function getSearchResults(url, container) {
+  let request = new XMLHttpRequest();
+  request.open("GET", url, true);
+
+  request.onload = function () {
+    if (this.status >= 200 && this.status < 400) {
+      // Success!
+      const preloader = document.getElementById("loader");
+      preloader.style.cssText = "display:none !important";
+      let resp = this.response;
+      if (resp !== "") container.innerHTML = request.responseText;
     } else {
       // We reached our target server, but it returned an error
     }
@@ -201,7 +225,7 @@ function handleView(url, selectedView, feedsContainer) {
 
 function handleSelect(selectedView, selectedPeriod, selectedOrder) {
   pageNumber = 1;
-  // delete list contianer, if it exists
+
   let listItemsContainer = document.getElementById("list-items-container");
   let cardsContainer = document.getElementById("cards-container");
 
@@ -239,45 +263,58 @@ function handleSelect(selectedView, selectedPeriod, selectedOrder) {
 // handle view select
 viewSelect.addEventListener("change", function (e) {
   let selectedView = e.target.value;
-  let selectedPeriod = document.getElementById("period-select").value;
-  let selectedOrder = document.getElementById("order-select").value;
+  let selectedPeriod = document.getElementById("period-select").value.trim();
+  let selectedOrder = document.getElementById("order-select").value.trim();
+  let searchTermValue = document.getElementById("q").value.trim();
 
   console.log(
     "Selected view= " + selectedView + ", period= " + selectedPeriod,
     " and order= " + selectedOrder
   );
-  handleSelect(selectedView, selectedPeriod, selectedOrder);
+
+  if (searchTermValue !== "") search();
+  else handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
 
 // handle period select
 periodSelect.addEventListener("change", function (e) {
-  let selectedView = document.getElementById("view-select").value;
-  let selectedPeriod = e.target.value;
-  let selectedOrder = document.getElementById("order-select").value;
+  let selectedView = document.getElementById("view-select").value.trim();
+  let selectedPeriod = e.target.value.trim();
+  let selectedOrder = document.getElementById("order-select").value.trim();
+  let searchTermValue = document.getElementById("q").value.trim();
 
   console.log(
     "Selected view= " + selectedView + ", period= " + selectedPeriod,
     " and order= " + selectedOrder
   );
-  handleSelect(selectedView, selectedPeriod, selectedOrder);
+  if (searchTermValue !== "") search();
+  else handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
 
 // handle order select
 orederSelect.addEventListener("change", function (e) {
-  let selectedView = document.getElementById("view-select").value;
-  let selectedPeriod = document.getElementById("period-select").value;
-  let selectedOrder = e.target.value;
+  let selectedView = document.getElementById("view-select").value.trim();
+  let selectedPeriod = document.getElementById("period-select").value.trim();
+  let selectedOrder = e.target.value.trim();
+  let searchTermValue = document.getElementById("q").value.trim();
 
   console.log(
     "Selected view =" + selectedView + ", period = " + selectedPeriod,
     " and order = " + selectedOrder
   );
-  handleSelect(selectedView, selectedPeriod, selectedOrder);
+  if (searchTermValue !== "") search();
+  else handleSelect(selectedView, selectedPeriod, selectedOrder);
 });
 
 /* ===== Load feeds on scroll ====== */
 
 function loadFeeds() {
+  let searchTerm = document.getElementById("q").value.trim();
+  if (searchTerm !== "") search();
+  else loadNormalFeeds();
+}
+
+function loadNormalFeeds() {
   let selectedView = document.getElementById("view-select").value;
   let selectedPeriod = document.getElementById("period-select").value;
   let selectedOrder = document.getElementById("order-select").value;
@@ -397,6 +434,8 @@ function loadFeeds() {
       );
     }
   }
+
+  pageNumber++;
 }
 
 // listen for scroll event and load more feeds if we reach the bottom of window
@@ -406,8 +445,157 @@ window.addEventListener("scroll", () => {
     document.documentElement.scrollHeight - 0.4
   ) {
     loadFeeds();
-    pageNumber++;
   }
+});
+
+/* ===== search ====== */
+function search() {
+  let selectedView = document.getElementById("view-select").value;
+  let selectedPeriod = document.getElementById("period-select").value;
+  let selectedOrder = document.getElementById("order-select").value;
+  let searchTerm = document.getElementById("q").value.trim();
+
+  const listItemsContainer = document.getElementById("list-items-container");
+  const cardsContainer = document.getElementById("cards-container");
+  if (document.body.contains(cardsContainer)) {
+    if (
+      window.location.href.indexOf(CATEGORY_URL) > -1 &&
+      window.location.href.indexOf(CHANNEL_URL) == -1
+    ) {
+      let category = window.location.pathname.split("/").pop();
+      getSearchResults(
+        SEARCH_URL +
+          "?q=" +
+          searchTerm +
+          "&currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&category=" +
+          category +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        cardsContainer
+      );
+    } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+      let channelTitle = decodeURI(window.location.pathname.split("/").pop());
+      getSearchResults(
+        SEARCH_URL +
+          "?q=" +
+          searchTerm +
+          "&currentFeedsUrl=" +
+          "/channel" +
+          "&channelTitle=" +
+          channelTitle +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        cardsContainer
+      );
+    } else {
+      getSearchResults(
+        SEARCH_URL +
+          "?q=" +
+          searchTerm +
+          "&currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        cardsContainer
+      );
+    }
+  } else if (document.body.contains(listItemsContainer)) {
+    if (
+      window.location.href.indexOf(CATEGORY_URL) > -1 &&
+      window.location.href.indexOf(CHANNEL_URL) == -1
+    ) {
+      let category = window.location.pathname.split("/").pop();
+      getSearchResults(
+        SEARCH_URL +
+          "?q=" +
+          searchTerm +
+          "&currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&category=" +
+          category +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        listItemsContainer
+      );
+    } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+      let channelTitle = decodeURI(window.location.pathname.split("/").pop());
+      getSearchResults(
+        SEARCH_URL +
+          "?q=" +
+          searchTerm +
+          "&currentFeedsUrl=" +
+          "/channel" +
+          "&channelTitle=" +
+          channelTitle +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        listItemsContainer
+      );
+    } else {
+      getSearchResults(
+        SEARCH_URL +
+          "?q=" +
+          searchTerm +
+          "&currentFeedsUrl=" +
+          currentFeedsUrl +
+          "&view=" +
+          selectedView +
+          "&period=" +
+          selectedPeriod +
+          "&orderBy=" +
+          selectedOrder +
+          "&pageNumber=" +
+          pageNumber,
+        listItemsContainer
+      );
+    }
+  }
+
+  pageNumber++;
+}
+
+let searchTerm = document.getElementById("q");
+searchTerm.addEventListener("input", (e) => {
+  pageNumber = 1;
+  document.getElementById("order-select").value = "most-relevant";
+  let searchTermValue = document.getElementById("q").value.trim();
+  if (searchTermValue === "") {
+    pageNumber = 0;
+    document.getElementById("order-select").value = "latest";
+  }
+  loadFeeds();
 });
 
 /* ===== sse-notifications ====== */
@@ -417,9 +605,9 @@ eventSource.onmessage = function (e) {
 
   // refresh the feed items list
   if (notification.message === "New Feed") {
-    let selectedView = document.getElementById("view-select").value;
-    let selectedPeriod = document.getElementById("period-select").value;
-    let selectedOrder = document.getElementById("order-select").value;
+    let selectedView = document.getElementById("view-select").value.trim();
+    let selectedPeriod = document.getElementById("period-select").value.trim();
+    let selectedOrder = document.getElementById("order-select").value.trim();
     handleSelect(selectedView, selectedPeriod, selectedOrder);
   }
 };
