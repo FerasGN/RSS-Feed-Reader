@@ -11,42 +11,58 @@ import de.htwsaar.pib2021.rss_feed_reader.validators.annotation.ValidFormInput;
 
 public class FormInputConstaintValidator implements ConstraintValidator<ValidFormInput, String> {
 
-    private Integer minLength;
-    private Integer maxLength;
-    private boolean blank;
+	private Integer minLength;
+	private Integer maxLength;
+	private boolean blank;
+	private boolean containsOnlyLettersAndNumbers;
 
-    @Override
-    public void initialize(ValidFormInput constraint) {
-        this.minLength = constraint.minLength();
-        this.maxLength = constraint.maxLength();
-        this.blank = constraint.blank();
-    }
+	@Override
+	public void initialize(ValidFormInput constraint) {
+		this.minLength = constraint.minLength();
+		this.maxLength = constraint.maxLength();
+		this.blank = constraint.blank();
+		this.containsOnlyLettersAndNumbers = constraint.containsOnlyLettersAndNumbers();
+	}
 
-    @Override
-    public boolean isValid(String text, ConstraintValidatorContext context) {
-        if (Math.abs(minLength) > Math.abs(maxLength)) {
-            Integer temp = maxLength;
-            maxLength = minLength;
-            minLength = temp;
-        }
+	@Override
+	public boolean isValid(String text, ConstraintValidatorContext context) {
+		if (Math.abs(minLength) > Math.abs(maxLength)) {
+			Integer temp = maxLength;
+			maxLength = minLength;
+			minLength = temp;
+		}
 
-        List<String> messages = new ArrayList<>();
-        if (blank) {
-            messages.add("* Length must be between " + minLength + " and " + maxLength + ".");
-            String messageTemplate = messages.stream().collect(Collectors.joining("\n"));
+		boolean textMinLength = text.length() >= minLength;
+		boolean textMaxLength = text.length() <= maxLength;
+		boolean textNotEmpty = !text.trim().isEmpty();
+		boolean textContainsOnlyLettersAndNumbers = text.matches(("[a-zA-Z0-9]{" + minLength + "," + maxLength + "}"));
 
-            context.buildConstraintViolationWithTemplate(messageTemplate).addConstraintViolation()
-                    .disableDefaultConstraintViolation();
-            return text.length() >= minLength && text.length() <= maxLength;
-        } else {
-            messages.add("* Length must be between " + minLength + " and " + maxLength + ".");
-            messages.add("* Field must not be empty");
-            String messageTemplate = messages.stream().collect(Collectors.joining("\n"));
+		List<String> messages = new ArrayList<>();
+		if (blank) {
+			messages.add("* Length must be between " + minLength + " and " + maxLength + ".");
+			String messageTemplate = messages.stream().collect(Collectors.joining("\n"));
 
-            context.buildConstraintViolationWithTemplate(messageTemplate).addConstraintViolation()
-                    .disableDefaultConstraintViolation();
-            return text.length() >= minLength && text.length() <= maxLength && !text.trim().isEmpty();
-        }
-    }
+			context.buildConstraintViolationWithTemplate(messageTemplate).addConstraintViolation()
+					.disableDefaultConstraintViolation();
+			return textMinLength && textMaxLength;
+		} else if (containsOnlyLettersAndNumbers) {
+			messages.add("* Length must be between " + minLength + " and " + maxLength + ".");
+			messages.add("* Field must not be empty.");
+			messages.add("* Field must only contain letters and numbers.");
+			String messageTemplate = messages.stream().collect(Collectors.joining("\n"));
+
+			context.buildConstraintViolationWithTemplate(messageTemplate).addConstraintViolation()
+					.disableDefaultConstraintViolation();
+			return textMinLength && textMaxLength && textNotEmpty & textContainsOnlyLettersAndNumbers;
+		} else {
+			messages.add("* Length must be between " + minLength + " and " + maxLength + ".");
+			messages.add("* Field must not be empty.");
+			String messageTemplate = messages.stream().collect(Collectors.joining("\n"));
+
+			context.buildConstraintViolationWithTemplate(messageTemplate).addConstraintViolation()
+					.disableDefaultConstraintViolation();
+			return textMinLength && textMaxLength && textNotEmpty;
+		}
+	}
 
 }

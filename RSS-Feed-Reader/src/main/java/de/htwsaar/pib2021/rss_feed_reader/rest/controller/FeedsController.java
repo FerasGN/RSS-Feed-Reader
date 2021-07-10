@@ -267,8 +267,14 @@ public class FeedsController {
     }
 
     private boolean existViewAndPeriodAbdOrderParams(String view, String period, String order) {
-        return (view != null && !view.trim().isEmpty()) && (order != null && !order.trim().isEmpty())
-                && (period != null && !period.trim().isEmpty());
+        boolean correctView = VIEW_CARDS.equalsIgnoreCase(view) || VIEW_TITLE_ONLY.equalsIgnoreCase(view);
+        boolean correctPeriod = PERIOD_ALL.equalsIgnoreCase(period) || PERIOD_LAST_SEVEN_DAYS.equalsIgnoreCase(period)
+                || PERIOD_LAST_THIRTY_DAYS.equalsIgnoreCase(period) || PERIOD_TODAY.equalsIgnoreCase(period);
+        boolean correctOrder = ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(order)
+                || ORDER_BY_CATEGORY.equalsIgnoreCase(order) || ORDER_BY_CHANNEL.equalsIgnoreCase(order)
+                || ORDER_BY_LATEST.equalsIgnoreCase(order) || ORDER_BY_OLDEST.equalsIgnoreCase(order)
+                || ORDER_BY_UNREAD.equalsIgnoreCase(order);
+        return (correctView && correctPeriod && correctOrder);
     }
 
     private Model initSidePanelFeedsInfo(Model model, SecurityUser securityUser) {

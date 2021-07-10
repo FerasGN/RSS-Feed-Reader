@@ -11,13 +11,13 @@ public class UserProfileUpdateCommand {
 
     private Long id;
 
-    @ValidFormInput(minLength = 6, maxLength = 60, blank = false)
+    @ValidFormInput(minLength = 6, maxLength = 60, blank = false, containsOnlyLettersAndNumbers = true)
     private String firstName;
 
-    @ValidFormInput(minLength = 6, maxLength = 60, blank = false)
+    @ValidFormInput(minLength = 6, maxLength = 60, blank = false, containsOnlyLettersAndNumbers = true)
     private String lastName;
 
-    @ValidFormInput(minLength = 5, maxLength = 30, blank = false)
+    @ValidFormInput(minLength = 5, maxLength = 30, blank = false, containsOnlyLettersAndNumbers = true)
     private String userName;
 
     @Email

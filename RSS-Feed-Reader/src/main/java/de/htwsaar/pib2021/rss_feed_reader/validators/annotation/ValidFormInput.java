@@ -31,4 +31,5 @@ public @interface ValidFormInput {
     int minLength();
     int maxLength();
     boolean blank();
+    boolean containsOnlyLettersAndNumbers();
 }

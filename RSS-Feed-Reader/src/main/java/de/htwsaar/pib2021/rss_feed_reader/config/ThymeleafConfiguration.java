@@ -20,7 +20,7 @@ public class ThymeleafConfiguration implements WebMvcConfigurer {
             "classpath:/static/assets/css/", "classpath:/static/assets/images/", "classpath:/static/assets/js/",
             "classpath:/static/assets/plugins/" };
 
-    private static final String PEFIX = "templates/";
+    private static final String PREFIX = "templates/";
     private static final String SUFFIX = ".html";
     private static final String TEMPLATE_MODE = "HTML";
     private static final String UTF8_ENCODING = "UTF-8";
@@ -33,7 +33,7 @@ public class ThymeleafConfiguration implements WebMvcConfigurer {
     @Bean
     public ViewResolver getViewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix(PEFIX);
+        resolver.setPrefix(PREFIX);
         resolver.setSuffix(SUFFIX);
         return resolver;
     }
@@ -41,7 +41,7 @@ public class ThymeleafConfiguration implements WebMvcConfigurer {
     @Bean
     public ClassLoaderTemplateResolver templateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix(PEFIX);
+        templateResolver.setPrefix(PREFIX);
         templateResolver.setCacheable(false);
         templateResolver.setSuffix(SUFFIX);
         templateResolver.setTemplateMode(TEMPLATE_MODE);

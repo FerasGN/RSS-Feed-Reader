@@ -34,8 +34,8 @@
 
 								<input th:field="*{firstName}" id="signup-first-name" name="signup-fisrt-name"
 									type="text" class="form-control signup-name" placeholder="First name"
-									pattern=".{3,60}"
-									oninvalid="this.setCustomValidity('First name must be between 3 and 60')"
+									pattern="[a-zA-Z0-9]{3,60}"
+									oninvalid="this.setCustomValidity('First name must be between 3 and 60 and contain only letters and numbers')"
 									oninput="this.setCustomValidity('')" required="required">
 
 								<th:block th:if="${#fields.hasErrors('firstName')}">
@@ -54,8 +54,8 @@
 								<label class="sr-only" for="signup-last-name">Your last name</label>
 
 								<input th:field="*{lastName}" id="signup-last-name" name="signup-last-name" type="text"
-									class="form-control signup-name" placeholder="Last name" pattern=".{3,60}"
-									oninvalid="this.setCustomValidity('Last name must be between 3 and 60')"
+									class="form-control signup-name" placeholder="Last name" pattern="[a-zA-Z0-9]{3,60}"
+									oninvalid="this.setCustomValidity('Last name must be between 3 and 60 and contain only letters and numbers')"
 									oninput="this.setCustomValidity('')" required="required">
 
 								<th:block th:if="${#fields.hasErrors('lastName')}">
@@ -83,8 +83,8 @@
 								<label class="sr-only" for="signup-username">Your username</label>
 
 								<input th:field="*{username}" id="signup-username" name="signup-email" type="text"
-									class="form-control username" placeholder="Username" pattern=".{5,30}"
-									oninvalid="this.setCustomValidity('Username must be between 5 and 40')"
+									class="form-control username" placeholder="Username" pattern="[a-zA-Z0-9]{5,30}"
+									oninvalid="this.setCustomValidity('Username must be between 5 and 30 and contain only letters and numbers')"
 									oninput="this.setCustomValidity('')" required="required">
 
 								<th:block th:if="${#fields.hasErrors('username')}">
