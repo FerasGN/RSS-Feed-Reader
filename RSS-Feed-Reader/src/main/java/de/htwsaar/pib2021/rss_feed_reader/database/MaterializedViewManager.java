@@ -1,5 +1,6 @@
 package de.htwsaar.pib2021.rss_feed_reader.database;
 
+import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import javax.transaction.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,13 +23,13 @@ public class MaterializedViewManager {
     @Modifying
     @Transactional
     public void refreshFeedItem() {
-        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW search_index_feed_item;").executeUpdate();
+        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW feedify.public.search_index_feed_item;").executeUpdate();
     }
 
     @Modifying
     @Transactional
     public void refreshChannleView() {
-        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW search_index_channel;").executeUpdate();
+        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW feedify.public.search_index_channel;").executeUpdate();
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -41,12 +43,15 @@ public class MaterializedViewManager {
 
     @Transactional
     @SuppressWarnings("unchecked")
-    public List<Long> fullTextSeachrFeedItem(String query) {
-        Query q = entityManager.createNativeQuery("SELECT id\n" 
+    public List<Long> fullTextSeachrFeedItem(String query, String language) {
+        String language2 = language.toLowerCase(Locale.ROOT);
+
+        Query q = entityManager.createNativeQuery("SELECT id\n"
                                                 + "From feedify.public.search_index_feed_item\n"
-                                                + "WHERE document @@ plainto_tsquery(?1)\n"
-                                                + "ORDER BY ts_rank(search_index_feed_item.document, plainto_tsquery(?1)) DESC;");
-        q.setParameter(1, query);
+                                                + "WHERE document @@ plainto_tsquery(?1 , ?2 )\n"
+                                                + "ORDER BY ts_rank(search_index_feed_item.document, plainto_tsquery(?1 , ?2 )) DESC;");
+        q.setParameter(2, query);
+        q.setParameter(1, language2 +"::regconfig");
         List<Long> resultList = (List<Long>)  q.getResultList()
                                                .stream()
                                                .map(id -> ((BigInteger) id).longValue())
@@ -56,18 +61,23 @@ public class MaterializedViewManager {
 
     @Transactional
     @SuppressWarnings("unchecked")
-    public List<Long> fullTextSearchChannel(String query) {
+    public List<Long> fullTextSearchChannel(String query, String language) {
+        String language2 = language.toLowerCase(Locale.ROOT);
 
-        Query q = entityManager.createNativeQuery( "SELECT id\n" 
-                                                + "From feedify.public.search_index_channel\n" 
-                                                + "WHERE document @@ plainto_tsquery(?1)\n"
-                                                + "ORDER BY ts_rank( search_index_channel.document, plainto_tsquery(?1)) DESC;");
-        q.setParameter(1, query);
+        Query q = entityManager.createNativeQuery( "SELECT id\n"
+                                                + "From feedify.public.search_index_channel\n"
+                                                + "WHERE document @@ plainto_tsquery(?1 , ?2 )\n"
+                                                + "ORDER BY ts_rank( search_index_channel.document, plainto_tsquery(?1, ?2)) DESC;");
+        q.setParameter(2, query);
+        q.setParameter(1, language2 +"::regconfig");
         List<Long> resultList = (List<Long>)  q.getResultList()
                                                .stream()
                                                .map(id -> ((BigInteger) id).longValue())
                                                .collect(Collectors.toList());
         return resultList;
     }
+
+
+
 
 }
