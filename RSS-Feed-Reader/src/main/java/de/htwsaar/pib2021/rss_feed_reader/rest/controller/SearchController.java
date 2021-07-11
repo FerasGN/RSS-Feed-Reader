@@ -36,6 +36,11 @@ public class SearchController {
             @RequestParam(value = "pageNumber", required = false) int pageNumber, Model model,
             @AuthenticationPrincipal SecurityUser securityUser) {
 
+        if (q == null || q.trim().isEmpty())
+            return "redirect:/feeds-page?currentFeedsUrl=" + currentFeedsUrl + "&channelTitle=" + channelTitle
+                    + "&category=" + category + "&view=" + view + "&period=" + period + "&orderBy=" + order
+                    + "&pageNumber=0";
+
         String filteredAndOrderedSearchResults = "";
 
         if (existViewAndPeriodAbdOrderParams(view, period, order)) { // if params exist use them

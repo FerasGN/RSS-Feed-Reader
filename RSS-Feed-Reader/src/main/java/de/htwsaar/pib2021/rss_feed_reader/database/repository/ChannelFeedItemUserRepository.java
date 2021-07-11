@@ -1,7 +1,7 @@
 package de.htwsaar.pib2021.rss_feed_reader.database.repository;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +34,7 @@ public interface ChannelFeedItemUserRepository extends JpaRepository<FeedItemUse
 
         Page<FeedItemUser> findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
                         User user, String channelTitle, LocalDate publishLocalDate, Pageable pageable);
+
+        Optional<FeedItemUser> findByIdAndFeedItem_Channel_Title(FeedItemUserId feedItemUserId, String channelTitle);
 
 }

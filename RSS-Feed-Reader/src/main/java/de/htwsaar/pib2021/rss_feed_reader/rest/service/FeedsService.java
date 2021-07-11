@@ -1,6 +1,5 @@
 package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
-
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemUserToFeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
@@ -145,7 +144,7 @@ public class FeedsService {
 
     public Long findNumberOfUnreadFeedsOfCategory(User user, String categoryName) {
         List<FeedItemUser> feedItemsUser = categoryFeedsSortAndFilterService
-                .findFeedItemUsersOrderedyCategoryNameAndPublishLocalDate(user, categoryName, null);
+                .findFeedItemUsersByCategoryNameOrderedyCategoryNameAndPublishLocalDate(user, categoryName, null);
 
         Long count = feedItemsUser.stream().filter(f -> !f.isRead()).count();
         return count;
@@ -290,7 +289,7 @@ public class FeedsService {
 
     public List<FeedItemUserCommand> searchReadLaterFeedItemCommands(String q, User user, String period, String order,
             int pageNumber) {
-        List<FeedItemUser> feedItemsUser = searchingService.searchReadLater(q, user.getId(), period, order, pageNumber);
+        List<FeedItemUser> feedItemsUser = searchingService.searchInReadLater(q, user, period, order, pageNumber);
         List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
                 feedItemsUser);
 
@@ -299,8 +298,7 @@ public class FeedsService {
 
     public List<FeedItemUserCommand> searchLikedFeedItemCommands(String q, User user, String period, String order,
             int pageNumber) {
-        List<FeedItemUser> feedItemsUser = searchingService.searchLikedFeeds(q, user.getId(), period, order,
-                pageNumber);
+        List<FeedItemUser> feedItemsUser = searchingService.searchInLikedFeeds(q, user, period, order, pageNumber);
         List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
                 feedItemsUser);
 
@@ -309,7 +307,7 @@ public class FeedsService {
 
     public List<FeedItemUserCommand> searchCategoryFeedItemCommands(String q, User user, String categoryName,
             String period, String order, int pageNumber) {
-        List<FeedItemUser> feedItemsUser = searchingService.searchCategory(q, categoryName, user.getId(), period, order,
+        List<FeedItemUser> feedItemsUser = searchingService.searchInCategory(q, user, categoryName, period, order,
                 pageNumber);
         List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
                 feedItemsUser);
@@ -319,7 +317,7 @@ public class FeedsService {
 
     public List<FeedItemUserCommand> searchChannelFeedItemCommands(String q, User user, String channelTitle,
             String period, String order, int pageNumber) {
-        List<FeedItemUser> feedItemsUser = searchingService.searchChannel(q, channelTitle, user.getId(), period, order,
+        List<FeedItemUser> feedItemsUser = searchingService.searchInChannel(q, channelTitle, user, period, order,
                 pageNumber);
         List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
                 feedItemsUser);

@@ -71,8 +71,8 @@ public class CategoryFeedsSortAndFilterService {
     private List<FeedItemUser> findFilteredAndOrderedFeedItemsUser(User user, String categoryName, LocalDate startDate,
             String order, Integer pageNumber) {
 
-        List<FeedItemUser> feedItemsUsers = findFeedItemUsersOrderedyCategoryNameAndPublishLocalDate(user, categoryName,
-                startDate);
+        List<FeedItemUser> feedItemsUsers = findFeedItemUsersByCategoryNameOrderedyCategoryNameAndPublishLocalDate(user,
+                categoryName, startDate);
 
         switch (order) {
             case ORDER_BY_LATEST: {
@@ -125,8 +125,8 @@ public class CategoryFeedsSortAndFilterService {
         return feedItemsUser;
     }
 
-    public List<FeedItemUser> findFeedItemUsersOrderedyCategoryNameAndPublishLocalDate(User user, String categoryName,
-            LocalDate startDate) {
+    public List<FeedItemUser> findFeedItemUsersByCategoryNameOrderedyCategoryNameAndPublishLocalDate(User user,
+            String categoryName, LocalDate startDate) {
         List<ChannelUser> channelsUser;
 
         channelsUser = channelUserRepository.findAllByUserAndCategory_NameOrderByCategory_Name(user,
