@@ -121,6 +121,17 @@ public class LikedFeedsSortAndFilterService {
             } // end case
 
             case ORDER_BY_UNREAD: {
+                pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+
+                if (startDate == null)
+                    page = likedFeedItemUserRepository.findByUserAndLikedOrderByReadAscFeedItem_PublishDateDesc(user, true,
+                            pageable);
+                else
+                    page = likedFeedItemUserRepository
+                            .findByUserAndLikedAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, true, startDate, pageable);
+
+                feedItemsUser = page.getContent();
 
                 break;
             } // end case

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,12 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.ChannelUser;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
+
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.AllFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
-import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemUserRepository;
 
 @Service
 public class AllFeedsSortAndFilterService {
@@ -120,7 +119,16 @@ public class AllFeedsSortAndFilterService {
                 break;
             } // end case
             case ORDER_BY_UNREAD: {
+                pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
+                if (startDate == null)
+                    page = allFeedItemUserRepository.findByUserOrderByReadAscFeedItem_PublishDateDesc(user, pageable);
+                else
+                    page = allFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, startDate, pageable);
+
+                feedItemsUsers = page.getContent();
                 break;
             } // end case
 

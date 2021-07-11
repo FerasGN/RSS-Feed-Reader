@@ -121,7 +121,8 @@ public class CategoryFeedsSearchingService {
             } // end case
 
             default:
-                break;
+                return feedItemsUser;
+
         }// end switch
 
         return feedItemsUser;

@@ -42,4 +42,9 @@ public interface LikedFeedItemUserRepository extends JpaRepository<FeedItemUser,
             Boolean liked, Channel channel, LocalDate publishLocalDate);
 
     Optional<FeedItemUser> findByIdAndLiked(FeedItemUserId feedItemUserId, boolean liked);
+
+Page<FeedItemUser> findByUserAndLikedOrderByReadAscFeedItem_PublishDateDesc(User user, boolean b, Pageable pageable);
+
+Page<FeedItemUser> findByUserAndLikedAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+        User user, boolean b, LocalDate startDate, Pageable pageable);
 }

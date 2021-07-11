@@ -12,7 +12,7 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.FeedItemU
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+
 
 @Repository
 public interface AllFeedItemUserRepository extends JpaRepository<FeedItemUser, FeedItemUserId> {
@@ -37,5 +37,10 @@ public interface AllFeedItemUserRepository extends JpaRepository<FeedItemUser, F
 
         List<FeedItemUser> findByUserAndFeedItem_ChannelAndFeedItem_publishLocalDateGreaterThanEqual(User user,
                         Channel channel, LocalDate publishLocalDate);
+
+        Page<FeedItemUser> findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                        User user, LocalDate startDate, Pageable pageable);
+
+        Page<FeedItemUser> findByUserOrderByReadAscFeedItem_PublishDateDesc(User user, Pageable pageable);
 
 }

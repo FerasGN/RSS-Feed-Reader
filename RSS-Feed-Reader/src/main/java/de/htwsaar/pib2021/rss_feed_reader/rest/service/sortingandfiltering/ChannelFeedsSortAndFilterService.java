@@ -3,21 +3,20 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering;
 import static de.htwsaar.pib2021.rss_feed_reader.constants.Constants.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItem;
+
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelFeedItemUserRepository;
-import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 
 @Service
 public class ChannelFeedsSortAndFilterService {
@@ -121,6 +120,18 @@ public class ChannelFeedsSortAndFilterService {
             } // end case
 
             case ORDER_BY_UNREAD: {
+                pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+
+                if (startDate == null)
+                    page = channelFeedItemUserRepository
+                            .findByUserAndFeedItem_Channel_TitleOrderByReadAscFeedItem_PublishDateDesc(user, channelTitle,
+                                    pageable);
+                else
+                    page = channelFeedItemUserRepository
+                            .findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, channelTitle, startDate, pageable);
+
+                feedItemsUser = page.getContent();
 
                 break;
             } // end case
