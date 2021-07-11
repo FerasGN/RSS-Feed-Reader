@@ -1,8 +1,8 @@
 <thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="feeds-list"
     th:remove="tag">
-    <th:block th:each="feed,i : ${feeds}" th:id="'feed-list-item-' + ${feed.userId + '-' + feed.feedItemId}"
-        class="feeds-list">
-        <div class="app-list app-list-feed shadow-sm mb-1">
+    <th:block th:each="feed,i : ${feeds}" class="feeds-list">
+        <div th:id="'feed-list-item-' + ${feed.userId + '-' + feed.feedItemId}"
+            class="app-list app-list-feed shadow-sm mb-1">
             <div class="px-4 p-1">
                 <div class="row justify-content-between">
                     <h6 class="col feed-title ms-0 me-0 m-auto"><a th:href="@{${feed.feedItemCommand.link}}"

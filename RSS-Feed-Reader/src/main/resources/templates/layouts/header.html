@@ -194,7 +194,7 @@
                         <li class="nav-item has-submenu">
                             <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                             <a class="nav-link submenu-toggle" data-bs-toggle="collapse" data-bs-target="#submenus"
-                                aria-expanded="false" aria-controls="submenus">
+                                aria-expanded="true" aria-controls="submenus">
                                 <span class="nav-icon">
                                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -220,7 +220,7 @@
                                 <!--//text-count-arrow-->
                             </a>
                             <!--//nav-link-->
-                            <div id="submenus" class="collapse submenu submenus"
+                            <div id="submenus" class="collapse submenu submenus show"
                                 th:classappend="${categoryUrl != null} ? show : ''"
                                 th:insert="layouts/side-panel-submenus :: side-panel-submenus">
                             </div>

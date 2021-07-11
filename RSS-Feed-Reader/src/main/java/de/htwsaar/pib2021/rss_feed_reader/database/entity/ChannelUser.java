@@ -31,4 +31,9 @@ public class ChannelUser {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
+	public void addCategory(Category category){
+		this.category = category;
+		category.addChannelUser(this);
+	}
+
 }

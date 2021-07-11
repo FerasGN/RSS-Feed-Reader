@@ -33,4 +33,14 @@ public class Category extends BaseEntity {
                 this.name = name;
         }
 
+        public void addChannelUser(ChannelUser cu) {
+                cu.setCategory(this);
+                this.channelUsers.add(cu);
+        }
+
+        public void addFeedItem(FeedItem feedItem) {
+                feedItem.addCategory(this);
+                this.feedItems.add(feedItem);
+        }
+
 }

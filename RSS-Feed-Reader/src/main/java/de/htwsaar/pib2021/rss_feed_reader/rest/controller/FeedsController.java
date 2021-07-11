@@ -11,17 +11,24 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.CategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemUserCommand;
+import de.htwsaar.pib2021.rss_feed_reader.commands.LikeCommand;
+import de.htwsaar.pib2021.rss_feed_reader.commands.ReadCommand;
+import de.htwsaar.pib2021.rss_feed_reader.commands.ReadLaterCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.converters.CategoryToCategoryCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.ChannelUserToChannelCommand;
@@ -131,7 +138,6 @@ public class FeedsController {
 
         return filteredAndOrderedFeeds;
     }
-    
 
     @GetMapping(READ_LATER_URL)
     public String showReadLaterFeeds(@RequestParam(value = "view", required = false) String view,
@@ -267,6 +273,45 @@ public class FeedsController {
         return "all-feeds";
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(value = { LIKE_URL }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody void like(@RequestBody LikeCommand likeCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+
+        boolean liked = likeCommand.isLiked();
+        Long feedItemId = likeCommand.getFeedId();
+
+        feedsService.changeLikeStatus(securityUser.getId(), feedItemId, liked);
+        feedsService.incrementClicksNumber(securityUser.getId(), feedItemId);
+
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(value = { MARK_AS_READ_LATER_URL }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody void markAsReadLater(@RequestBody ReadLaterCommand readLaterCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+
+        boolean readLater = readLaterCommand.isReadLater();
+        Long feedItemId = readLaterCommand.getFeedId();
+
+        feedsService.changeReadLaterStatus(securityUser.getId(), feedItemId, readLater);
+        feedsService.incrementClicksNumber(securityUser.getId(), feedItemId);
+
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(value = { MARK_AS_READ_URL }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody void markAsRead(@RequestBody ReadCommand readCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+
+        boolean read = readCommand.isRead();
+        Long feedItemId = readCommand.getFeedId();
+
+        feedsService.changeReadStatus(securityUser.getId(), feedItemId, read);
+        feedsService.incrementClicksNumber(securityUser.getId(), feedItemId);
+
+    }
+
     private boolean existViewAndPeriodAbdOrderParams(String view, String period, String order) {
         boolean correctView = VIEW_CARDS.equalsIgnoreCase(view) || VIEW_TITLE_ONLY.equalsIgnoreCase(view);
         boolean correctPeriod = PERIOD_ALL.equalsIgnoreCase(period) || PERIOD_LAST_SEVEN_DAYS.equalsIgnoreCase(period)
@@ -274,8 +319,7 @@ public class FeedsController {
         boolean correctOrder = ORDER_BY_ALL_CATEGORIES.equalsIgnoreCase(order)
                 || ORDER_BY_CATEGORY.equalsIgnoreCase(order) || ORDER_BY_CHANNEL.equalsIgnoreCase(order)
                 || ORDER_BY_LATEST.equalsIgnoreCase(order) || ORDER_BY_OLDEST.equalsIgnoreCase(order)
-                || ORDER_BY_UNREAD.equalsIgnoreCase(order)
-                || ORDER_BY_MOST_RELEVANT.equalsIgnoreCase(order);
+                || ORDER_BY_UNREAD.equalsIgnoreCase(order) || ORDER_BY_MOST_RELEVANT.equalsIgnoreCase(order);
         return (correctView && correctPeriod && correctOrder);
     }
 

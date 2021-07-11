@@ -8,6 +8,9 @@ public class Endpoints {
     public final static String RECENTLY_READ_URL = "/recently-read";
     public final static String CATEGORY_URL = "/category";
     public final static String CHANNEL_URL = "/channel";
+    public final static String LIKE_URL = "/like";
+    public final static String MARK_AS_READ_LATER_URL = "/mark-as-read-later";
+    public final static String MARK_AS_READ_URL = "/mark-as-read";
 
     public final static String SSE_NOTIFICATIONS_URL = "/sse-notifications";
 }

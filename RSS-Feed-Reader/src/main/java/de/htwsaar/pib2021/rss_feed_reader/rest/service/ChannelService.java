@@ -41,13 +41,21 @@ import java.util.Optional;
 @Service
 public class ChannelService {
 
+    @Autowired
     private ChannelRepository channelRepository;
+    @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
     private FeedItemRepository feedItemRepository;
+    @Autowired
     private FeedItemUserRepository feedItemUserRepository;
+    @Autowired
     private ChannelUserRepository channelUserRepository;
+    @Autowired
     private FaviconExtractorService faviconExtractorService;
-
+    @Autowired
+    MaterializedViewManager materializedViewManager;
+    @Autowired
     private ApplicationEventPublisher eventPublisher;
 
     private final static String CHANNEL_URL_NOT_FOUND = "Channel with given URL could not be found: ";
@@ -58,22 +66,6 @@ public class ChannelService {
     private final static String ERROR_SUBSCRIBING_CHANNEL = "An error occurred while subscribing to this channel.";
     private final static String FEED_PARSING_ERROR = "Problem occurred while parsing the feed.";
     private final static String IOEXCEPTION_WHILE_SUBSCRIBING = "IOException error caught while subscribing to channel";
-
-    public ChannelService(ChannelRepository channelRepository, CategoryRepository categoryRepository,
-            FeedItemRepository feedItemRepository, FeedItemUserRepository feedItemUserRepository,
-            ChannelUserRepository channelUserRepository, FaviconExtractorService faviconExtractorService,
-            ApplicationEventPublisher eventPublisher) {
-        this.channelRepository = channelRepository;
-        this.categoryRepository = categoryRepository;
-        this.feedItemRepository = feedItemRepository;
-        this.feedItemUserRepository = feedItemUserRepository;
-        this.channelUserRepository = channelUserRepository;
-        this.faviconExtractorService = faviconExtractorService;
-        this.eventPublisher = eventPublisher;
-    }
-
-    @Autowired
-    MaterializedViewManager materializedViewManager;
 
     /**
      * FEED_PARSING_ERROR
@@ -231,15 +223,21 @@ public class ChannelService {
             // Check if category is already available in database
             Optional<Category> category = categoryRepository.findByName(categoryName.trim().toLowerCase());
             if (category.isPresent()) {
-                channelUser.setCategory(category.get());
+                category.get().addChannelUser(channelUser);
+                categoryRepository.save(category.get());
+                channelUser = channelUserRepository.save(channelUser);
+                System.out.println("Category exists already and was set to user !");
             } else {
                 Category newCategory = new Category();
                 newCategory.setName(categoryName.trim().toLowerCase());
+                newCategory.addChannelUser(channelUser);
                 categoryRepository.save(newCategory);
-                channelUser.setCategory(newCategory);
+                channelUser = channelUserRepository.save(channelUser);
+                System.out.println("Category was created!");
             }
 
-            channelUser = channelUserRepository.save(channelUser);
+            materializedViewManager.refreshFeedItem();
+            materializedViewManager.refreshChannleView();
 
             return Optional.of(channelUser.getChannel());
 
@@ -315,7 +313,7 @@ public class ChannelService {
             channel.setChannelUrl(url);
             channel.setWebsiteLink(feed.getLink());
             channel.setDescription(feed.getDescription());
-            channel.setLanguage(feed.getLanguage());
+            channel.setLanguage("english");
 
             try {
                 List<URL> links = faviconExtractorService.findFaviconLinks(feed.getLink());
@@ -329,8 +327,6 @@ public class ChannelService {
 
             // extract feed items
             saveFeedItems(user, channel, feed.getEntries());
-            materializedViewManager.refreshFeedItem();
-            materializedViewManager.refreshChannleView();
         }
 
         return Optional.of(channel);
@@ -394,7 +390,7 @@ public class ChannelService {
             feedItem.setTitle(syndEntry.getTitle());
         else
             feedItem.setTitle("No title");
-        feedItem.setLanguage("german");
+        feedItem.setLanguage("english");
         if (syndEntry.getDescription() != null)
             feedItem.setDescription(syndEntry.getDescription().getValue());
         feedItem.setAuthor(syndEntry.getAuthor());

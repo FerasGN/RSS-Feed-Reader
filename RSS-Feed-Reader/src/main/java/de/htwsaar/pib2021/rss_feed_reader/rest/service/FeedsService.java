@@ -3,6 +3,7 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 import de.htwsaar.pib2021.rss_feed_reader.commands.FeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.FeedItemUserToFeedItemUserCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.*;
+import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.FeedItemUserId;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.FeedItemRepository;
@@ -39,52 +40,6 @@ public class FeedsService {
     private ChannelService channelService;
 
     /**
-     * @param channel
-     * @return List<FeedItem>
-     */
-    public List<FeedItem> showChannelFeed(Channel channel) {
-        return feedItemRepository.findAllByChannel(channel);
-    }
-
-    /**
-     * @return List<FeedItem>
-     */
-    // public List<FeedItem> showCategoryFeeds(User user, String category) {
-    // List<ChannelUser> list1 =
-    // channelUserRepository.findAllByUserAndCategory(user, category);
-    // List<FeedItem> list2 = new ArrayList<>();
-
-    // for (ChannelUser channelUser : list1) {
-    // list2.addAll(feedItemRepository.findAllByChannel(channelUser.getChannel()));
-    // }
-    // return list2;
-    // }
-
-    public List<FeedItem> showReadLaterFeeds(User user) {
-        List<FeedItemUser> list = feedItemUserRepository.findAllByUserAndReadLater(user, true);
-        List<FeedItem> list2 = new ArrayList<>();
-
-        for (FeedItemUser feedItemUser : list) {
-            list2.add(feedItemUser.getFeedItem());
-        }
-        return list2;
-    }
-
-    /**
-     * @param user
-     * @return List<FeedItem>
-     */
-    public List<FeedItem> showLikedFeeds(User user) {
-        List<FeedItemUser> list = feedItemUserRepository.findAllByUserAndLiked(user, true);
-        List<FeedItem> list2 = new ArrayList<>();
-
-        for (FeedItemUser feedItemUser : list) {
-            list2.add(feedItemUser.getFeedItem());
-        }
-        return list2;
-    }
-
-    /**
      * @param user
      * @return List<FeedItem>
      */
@@ -102,11 +57,12 @@ public class FeedsService {
      * @param user
      * @param feedItem
      */
-    public void likeFeed(User user, FeedItem feedItem) {
-        Optional<FeedItemUser> itemOptional = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
-        if (itemOptional.isPresent()) {
-            FeedItemUser item = itemOptional.get();
-            item.setLiked(true);
+    public void changeLikeStatus(Long userId, Long feedItemId, boolean liked) {
+        Optional<FeedItemUser> optionalFeedItemUser = feedItemUserRepository
+                .findById(new FeedItemUserId(feedItemId, userId));
+        if (optionalFeedItemUser.isPresent()) {
+            FeedItemUser item = optionalFeedItemUser.get();
+            item.setLiked(liked);
             feedItemUserRepository.save(item);
         }
     }
@@ -115,11 +71,27 @@ public class FeedsService {
      * @param user
      * @param feedItem
      */
-    public void markFeedAsRead(User user, FeedItem feedItem) {
-        Optional<FeedItemUser> itemOptional = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
-        if (itemOptional.isPresent()) {
-            FeedItemUser item = itemOptional.get();
-            item.setRead(true);
+    public void changeReadStatus(Long userId, Long feedItemId, boolean read) {
+        Optional<FeedItemUser> optionalFeedItemUser = feedItemUserRepository
+                .findById(new FeedItemUserId(feedItemId, userId));
+        if (optionalFeedItemUser.isPresent()) {
+            FeedItemUser item = optionalFeedItemUser.get();
+            item.setRead(read);
+            feedItemUserRepository.save(item);
+        }
+    }
+
+    public void incrementClicksNumber(Long userId, Long feedItemId) {
+        Optional<FeedItemUser> optionalFeedItemUser = feedItemUserRepository
+                .findById(new FeedItemUserId(feedItemId, userId));
+        if (optionalFeedItemUser.isPresent()) {
+            FeedItemUser item = optionalFeedItemUser.get();
+            Integer clicksNumber = item.getClicks();
+            if (clicksNumber == null)
+                clicksNumber = 0;
+            else
+                clicksNumber = clicksNumber + 1;
+            item.setClicks(clicksNumber);
             feedItemUserRepository.save(item);
         }
     }
@@ -128,11 +100,12 @@ public class FeedsService {
      * @param user
      * @param feedItem
      */
-    public void readFeedLater(User user, FeedItem feedItem) {
-        Optional<FeedItemUser> itemOptional = feedItemUserRepository.findByUserAndFeedItem(user, feedItem);
-        if (itemOptional.isPresent()) {
-            FeedItemUser item = itemOptional.get();
-            item.setReadLater(true);
+    public void changeReadLaterStatus(Long userId, Long feedItemId, boolean readLater) {
+        Optional<FeedItemUser> optionalFeedItemUser = feedItemUserRepository
+                .findById(new FeedItemUserId(feedItemId, userId));
+        if (optionalFeedItemUser.isPresent()) {
+            FeedItemUser item = optionalFeedItemUser.get();
+            item.setReadLater(readLater);
             feedItemUserRepository.save(item);
         }
     }

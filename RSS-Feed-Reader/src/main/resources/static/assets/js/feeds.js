@@ -8,6 +8,9 @@ var FAVORITE_CHANNELS_URL = "/favorite-channels";
 var RECENTLY_READ_URL = "/recently-read";
 var CATEGORY_URL = "/category/";
 var CHANNEL_URL = "/channel/";
+var LIKE_URL = "/like";
+var MARK_AS_READ_LATER = "/mark-as-read-later";
+var MARK_AS_READ = "/mark-as-read";
 var FEEDS_PAGE_URL = HOST + "feeds-page";
 var SEARCH_URL = HOST + "search";
 var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
@@ -29,6 +32,7 @@ async function getAllFeeds(url, container) {
 
       let resp = this.response;
       container.innerHTML = request.responseText;
+      initInteractionsButtons();
     } else {
       // We reached our target server, but it returned an error
     }
@@ -53,7 +57,10 @@ function getFeedsPage(url, container) {
       preloader.style.cssText = "display:none !important";
 
       let resp = this.response;
-      if (resp !== "") container.innerHTML += request.responseText;
+      if (resp !== "") {
+        container.innerHTML += request.responseText;
+        initInteractionsButtons();
+      }
     } else {
       // We reached our target server, but it returned an error
     }
@@ -76,7 +83,10 @@ function getSearchResults(url, container) {
       const preloader = document.getElementById("loader");
       preloader.style.cssText = "display:none !important";
       let resp = this.response;
-      if (resp !== "") container.innerHTML = request.responseText;
+      if (resp !== "") {
+        container.innerHTML = request.responseText;
+        initInteractionsButtons();
+      }
     } else {
       // We reached our target server, but it returned an error
     }
@@ -87,6 +97,27 @@ function getSearchResults(url, container) {
 
   // await showPreloader();
   request.send();
+}
+
+function postInteractionButton(url, payload) {
+  let request = new XMLHttpRequest();
+  request.open("POST", url, true);
+  request.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+  request.setRequestHeader("Content-Type", "application/json");
+
+  request.onload = function () {
+    if (this.status >= 200 && this.status < 400) {
+      console.log("click Successed!");
+    } else {
+      // We reached our target server, but it returned an error
+    }
+  };
+  request.onerror = function () {
+    // There was a connection error of some sort
+  };
+
+  // await showPreloader();
+  request.send(JSON.stringify(payload));
 }
 
 /* ===== Select order and period ====== */
@@ -611,3 +642,67 @@ eventSource.onmessage = function (e) {
     handleSelect(selectedView, selectedPeriod, selectedOrder);
   }
 };
+
+/* ===== feeds buttons ====== */
+initInteractionsButtons();
+
+function initLikeButton() {
+  var heartCheckboxes = document.querySelectorAll("[id^=heart-]");
+  for (let i = 0; i < heartCheckboxes.length; i++) {
+    heartCheckboxes[i].addEventListener("change", (event) => {
+      let id = heartCheckboxes[i].id.split("-").pop();
+
+      if (!event.currentTarget.checked === false) {
+        let payload = { liked: true, feedId: id };
+        postInteractionButton(LIKE_URL, payload);
+      } else {
+        let payload = { liked: false, feedId: id };
+        postInteractionButton(LIKE_URL, payload);
+      }
+    });
+  }
+}
+
+function initReadLaterButton() {
+  var readLaterCheckboxes = document.querySelectorAll("[id^=bookmark-]");
+  for (let i = 0; i < readLaterCheckboxes.length; i++) {
+    readLaterCheckboxes[i].addEventListener("change", (event) => {
+      let id = readLaterCheckboxes[i].id.split("-").pop();
+
+      if (!event.currentTarget.checked === false) {
+        let payload = { readLater: true, feedId: id };
+        postInteractionButton(MARK_AS_READ_LATER, payload);
+      } else {
+        let payload = { readLater: false, feedId: id };
+        postInteractionButton(MARK_AS_READ_LATER, payload);
+      }
+    });
+  }
+}
+
+function initReadButton() {
+  var readCheckboxes = document.querySelectorAll("[id^=read-]");
+  for (let i = 0; i < readCheckboxes.length; i++) {
+    readCheckboxes[i].addEventListener("change", (event) => {
+      let id = readCheckboxes[i].id.split("-").pop();
+
+      if (!event.currentTarget.checked === false) {
+        let payload = { read: true, feedId: id };
+        postInteractionButton(MARK_AS_READ, payload);
+        let headerContainer = document.getElementById("header-container");
+        refreshHeader(REFRESH_HEADER_URL, headerContainer);
+      } else {
+        let payload = { read: false, feedId: id };
+        postInteractionButton(MARK_AS_READ, payload);
+        let headerContainer = document.getElementById("header-container");
+        refreshHeader(REFRESH_HEADER_URL, headerContainer);
+      }
+    });
+  }
+}
+
+function initInteractionsButtons() {
+  initLikeButton();
+  initReadLaterButton();
+  initReadButton();
+}

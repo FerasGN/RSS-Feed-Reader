@@ -130,6 +130,7 @@ function refreshHeader(url, headerContainer) {
       var resp = this.response;
       headerContainer.innerHTML = request.responseText;
       initSidePanel();
+      initShowSubMenus();
     } else {
       // We reached our target server, but it returned an error
     }

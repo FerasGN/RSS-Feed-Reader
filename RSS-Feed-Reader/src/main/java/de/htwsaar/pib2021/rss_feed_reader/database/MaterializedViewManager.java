@@ -21,13 +21,13 @@ public class MaterializedViewManager {
     @Modifying
     @Transactional
     public void refreshFeedItem() {
-        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW  search_index_feed_item;");
+        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW search_index_feed_item;").executeUpdate();
     }
 
     @Modifying
     @Transactional
     public void refreshChannleView() {
-        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW  search_index_channel;");
+        this.entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW search_index_channel;").executeUpdate();
     }
 
     @Transactional(rollbackOn = Exception.class)
