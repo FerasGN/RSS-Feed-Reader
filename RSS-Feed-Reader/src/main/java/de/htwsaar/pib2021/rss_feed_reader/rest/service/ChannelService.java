@@ -333,7 +333,8 @@ public class ChannelService {
     }
 
     /**
-     * @param channelUser
+     * @param user
+     * @param channel
      * @throws IllegalArgumentException
      * @throws FeedException
      * @throws IOException

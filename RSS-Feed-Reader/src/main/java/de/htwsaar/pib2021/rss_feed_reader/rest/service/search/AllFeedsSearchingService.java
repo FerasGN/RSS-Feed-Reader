@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.htwsaar.pib2021.rss_feed_reader.rest.service.LanguageIdentifierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,8 @@ public class AllFeedsSearchingService {
     private CustomPagination customPagination;
     @Autowired
     private MaterializedViewManager materializedViewManager;
+    @Autowired
+    private LanguageIdentifierService languageIdentifierService;
 
     /**
      * @param user
@@ -179,7 +182,8 @@ public class AllFeedsSearchingService {
 
     private List<FeedItemUser> search(Long userId, String term, Integer pageNumber) {
 
-        List<Long> feedItemsIds = materializedViewManager.fullTextSeachrFeedItem(term);
+        String language = languageIdentifierService.searchLanguage(term);
+        List<Long> feedItemsIds = materializedViewManager.fullTextSeachrFeedItem(term, language);
         List<Long> feedItemsIdsPage = customPagination.getNextPageOfFeedItemsIds(pageNumber, PAGE_SIZE, feedItemsIds);
 
         List<FeedItemUserId> feedItemUsersIds = feedItemsIdsPage.stream().filter(feedItemId -> {

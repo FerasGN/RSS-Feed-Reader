@@ -35,7 +35,7 @@ public class RssFeedReaderApplication {
 		// materializedViewManager.createMaterializedViewChannelWithIndex();
 		// materializedViewManager.refreshFeedItem();
 
-		List<Long> l = materializedViewManager.fullTextSeachrFeedItem("years");
+		List<Long> l = materializedViewManager.fullTextSeachrFeedItem("years", "ENGLISH");
 		System.out.println("<-----------------------The ids -------------------->");
 		System.out.println(l);
 		// List<FeedItemUser> feeds = searchingService.searchAll(new User(), "years",
