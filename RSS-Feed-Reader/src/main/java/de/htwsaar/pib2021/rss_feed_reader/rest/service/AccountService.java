@@ -2,6 +2,7 @@ package de.htwsaar.pib2021.rss_feed_reader.rest.service;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.UserProfileUpdateCommand;
 import de.htwsaar.pib2021.rss_feed_reader.converters.UserProfileUpdateCommandToUser;
+import de.htwsaar.pib2021.rss_feed_reader.converters.UserToUserProfileUpdateCommand;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.UserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.exceptions.UserNotFoundException;
@@ -84,6 +85,11 @@ public class AccountService {
     public void saveUserInterests(User user, List<String> interests) {
         user.setUserInterests(interests);
         userRepository.save(user);
+    }
+
+    public UserProfileUpdateCommand convertToUserProfileUpdateCommand(User user){
+        UserToUserProfileUpdateCommand  UserToUserProfileUpdateCommand = new UserToUserProfileUpdateCommand();
+        return UserToUserProfileUpdateCommand.convert(user);
     }
 
     public void changeLanguage() {
