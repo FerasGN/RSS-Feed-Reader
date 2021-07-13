@@ -48,10 +48,10 @@ public class MaterializedViewManager {
 
         Query q = entityManager.createNativeQuery("SELECT id\n"
                                                 + "From feedify.public.search_index_feed_item\n"
-                                                + "WHERE document @@ plainto_tsquery(?1 , ?2 )\n"
-                                                + "ORDER BY ts_rank(search_index_feed_item.document, plainto_tsquery(?1 , ?2 )) DESC;");
+                                                + "WHERE document @@ plainto_tsquery( ?2 )\n"
+                                                + "ORDER BY ts_rank(search_index_feed_item.document, plainto_tsquery( ?2 )) DESC;");
         q.setParameter(2, query);
-        q.setParameter(1, language2 +"::regconfig");
+
         List<Long> resultList = (List<Long>)  q.getResultList()
                                                .stream()
                                                .map(id -> ((BigInteger) id).longValue())
@@ -66,10 +66,10 @@ public class MaterializedViewManager {
 
         Query q = entityManager.createNativeQuery( "SELECT id\n"
                                                 + "From feedify.public.search_index_channel\n"
-                                                + "WHERE document @@ plainto_tsquery(?1 , ?2 )\n"
-                                                + "ORDER BY ts_rank( search_index_channel.document, plainto_tsquery(?1, ?2)) DESC;");
+                                                + "WHERE document @@ plainto_tsquery( ?2 )\n"
+                                                + "ORDER BY ts_rank( search_index_channel.document, plainto_tsquery( ?2)) DESC;");
         q.setParameter(2, query);
-        q.setParameter(1, language2 +"::regconfig");
+
         List<Long> resultList = (List<Long>)  q.getResultList()
                                                .stream()
                                                .map(id -> ((BigInteger) id).longValue())
