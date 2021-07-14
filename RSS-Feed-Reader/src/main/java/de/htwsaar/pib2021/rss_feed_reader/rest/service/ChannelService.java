@@ -56,6 +56,8 @@ public class ChannelService {
     @Autowired
     MaterializedViewManager materializedViewManager;
     @Autowired
+    private LanguageIdentifierService languageIdentifierService;
+    @Autowired
     private ApplicationEventPublisher eventPublisher;
 
     private final static String CHANNEL_URL_NOT_FOUND = "Channel with given URL could not be found: ";
@@ -313,7 +315,6 @@ public class ChannelService {
             channel.setChannelUrl(url);
             channel.setWebsiteLink(feed.getLink());
             channel.setDescription(feed.getDescription());
-            channel.setLanguage("english");
 
             try {
                 List<URL> links = faviconExtractorService.findFaviconLinks(feed.getLink());
@@ -327,9 +328,23 @@ public class ChannelService {
 
             // extract feed items
             saveFeedItems(user, channel, feed.getEntries());
+
+            channel = channelRepository.findById(channel.getId()).get();
+            String languageOfChannel = detectLanguageOfChannel(channel);
+            channel.setLanguage(languageOfChannel.toLowerCase());
+            channel = channelRepository.save(channel);
         }
 
         return Optional.of(channel);
+    }
+
+    private String detectLanguageOfChannel(Channel channel) {
+        List<FeedItem> feedItems = channel.getFeedItems();
+        String language = "simple";
+        if (feedItems != null && !feedItems.isEmpty())
+            language = languageIdentifierService.searchLanguage(feedItems.get(0).getTitle());
+
+        return language;
     }
 
     /**
@@ -391,9 +406,13 @@ public class ChannelService {
             feedItem.setTitle(syndEntry.getTitle());
         else
             feedItem.setTitle("No title");
-        feedItem.setLanguage("english");
+
         if (syndEntry.getDescription() != null)
             feedItem.setDescription(syndEntry.getDescription().getValue());
+
+        String language = languageIdentifierService.searchLanguage(feedItem.getTitle());
+        feedItem.setLanguage(language);
+
         feedItem.setAuthor(syndEntry.getAuthor());
         feedItem.setLink(syndEntry.getLink());
         if (syndEntry.getPublishedDate() != null) {

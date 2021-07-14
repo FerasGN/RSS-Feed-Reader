@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.htwsaar.pib2021.rss_feed_reader.commands.ChannelCommand;
+import de.htwsaar.pib2021.rss_feed_reader.commands.PostChannelCommand;
 import de.htwsaar.pib2021.rss_feed_reader.config.security.SecurityUser;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.Channel;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.ChannelService;
@@ -79,11 +81,11 @@ public class ChannelController {
      * @param channelCommand
      * @return ModelAndView
      */
-    @PostMapping(value = { "/save-channel" }, consumes = "application/json")
-    public ModelAndView saveChannel(ModelAndView mav, @RequestBody List<String[]> data,
+    @PostMapping(value = { "/save-channel" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public ModelAndView saveChannel(ModelAndView mav, @RequestBody PostChannelCommand postChannelCommand,
             @AuthenticationPrincipal SecurityUser securityUser) {
-        String url = data.get(0)[0];
-        String categoryName = data.get(0)[1];
+        String url = postChannelCommand.getChannelUrl();
+        String categoryName = postChannelCommand.getCategory();
         try {
             Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, categoryName);
 
@@ -92,18 +94,21 @@ public class ChannelController {
         }
 
         // if category != null
-        if (data.get(1)[1] != null)
-            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + data.get(1)[0] + "&category=" + data.get(1)[1]
-                    + "&view=" + data.get(1)[3] + "&period=" + data.get(1)[4] + "&orderBy=" + data.get(1)[5]
-                    + "&pageNumber=0");
+        if (postChannelCommand.getCategoryUrl() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + postChannelCommand.getCurrentFeedsUrl()
+                    + "&category=" + postChannelCommand.getCategory() + "&view=" + postChannelCommand.getSelectedView()
+                    + "&period=" + postChannelCommand.getSelectedPeriod() + "&orderBy="
+                    + postChannelCommand.getSelectedOrder() + "&pageNumber=0");
         // if channelTitle != null
-        else if (data.get(1)[2] != null)
-            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + data.get(1)[0] + "&channelTitle=" + data.get(1)[2]
-                    + "&view=" + data.get(1)[3] + "&period=" + data.get(1)[4] + "&orderBy=" + data.get(1)[5]
-                    + "&pageNumber=0");
+        else if (postChannelCommand.getChannelUrl() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + postChannelCommand.getCurrentFeedsUrl()
+                    + "&channelTitle=" + postChannelCommand.getChannelTitle() + "&view="
+                    + postChannelCommand.getSelectedView() + "&period=" + postChannelCommand.getSelectedPeriod()
+                    + "&orderBy=" + postChannelCommand.getSelectedOrder() + "&pageNumber=0");
         else
-            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + data.get(1)[0] + "&view=" + data.get(1)[3]
-                    + "&period=" + data.get(1)[4] + "&orderBy=" + data.get(1)[5] + "&pageNumber=0");
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + postChannelCommand.getCurrentFeedsUrl() + "&view="
+                    + postChannelCommand.getSelectedView() + "&period=" + postChannelCommand.getSelectedPeriod()
+                    + "&orderBy=" + postChannelCommand.getSelectedOrder() + "&pageNumber=0");
 
         return mav;
     }

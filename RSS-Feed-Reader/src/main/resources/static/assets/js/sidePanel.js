@@ -278,15 +278,24 @@ function addSubscribeButton() {
       selectedOrder,
     ];
 
-    let data = [channelInfos, feedsPageParameters];
+    let postChannelCommand = {
+      channelUrl: channelUrl.value,
+      category: category.value,
+      currentFeedsUrl: currentFeedsUrl,
+      categoryUrl: categoryUrl,
+      channelTitle: channelTitle,
+      selectedView: selectedView,
+      selectedPeriod: selectedPeriod,
+      selectedOrder: selectedOrder,
+    };
 
     const listItemsContainer = document.getElementById("list-items-container");
     const cardsContainer = document.getElementById("cards-container");
 
     if (document.body.contains(cardsContainer)) {
-      postChannel(SAVE_CHANNEL_URL, data, cardsContainer);
+      postChannel(SAVE_CHANNEL_URL, postChannelCommand, cardsContainer);
     } else {
-      postChannel(SAVE_CHANNEL_URL, data, listItemsContainer);
+      postChannel(SAVE_CHANNEL_URL, postChannelCommand, listItemsContainer);
     }
     let searchChannelButton = document.getElementById("search-channel-button");
     let dismissModal = document.getElementById("dismiss-modal");
