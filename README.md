@@ -6,9 +6,9 @@
 2. [Deskription](#Deskription)
 3. [User Interface](#User-Interface)
 4. [Use cases/ User Stories](#Use-Cases)
-5. [Installation]
+5. [Installation](#<Installation)
 6. [Technologien](#Technologien)
-6. [Maintainers]
+6. [Maintainers](#Maintainers)
 
 # Einleitung und Motivation
 Immer mehr Webseiten veröffentlichen Inhalte(Artikel) zum Lesen. Diese Inhalte sind öfter in einer 
@@ -43,25 +43,25 @@ Ein nutzer kann:
 ## User Interests
 Beim Starten der Applikation wird nach der Interessen des Users gefragt.
 Diese benutzen wir, um die Feeds nach der User-Interessen anzuzeigen. 
-![](userInterest.png)
+![](RSS-Feed-Reader\src\main\resources\static\assets\images\readmeImages\userInterest.png)
 
 ## Login 
 Um sich in der Application einzuloggen, braucht der User ein Konto. Dies kann er eichfach erstellen,
 idem er seinen Namen, Vornamen, Nachnamen, Usernamen, Passwort und seine E-Mail eingibt.
-![](signIn.png)
+![Login](RSS-Feed-Reader\src\main\resources\static\assets\images\readmeImages\signIn.png)
 
 Nachdem das Konto erstellen wurde, kann sich der User mit seinen Namen und Passwort einloggen.
-![](login.png)
+![](RSS-Feed-Reader\src\main\resources\static\assets\images\readmeImages\login.png)
 
 ## kanal Abonnieren
 Um einen Kanal zu abonnieren, gibt der User einfach die URL des RSS-FEEDS. Wenn diese eine valide RSS-Feeds 
 URL ist, wählt der User eine Kategorie, in der er die Feeds einordnen möchte.
-![](channel.png)
+![](RSS-Feed-Reader\src\main\resources\static\assets\images\readmeImages\channel.png)
 
 ## Homepage
 Auf der Homepage bekommt der User alle Feeds der abonnierten Kanälen und kann sie dann nach seinem wunsch 
 sortieren oder darstellen.
-![](homepage.png)
+![](RSS-Feed-Reader\src\main\resources\static\assets\images\readmeImages\homepage.png)
 
 
 # Technologien
