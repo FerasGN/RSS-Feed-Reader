@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import de.htwsaar.pib2021.rss_feed_reader.database.MaterializedViewManager;
-import de.htwsaar.pib2021.rss_feed_reader.database.entity.FeedItemUser;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.search.FeedSearchingService;
 
 @SpringBootApplication
@@ -35,7 +34,7 @@ public class RssFeedReaderApplication {
 		// materializedViewManager.createMaterializedViewChannelWithIndex();
 		// materializedViewManager.refreshFeedItem();
 
-		List<Long> l = materializedViewManager.fullTextSeachrFeedItem("years", "ENGLISH");
+		List<Long> l = materializedViewManager.fullTextSearchFeedItem("years");
 		System.out.println("<-----------------------The ids -------------------->");
 		System.out.println(l);
 		// List<FeedItemUser> feeds = searchingService.searchAll(new User(), "years",

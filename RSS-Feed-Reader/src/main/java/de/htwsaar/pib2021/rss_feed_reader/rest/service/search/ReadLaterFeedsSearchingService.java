@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.htwsaar.pib2021.rss_feed_reader.rest.service.LanguageIdentifierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,6 @@ import de.htwsaar.pib2021.rss_feed_reader.database.entity.User;
 import de.htwsaar.pib2021.rss_feed_reader.database.entity.compositeIds.FeedItemUserId;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ChannelUserRepository;
 
-import de.htwsaar.pib2021.rss_feed_reader.database.repository.LikedFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.database.repository.ReadLaterFeedItemUserRepository;
 import de.htwsaar.pib2021.rss_feed_reader.rest.service.sortingandfiltering.CustomPagination;
 
@@ -38,8 +36,7 @@ public class ReadLaterFeedsSearchingService {
     private CustomPagination customPagination;
     @Autowired
     private MaterializedViewManager materializedViewManager;
-    @Autowired
-    private LanguageIdentifierService languageIdentifierService;
+
 
     /**
      * @param user
@@ -184,8 +181,7 @@ public class ReadLaterFeedsSearchingService {
 
     private List<FeedItemUser> search(Long userId, String term, Integer pageNumber) {
 
-        String language = languageIdentifierService.searchLanguage(term);
-        List<Long> feedItemsIds = materializedViewManager.fullTextSeachrFeedItem(term, language);
+        List<Long> feedItemsIds = materializedViewManager.fullTextSearchFeedItem(term);
         List<Long> feedItemsIdsPage = customPagination.getNextPageOfFeedItemsIds(pageNumber, PAGE_SIZE, feedItemsIds);
 
         List<FeedItemUserId> feedItemUsersIds = feedItemsIdsPage.stream().filter(feedItemId -> {
