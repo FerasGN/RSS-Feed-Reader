@@ -377,5 +377,5 @@ function hideModal() {
 }
 
 // /* ===== reset bootstrap modal on hide ====== */
-var subscribeModal = document.getElementById("subscribe-modal");
+let subscribeModal = document.getElementById("subscribe-modal");
 subscribeModal.addEventListener("hidden.bs.modal", hideModal);

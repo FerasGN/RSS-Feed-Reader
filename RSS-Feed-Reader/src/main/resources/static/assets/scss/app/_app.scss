@@ -267,7 +267,7 @@
   @include on-state-mixin($bookmark-color, "\f02e");
 }
 .read {
-  @include on-state-mixin(black, "\f00c");
+  @include on-state-mixin($read-color, "\f00c");
 }
 
 .animated-icon {

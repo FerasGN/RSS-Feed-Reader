@@ -7,7 +7,7 @@
 		<version>2.4.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>de.htwsaar.pib2021.RSS-Feed-Reader</groupId>
+	<groupId>com.feeedify</groupId>
 	<artifactId>RSS-Feed-Reader</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RSS-Feed-Reader</name>

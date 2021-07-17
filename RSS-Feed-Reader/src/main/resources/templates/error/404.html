@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <thymeleaf th:replace="layouts/head :: head" />
@@ -510,7 +510,8 @@
                             </svg>
 
                             <div class="text-center">
-                                <a type="submit" class="btn app-btn-primary btn-block theme-btn mx-auto">Go back</a>
+                                <a th:href="@{/all-feeds}" class="btn app-btn-primary btn-block theme-btn mx-auto">Go
+                                    back</a>
                             </div>
 
                         </div>
