@@ -707,11 +707,7 @@ function initLastReadingDate() {
   for (let i = 0; i < lastReadingDateLinks.length; i++) {
     lastReadingDateLinks[i].addEventListener("click", (event) => {
       let id = lastReadingDateLinks[i].id.split("-").pop();
-      let payload = {
-        lastReadingDate: new Date().toISOString(),
-        feedId: id,
-      };
-      postInteraction(LAST_READING_TIME, payload);
+      postInteraction(LAST_READING_TIME, id);
     });
   }
 }

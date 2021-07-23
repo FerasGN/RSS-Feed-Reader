@@ -97,7 +97,7 @@ create table IF NOT EXISTS feed_item_x_user
     clicks     integer default 0,
     liked      boolean not null,
     read       boolean not null,
-    read_later boolean not null,
+    last_reading_date timestamp,
     feed_item  bigint  not null
         constraint fkdccevj71twxrldjhs39l5ryy
             references feed_item,

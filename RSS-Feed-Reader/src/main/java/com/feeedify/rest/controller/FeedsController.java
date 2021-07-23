@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.feeedify.commands.CategoryCommand;
 import com.feeedify.commands.ChannelCommand;
 import com.feeedify.commands.FeedItemUserCommand;
-import com.feeedify.commands.LastReadingDateCommand;
 import com.feeedify.commands.LikeCommand;
 import com.feeedify.commands.ReadCommand;
 import com.feeedify.commands.ReadLaterCommand;
@@ -399,13 +398,10 @@ public class FeedsController {
      */
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = { LAST_READING_DATE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody void setLastReadingTime(@RequestBody LastReadingDateCommand lastReadingTimeCommand,
+    public @ResponseBody void setLastReadingTime(@RequestBody Long feedItemId,
             @AuthenticationPrincipal SecurityUser securityUser) {
 
-        LocalDateTime lastReadingDate = lastReadingTimeCommand.getLastReadingDate();
-        Long feedItemId = lastReadingTimeCommand.getFeedId();
-
-        feedsService.changeLastReadingTime(securityUser.getId(), feedItemId, lastReadingDate);
+        feedsService.changeLastReadingTime(securityUser.getId(), feedItemId, LocalDateTime.now());
         feedsService.incrementClicksNumber(securityUser.getId(), feedItemId);
 
     }
