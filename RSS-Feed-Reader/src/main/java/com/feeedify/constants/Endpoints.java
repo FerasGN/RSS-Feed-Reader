@@ -21,6 +21,7 @@ public class Endpoints {
     public final static String LIKE_URL = "/like";
     public final static String MARK_AS_READ_LATER_URL = "/mark-as-read-later";
     public final static String MARK_AS_READ_URL = "/mark-as-read";
+    public final static String LAST_READING_DATE = "/last-reading-date";
     public final static String SAVE_INTERESTS_URL = "/save-interests";
     public final static String ACCOUNT_URL = "/account";
     public final static String SEARCH_URL = "/search";

@@ -107,6 +107,9 @@ public class SearchController {
         else if (LIKED_FEEDS_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = searchLikedFeedItemCommands(q, user, period, order, pageNumber);
 
+        else if (RECENTLY_READ_URL.equalsIgnoreCase(currentFeedsUrl))
+            feeds = searchRecentlyReadFeedItemCommands(q, user, period, order, pageNumber);
+
         else if (CATEGORY_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = searchCategoryFeedItemCommands(q, user, categoryName, period, order, pageNumber);
 
@@ -136,6 +139,14 @@ public class SearchController {
             int pageNumber) {
         List<FeedItemUserCommand> feedItemUserCommands = feedsService.searchLikedFeedItemCommands(q, user, period,
                 order, pageNumber);
+
+        return feedItemUserCommands;
+    }
+
+    private List<FeedItemUserCommand> searchRecentlyReadFeedItemCommands(String q, User user, String period,
+            String order, int pageNumber) {
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.searchRecentlyReadFeedItemCommands(q, user,
+                period, order, pageNumber);
 
         return feedItemUserCommands;
     }

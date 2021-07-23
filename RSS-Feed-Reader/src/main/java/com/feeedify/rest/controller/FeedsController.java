@@ -5,6 +5,7 @@ import static com.feeedify.constants.Endpoints.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.feeedify.commands.CategoryCommand;
 import com.feeedify.commands.ChannelCommand;
 import com.feeedify.commands.FeedItemUserCommand;
+import com.feeedify.commands.LastReadingDateCommand;
 import com.feeedify.commands.LikeCommand;
 import com.feeedify.commands.ReadCommand;
 import com.feeedify.commands.ReadLaterCommand;
@@ -230,6 +232,34 @@ public class FeedsController {
         return "liked-feeds";
     }
 
+    @GetMapping(RECENTLY_READ_URL)
+    public String showRecentlyReadFeeds(@RequestParam(value = "view", required = false) String view,
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "orderBy", required = false) String order, Model model,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+        // add categories, channels and the number of unread feeds
+        model = initSidePanelFeedsInfo(model, securityUser);
+
+        if (existViewAndPeriodAbdOrderParams(view, period, order)) {
+            String filteredAndOrderedFeeds = "";
+            if (VIEW_CARDS.equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsCards(securityUser.getUser(), model,
+                        RECENTLY_READ_URL, null, null, period, order, 0);
+            else if (VIEW_TITLE_ONLY.equalsIgnoreCase(view))
+                filteredAndOrderedFeeds = getFilteredAndOrderedFeedsAsList(securityUser.getUser(), model,
+                        RECENTLY_READ_URL, null, null, period, order, 0);
+            return filteredAndOrderedFeeds;
+        } else {
+            List<FeedItemUserCommand> feedItemUserCommands = new ArrayList<FeedItemUserCommand>();
+            feedItemUserCommands = findRecentlyReadFeedItemUserCommands(securityUser.getUser(), PERIOD_ALL,
+                    ORDER_BY_LATEST, 0);
+            model.addAttribute("view", "cards");
+            model.addAttribute("recentlyReadUrl", RECENTLY_READ_URL);
+            model.addAttribute("feeds", feedItemUserCommands);
+        }
+        return "recently-read";
+    }
+
     /**
      * Shows only the feeds of a specefic category of a specific user.
      * 
@@ -359,6 +389,23 @@ public class FeedsController {
         Long feedItemId = readCommand.getFeedId();
 
         feedsService.changeReadStatus(securityUser.getId(), feedItemId, read);
+        feedsService.changeLastReadingTime(securityUser.getId(), feedItemId, LocalDateTime.now());
+        feedsService.incrementClicksNumber(securityUser.getId(), feedItemId);
+
+    }
+
+    /**
+     * Set last reading time of a feed item .
+     */
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(value = { LAST_READING_DATE }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody void setLastReadingTime(@RequestBody LastReadingDateCommand lastReadingTimeCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+
+        LocalDateTime lastReadingDate = lastReadingTimeCommand.getLastReadingDate();
+        Long feedItemId = lastReadingTimeCommand.getFeedId();
+
+        feedsService.changeLastReadingTime(securityUser.getId(), feedItemId, lastReadingDate);
         feedsService.incrementClicksNumber(securityUser.getId(), feedItemId);
 
     }
@@ -477,6 +524,9 @@ public class FeedsController {
         else if (LIKED_FEEDS_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findLikedFeedItemUserCommands(user, period, order, pageNumber);
 
+        else if (RECENTLY_READ_URL.equalsIgnoreCase(currentFeedsUrl))
+            feeds = findRecentlyReadFeedItemUserCommands(user, period, order, pageNumber);
+
         else if (CATEGORY_URL.equalsIgnoreCase(currentFeedsUrl))
             feeds = findCategoryFeedItemCommands(user, categoryName, period, order, pageNumber);
 
@@ -526,6 +576,14 @@ public class FeedsController {
             int pageNumber) {
         List<FeedItemUserCommand> feedItemUserCommands = feedsService.findLikedFeedItemUserCommands(user, period, order,
                 pageNumber);
+
+        return feedItemUserCommands;
+    }
+
+    private List<FeedItemUserCommand> findRecentlyReadFeedItemUserCommands(User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUserCommand> feedItemUserCommands = feedsService.findRecentlyReadFeedItemUserCommands(user, period,
+                order, pageNumber);
 
         return feedItemUserCommands;
     }

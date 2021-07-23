@@ -13,10 +13,10 @@
     <div class="app-wrapper">
 
         <div class="app-content pt-3 p-md-3 p-lg-4">
-            <div class="container-xl">
+            <div id='main-container' class="container-xl">
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
                     <div class="col-auto">
-                        <h1 class="app-page-title mb-0">Recently Read</h1>
+                        <h1 class="app-page-title mb-0">Recently read</h1>
                     </div>
                     <div class="col-auto">
                         <thymeleaf th:replace="layouts/page-utilities :: page-utilities" />
@@ -25,7 +25,12 @@
                 </div>
                 <!--//row-->
 
-                <thymeleaf th:replace="layouts/feeds-cards :: feeds-cards" />
+                <div id="loader" class="loader d-none"></div>
+
+                <div id="cards-container" th:if="${view} == 'cards'" th:insert="layouts/feeds-cards :: feeds-cards">
+                </div>
+                <div id="list-items-container" th:if="${view} == 'title-only'"
+                    th:insert="layouts/feeds-list :: feeds-list"></div>
             </div>
             <!--//container-fluid-->
         </div>
@@ -33,8 +38,7 @@
 
         <div id="subscribe-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscribe-modal-title"
             aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
-            th:insert="layouts/subscribe-modal :: subscribe-modal">
-        </div>
+            th:insert="layouts/subscribe-modal :: subscribe-modal"></div>
     </div>
     <!--//app-wrapper-->
     <thymeleaf th:replace="layouts/scripts :: scripts" />

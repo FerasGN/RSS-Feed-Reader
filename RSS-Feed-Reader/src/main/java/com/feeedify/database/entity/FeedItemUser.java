@@ -2,6 +2,8 @@ package com.feeedify.database.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.*;
 
 import com.feeedify.database.entity.compositeIds.FeedItemUserId;
@@ -18,6 +20,7 @@ public class FeedItemUser {
 	private boolean readLater;
 	@Column(columnDefinition = "integer default 0")
 	private Integer clicks;
+	private LocalDateTime lastReadingDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("feedItemId")

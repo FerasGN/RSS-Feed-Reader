@@ -18,6 +18,8 @@ public class SortingAndFilteringFeedsService {
     @Autowired
     private LikedFeedsSortAndFilterService likedFeedsSortAndFilterService;
     @Autowired
+    private RecentlyReadFeedsSortAndFilterService recentlyReadFeedsSortAndFilterService;
+    @Autowired
     private CategoryFeedsSortAndFilterService categoryFeedsSortAndFilterService;
     @Autowired
     private ChannelFeedsSortAndFilterService channelFeedsSortAndFilterService;
@@ -35,6 +37,11 @@ public class SortingAndFilteringFeedsService {
     public List<FeedItemUser> findLikedFeedItemsByPeriodAndOrderAndPageNumber(User user, String period, String order,
             int pageNumber) {
         return likedFeedsSortAndFilterService.findFeedItemsUser(user, period, order, pageNumber);
+    }
+
+    public List<FeedItemUser> findRecentlyReadFeedItemsByPeriodAndOrderAndPageNumber(User user, String period,
+            String order, int pageNumber) {
+        return recentlyReadFeedsSortAndFilterService.findFeedItemsUser(user, period, order, pageNumber);
     }
 
     public List<FeedItemUser> findCategoryFeedItemsByPeriodAndOrderAndPageNumber(User user, String categoryName,

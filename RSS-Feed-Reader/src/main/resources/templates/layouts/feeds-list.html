@@ -5,8 +5,10 @@
             class="app-list app-list-feed shadow-sm mb-1">
             <div class="px-4 p-1">
                 <div class="row justify-content-between">
-                    <h6 class="col feed-title ms-0 me-0 m-auto"><a th:href="@{${feed.feedItemCommand.link}}"
-                            th:target="_blank" th:text="${feed.feedItemCommand.title}"></a></h6>
+                    <h6 class="col feed-title ms-0 me-0 m-auto"><a
+                            th:id="'read-more-' + ${feed.userId + '-' + feed.feedItemId}"
+                            th:href="@{${feed.feedItemCommand.link}}" th:target="_blank"
+                            th:text="${feed.feedItemCommand.title}"></a></h6>
                     <!--//col-->
                     <div class="row justify-content-between">
                         <div class="col-auto feed-category m-auto position-relative" style="top: -1.5px"><span

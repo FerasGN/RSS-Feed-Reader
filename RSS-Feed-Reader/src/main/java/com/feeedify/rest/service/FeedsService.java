@@ -13,6 +13,7 @@ import com.feeedify.rest.service.sortingandfiltering.SortingAndFilteringFeedsSer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +89,16 @@ public class FeedsService {
         if (optionalFeedItemUser.isPresent()) {
             FeedItemUser item = optionalFeedItemUser.get();
             item.setReadLater(readLater);
+            feedItemUserRepository.save(item);
+        }
+    }
+
+    public void changeLastReadingTime(Long userId, Long feedItemId, LocalDateTime lastReadingTime) {
+        Optional<FeedItemUser> optionalFeedItemUser = feedItemUserRepository
+                .findById(new FeedItemUserId(feedItemId, userId));
+        if (optionalFeedItemUser.isPresent()) {
+            FeedItemUser item = optionalFeedItemUser.get();
+            item.setLastReadingDate(lastReadingTime);
             feedItemUserRepository.save(item);
         }
     }
@@ -206,6 +217,13 @@ public class FeedsService {
         return feedItemsUser;
     }
 
+    public List<FeedItemUser> findRecentlyReadFeedItemsUser(User user, String period, String order, int pageNumber) {
+        List<FeedItemUser> feedItemsUser = sortingAndFilteringFeedsService
+                .findRecentlyReadFeedItemsByPeriodAndOrderAndPageNumber(user, period, order, pageNumber);
+
+        return feedItemsUser;
+    }
+
     /**
      * Returns a page with filtered by time period and sorted feed items of the
      * given category owned by the given user
@@ -302,6 +320,15 @@ public class FeedsService {
             int pageNumber) {
 
         List<FeedItemUser> feedItemsUser = findLikedFeedItemsUser(user, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> findRecentlyReadFeedItemUserCommands(User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUser> feedItemsUser = findRecentlyReadFeedItemsUser(user, period, order, pageNumber);
         List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
                 feedItemsUser);
 
@@ -432,6 +459,15 @@ public class FeedsService {
     public List<FeedItemUserCommand> searchLikedFeedItemCommands(String q, User user, String period, String order,
             int pageNumber) {
         List<FeedItemUser> feedItemsUser = searchingService.searchInLikedFeeds(q, user, period, order, pageNumber);
+        List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
+                feedItemsUser);
+
+        return feedItemsUserCommands;
+    }
+
+    public List<FeedItemUserCommand> searchRecentlyReadFeedItemCommands(String q, User user, String period, String order,
+            int pageNumber) {
+        List<FeedItemUser> feedItemsUser = searchingService.searchInRecentlyReadFeeds(q, user, period, order, pageNumber);
         List<FeedItemUserCommand> feedItemsUserCommands = convertFeedItemsUserToFeedItemUserCommands(user,
                 feedItemsUser);
 

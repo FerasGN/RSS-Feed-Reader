@@ -11,6 +11,7 @@ var CHANNEL_URL = "/channel/";
 var LIKE_URL = "/like";
 var MARK_AS_READ_LATER = "/mark-as-read-later";
 var MARK_AS_READ = "/mark-as-read";
+var LAST_READING_TIME = "/last-reading-date";
 var FEEDS_PAGE_URL = HOST + "feeds-page";
 var SEARCH_URL = HOST + "search";
 var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
@@ -99,7 +100,7 @@ function getSearchResults(url, container) {
   request.send();
 }
 
-function postInteractionButton(url, payload) {
+function postInteraction(url, payload) {
   let request = new XMLHttpRequest();
   request.open("POST", url, true);
   request.setRequestHeader("X-CSRF-TOKEN", csrfToken);
@@ -654,10 +655,10 @@ function initLikeButton() {
 
       if (!event.currentTarget.checked === false) {
         let payload = { liked: true, feedId: id };
-        postInteractionButton(LIKE_URL, payload);
+        postInteraction(LIKE_URL, payload);
       } else {
         let payload = { liked: false, feedId: id };
-        postInteractionButton(LIKE_URL, payload);
+        postInteraction(LIKE_URL, payload);
       }
     });
   }
@@ -671,10 +672,10 @@ function initReadLaterButton() {
 
       if (!event.currentTarget.checked === false) {
         let payload = { readLater: true, feedId: id };
-        postInteractionButton(MARK_AS_READ_LATER, payload);
+        postInteraction(MARK_AS_READ_LATER, payload);
       } else {
         let payload = { readLater: false, feedId: id };
-        postInteractionButton(MARK_AS_READ_LATER, payload);
+        postInteraction(MARK_AS_READ_LATER, payload);
       }
     });
   }
@@ -688,15 +689,29 @@ function initReadButton() {
 
       if (!event.currentTarget.checked === false) {
         let payload = { read: true, feedId: id };
-        postInteractionButton(MARK_AS_READ, payload);
+        postInteraction(MARK_AS_READ, payload);
         let headerContainer = document.getElementById("header-container");
         refreshHeader(REFRESH_HEADER_URL, headerContainer);
       } else {
         let payload = { read: false, feedId: id };
-        postInteractionButton(MARK_AS_READ, payload);
+        postInteraction(MARK_AS_READ, payload);
         let headerContainer = document.getElementById("header-container");
         refreshHeader(REFRESH_HEADER_URL, headerContainer);
       }
+    });
+  }
+}
+
+function initLastReadingDate() {
+  var lastReadingDateLinks = document.querySelectorAll("[id^=read-more]");
+  for (let i = 0; i < lastReadingDateLinks.length; i++) {
+    lastReadingDateLinks[i].addEventListener("click", (event) => {
+      let id = lastReadingDateLinks[i].id.split("-").pop();
+      let payload = {
+        lastReadingDate: new Date().toISOString(),
+        feedId: id,
+      };
+      postInteraction(LAST_READING_TIME, payload);
     });
   }
 }
@@ -705,4 +720,5 @@ function initInteractionsButtons() {
   initLikeButton();
   initReadLaterButton();
   initReadButton();
+  initLastReadingDate();
 }

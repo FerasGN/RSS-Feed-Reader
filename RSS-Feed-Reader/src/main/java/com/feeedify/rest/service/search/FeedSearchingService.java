@@ -18,12 +18,13 @@ public class FeedSearchingService {
     @Autowired
     private LikedFeedsSearchingService likedFeedsSearchingService;
     @Autowired
+    private RecentlyReadFeedsSearchingService recentlyReadFeedsSearchingService;
+    @Autowired
     private CategoryFeedsSearchingService categoryFeedsSearchingService;
     @Autowired
     private ChannelFeedsSearchingService channelFeedsSearchingService;
 
-    
-    /** 
+    /**
      * @param q
      * @param user
      * @param period
@@ -35,8 +36,7 @@ public class FeedSearchingService {
         return allFeedsSearchingService.findFeedItemsUser(q, user, period, order, pageNumber);
     }
 
-    
-    /** 
+    /**
      * @param q
      * @param user
      * @param period
@@ -48,8 +48,7 @@ public class FeedSearchingService {
         return readLaterFeedsSearchingService.findFeedItemsUser(q, user, period, order, pageNumber);
     }
 
-    
-    /** 
+    /**
      * @param q
      * @param user
      * @param period
@@ -61,8 +60,12 @@ public class FeedSearchingService {
         return likedFeedsSearchingService.findFeedItemsUser(q, user, period, order, pageNumber);
     }
 
-    
-    /** 
+    public List<FeedItemUser> searchInRecentlyReadFeeds(String q, User user, String period, String order,
+            int pageNumber) {
+        return recentlyReadFeedsSearchingService.findFeedItemsUser(q, user, period, order, pageNumber);
+    }
+
+    /**
      * @param q
      * @param user
      * @param categoryName
@@ -76,8 +79,7 @@ public class FeedSearchingService {
         return categoryFeedsSearchingService.findFeedItemsUser(q, user, categoryName, period, order, pageNumber);
     }
 
-    
-    /** 
+    /**
      * @param q
      * @param channelTitle
      * @param user
@@ -90,4 +92,5 @@ public class FeedSearchingService {
             int pageNumber) {
         return channelFeedsSearchingService.findFeedItemsUser(q, user, channelTitle, period, order, pageNumber);
     }
+
 }
