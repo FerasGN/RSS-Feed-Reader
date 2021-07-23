@@ -235,7 +235,7 @@ function addSubscribeButton() {
   var buttonContainer = document.getElementById("button-container");
   var saveChannelButton = document.createElement("button");
   saveChannelButton.id = "save-channel-button";
-  saveChannelButton.className += "btn app-btn-primary";
+  saveChannelButton.className += "btn app-btn-primary mb-2";
   saveChannelButton.innerText = "Subscribe to channel";
   buttonContainer.appendChild(saveChannelButton);
 

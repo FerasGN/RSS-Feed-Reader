@@ -154,15 +154,19 @@ public class ChannelService {
             return Optional.of(channelUser.getChannel());
 
         } catch (MalformedURLException e) {
+        	e.printStackTrace();
             log.error(e.getMessage());
             throw new NotValidURLException(NOT_VALID_URL);
         } catch (FeedException e) {
+        	e.printStackTrace();
             log.error(e.getMessage());
             throw new FeedException(FEED_PARSING_ERROR);
         } catch (IOException e) {
+        	e.printStackTrace();
             log.error(e.getMessage());
             throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
         } catch (Exception e) {
+        	e.printStackTrace();
             log.error(e.getMessage());
             throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
         }
@@ -227,8 +231,9 @@ public class ChannelService {
         channelUser.setChannel(channel);
         channelUser.setUser(user);
         channelUser.setFavorite(false);
-        channelUser = setCategory(categoryName, channelUser);
         channelUser = channelUserRepository.save(channelUser);
+        channelUser = setCategory(categoryName, channelUser);
+       
         return channelUser;
     }
 
