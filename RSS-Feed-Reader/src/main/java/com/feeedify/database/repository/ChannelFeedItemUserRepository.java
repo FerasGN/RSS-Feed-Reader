@@ -1,6 +1,7 @@
 package com.feeedify.database.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -16,6 +17,8 @@ import com.feeedify.database.entity.compositeIds.FeedItemUserId;
 public interface ChannelFeedItemUserRepository extends JpaRepository<FeedItemUser, FeedItemUserId> {
 
         Long countByUserAndFeedItem_Channel_TitleAndRead(User user, String channelTitle, boolean read);
+
+        List<FeedItemUser> findByUserAndFeedItem_Channel_Title(User user, String channelTitle);
 
         Page<FeedItemUser> findByUserAndFeedItem_Channel_TitleOrderByFeedItem_PublishDateDesc(User user,
                         String channelTitle, Pageable pageable);
@@ -38,9 +41,9 @@ public interface ChannelFeedItemUserRepository extends JpaRepository<FeedItemUse
         Optional<FeedItemUser> findByIdAndFeedItem_Channel_Title(FeedItemUserId feedItemUserId, String channelTitle);
 
         Page<FeedItemUser> findByUserAndFeedItem_Channel_TitleOrderByReadAscFeedItem_PublishDateDesc(User user,
-                String channelTitle, Pageable pageable);
+                        String channelTitle, Pageable pageable);
 
         Page<FeedItemUser> findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
-                User user, String channelTitle, LocalDate startDate, Pageable pageable);
+                        User user, String channelTitle, LocalDate startDate, Pageable pageable);
 
 }

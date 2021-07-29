@@ -4,6 +4,8 @@ var SEARCH_CHANNEL_URL = "/search-channel";
 var REFRESH_HEADER_URL = "/refresh-header";
 var FIND_CATEGORIES_URL = "/find-categories";
 var SAVE_CHANNEL_URL = "/save-channel";
+var EDIT_CATEGORY_URL = "/edit-category";
+var DELETE_CATEGORY_URL = "/delete-category";
 
 /* ===== Responsive Sidepanel ====== */
 initSidePanel();
@@ -66,7 +68,7 @@ function initShowSubMenus() {
     if (subSubmenulinks[i].classList.contains("active")) {
       let subSubmenu = subSubmenulinks[i].closest("div");
       let submenuLink = subSubmenu.closest("li").getElementsByTagName("div")[0];
-      let textCountArrow = submenuLink.getElementsByTagName("div")[0];
+      let textCountArrow = submenuLink.getElementsByTagName("div")[1];
       let submenuToggle = textCountArrow.getElementsByTagName("span")[1];
       submenuToggle.setAttribute("aria-expanded", "true");
       subSubmenu.classList.add("show");
@@ -143,11 +145,12 @@ function refreshHeader(url, headerContainer) {
   request.send();
 }
 
-/* =====  save channel AJAX====== */
-function postChannel(url, data, container) {
+/* =====  post AJAX====== */
+function post(url, data, container) {
   let request = new XMLHttpRequest();
   request.open("POST", url, true);
   request.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+  request.setRequestHeader("Accept", "application/json");
   request.setRequestHeader("Content-Type", "application/json");
   request.onload = function () {
     if (this.status >= 200 && this.status < 400) {
@@ -159,12 +162,13 @@ function postChannel(url, data, container) {
         var headerContainer = document.getElementById("header-container");
         refreshHeader(REFRESH_HEADER_URL, headerContainer);
       }
-      hideModal();
+      hideModals();
       pageNumber = 1;
     } else {
       // We reached our target server, but it returned an error
     }
   };
+ 
   request.send(JSON.stringify(data));
 }
 
@@ -255,47 +259,41 @@ function addSubscribeButton() {
     let channelInfos = [channelUrl.value, category.value];
     let currentFeedsUrl =
       "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
-    let categoryUrl = undefined;
+    let categoryName = undefined;
     let channelTitle = undefined;
 
     if (
       window.location.href.indexOf(CATEGORY_URL) > -1 &&
       window.location.href.indexOf(CHANNEL_URL) == -1
     ) {
-      categoryUrl = window.location.pathname.split("/").pop();
+      categoryName = window.location.pathname.split("/").pop();
       currentFeedsUrl = "/category";
     } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
       channelTitle = decodeURI(window.location.pathname.split("/").pop());
       currentFeedsUrl = "/channel";
     }
 
-    let feedsPageParameters = [
-      currentFeedsUrl,
-      categoryUrl,
-      channelTitle,
-      selectedView,
-      selectedPeriod,
-      selectedOrder,
-    ];
 
     let postChannelCommand = {
       channelUrl: channelUrl.value,
       category: category.value,
-      currentFeedsUrl: currentFeedsUrl,
-      categoryUrl: categoryUrl,
-      channelTitle: channelTitle,
-      selectedView: selectedView,
-      selectedPeriod: selectedPeriod,
-      selectedOrder: selectedOrder,
+      currentPageCommand:{
+       currentFeedsUrl,
+        categoryName,
+        channelTitle,
+        selectedView,
+        selectedPeriod,
+        selectedOrder,
+      }
     };
 
     const listItemsContainer = document.getElementById("list-items-container");
     const cardsContainer = document.getElementById("cards-container");
 
     if (document.body.contains(cardsContainer)) {
-      postChannel(SAVE_CHANNEL_URL, postChannelCommand, cardsContainer);
+      post(SAVE_CHANNEL_URL, postChannelCommand, cardsContainer);
     } else {
-      postChannel(SAVE_CHANNEL_URL, postChannelCommand, listItemsContainer);
+      post(SAVE_CHANNEL_URL, postChannelCommand, listItemsContainer);
     }
     let searchChannelButton = document.getElementById("search-channel-button");
     let dismissModal = document.getElementById("dismiss-modal");
@@ -343,39 +341,202 @@ function addSubscribeButton() {
 }
 
 /* ===== hide bootstrap modal ====== */
-function hideModal() {
-  var myModalEl = document.getElementById("subscribe-modal");
-  var modal = bootstrap.Modal.getInstance(myModalEl);
-  modal.hide();
+function hideModals(){
+  hideSubscribeModal();
+  hideRenameModal();
+  hideDeleteModal();
+}
+function hideSubscribeModal() {
+  let subscribeModal = document.getElementById("subscribe-modal");
+  if(typeof subscribeModal != "undefined" && subscribeModal != null && subscribeModal.classList.contains("show")){
+    let modal = bootstrap.Modal.getInstance(subscribeModal);
+    modal.hide();
 
-  const warpChannelImage = document.getElementById("warp-channel-image");
-  const faviconLink = document.getElementById("favicon-link");
-  warpChannelImage.classList.remove("warp-channel-image-no-after");
-  faviconLink.src = "//:0";
+    const warpChannelImage = document.getElementById("warp-channel-image");
+    const faviconLink = document.getElementById("favicon-link");
+    warpChannelImage.classList.remove("warp-channel-image-no-after");
+    faviconLink.src = "//:0";
 
-  const dismissModal = document.getElementById("dismiss-modal");
-  dismissModal.setAttribute("data-bs-dismiss", "modal");
-  dismissModal.href = "#";
+    const dismissModal = document.getElementById("dismiss-modal");
+    dismissModal.setAttribute("data-bs-dismiss", "modal");
+    dismissModal.href = "#";
 
-  const channelInfo = document.getElementById("channel-info");
-  const channelUrl = document.getElementById("channel-url");
-  const categoryContainer = document.getElementById("category-container");
-  const searchChannelButton = document.getElementById("search-channel-button");
-  const saveChannelButton = document.getElementById("save-channel-button");
+    const channelInfo = document.getElementById("channel-info");
+    const channelUrl = document.getElementById("channel-url");
+    const categoryContainer = document.getElementById("category-container");
+    const searchChannelButton = document.getElementById("search-channel-button");
+    const saveChannelButton = document.getElementById("save-channel-button");
 
-  channelInfo.innerText = "";
-  channelUrl.value = "";
-  channelUrl.disabled = false;
+    channelInfo.innerText = "";
+    channelUrl.value = "";
+    channelUrl.disabled = false;
 
-  if (typeof categoryContainer != "undefined" && categoryContainer != null)
-    categoryContainer.parentNode.removeChild(categoryContainer);
+    if (typeof categoryContainer != "undefined" && categoryContainer != null)
+      categoryContainer.parentNode.removeChild(categoryContainer);
 
-  searchChannelButton.disabled = false;
-  searchChannelButton.innerHTML = "Search";
-  if (typeof saveChannelButton != "undefined" && saveChannelButton != null)
-    saveChannelButton.parentNode.removeChild(saveChannelButton);
+    searchChannelButton.disabled = false;
+    searchChannelButton.innerHTML = "Search";
+    if (typeof saveChannelButton != "undefined" && saveChannelButton != null)
+      saveChannelButton.parentNode.removeChild(saveChannelButton);
+
+  }
 }
 
-// /* ===== reset bootstrap modal on hide ====== */
+function hideRenameModal() {
+  let renameModal = document.getElementById("rename-modal");
+  if(typeof renameModal != "undefined" && renameModal != null && renameModal.classList.contains("show")){
+    let modal = bootstrap.Modal.getInstance(renameModal);
+    modal.hide();
+
+    const currentCategoryName = document.querySelector("#rename-modal #current-category-name");
+    const newCategoryName = document.querySelector("#rename-modal #new-category-name");
+    currentCategoryName.value = "";
+    newCategoryName.value = "";
+
+    const dismissModal = document.getElementById("dismiss-modal");
+    dismissModal.setAttribute("data-bs-dismiss", "modal");
+    dismissModal.href = "#";
+
+  }
+}
+
+function hideDeleteModal() {
+  let deleteModal = document.getElementById("delete-modal");
+  if(typeof deleteModal != "undefined" && deleteModal != null && deleteModal.classList.contains("show")){
+    let modal = bootstrap.Modal.getInstance(deleteModal);
+    modal.hide();
+
+    const currentCategoryName = document.querySelector("#rename-modal #current-category-name");
+    const newCategoryName = document.querySelector("#rename-modal #new-category-name");
+    currentCategoryName.value = "";
+    newCategoryName.value = "";
+
+    const dismissModal = document.getElementById("dismiss-modal");
+    dismissModal.setAttribute("data-bs-dismiss", "modal");
+    dismissModal.href = "#";
+
+  }
+}
+
+
+/* ===== reset bootstrap modal on hide ====== */
 let subscribeModal = document.getElementById("subscribe-modal");
-subscribeModal.addEventListener("hidden.bs.modal", hideModal);
+subscribeModal.addEventListener("hidden.bs.modal", hideSubscribeModal);
+
+let renameModal = document.getElementById("rename-modal");
+renameModal.addEventListener("hidden.bs.modal", hideRenameModal);
+
+let deleteModal = document.getElementById("delete-modal");
+deleteModal.addEventListener("hidden.bs.modal", hideDeleteModal);
+
+renameModal.addEventListener('show.bs.modal', function (event) {
+  let currentCategoryName = document.querySelector("#current-category-name");
+  currentCategoryName.value =  event.relatedTarget.getAttribute('data-old-category-name');
+})
+
+deleteModal.addEventListener('show.bs.modal', function (event) {
+  let categoryNameToDelete = document.querySelector("#category-name-to-delete");
+  categoryNameToDelete.value =  event.relatedTarget.getAttribute('data-category-name');
+})
+/* ===== Edit category name ====== */
+let renameCategoryBtn = document.querySelector("#rename-category-btn");
+renameCategoryBtn.addEventListener("click", (event) => {
+
+  let oldCategoryName = document.querySelector("#current-category-name").value;
+  let newCategoryName = document.querySelector("#new-category-name").value;
+
+  let channelUrl = document.getElementById("channel-url");
+  let category = document.getElementById("category");
+  let selectedView = document.getElementById("view-select").value;
+  let selectedPeriod = document.getElementById("period-select").value;
+  let selectedOrder = document.getElementById("order-select").value;
+  let currentFeedsUrl =
+    "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
+  let categoryName = undefined;
+  let channelTitle = undefined;
+
+  if (
+    window.location.href.indexOf(CATEGORY_URL) > -1 &&
+    window.location.href.indexOf(CHANNEL_URL) == -1
+  ) {
+    categoryName = window.location.pathname.split("/").pop();
+    currentFeedsUrl = "/category";
+  } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+    channelTitle = decodeURI(window.location.pathname.split("/").pop());
+    currentFeedsUrl = "/channel";
+  }
+  let postCategoryCommand = {
+    categoryCommand:{
+      name:oldCategoryName
+    },
+    newCategoryName,
+    currentPageCommand:{
+     currentFeedsUrl,
+      categoryName,
+      channelTitle,
+      selectedView,
+      selectedPeriod,
+      selectedOrder,
+    }
+  };
+
+  const listItemsContainer = document.getElementById("list-items-container");
+  const cardsContainer = document.getElementById("cards-container");
+
+  if (document.body.contains(cardsContainer)) {
+    post(EDIT_CATEGORY_URL, postCategoryCommand, cardsContainer);
+  } else {
+    post(EDIT_CATEGORY_URL, postCategoryCommand, listItemsContainer);
+  }
+});
+
+
+let deleteCategoryBtn = document.querySelector("#delete-category-btn");
+deleteCategoryBtn.addEventListener("click", (event) => {
+
+  let name = document.querySelector("#category-name-to-delete").value;
+
+  let channelUrl = document.getElementById("channel-url");
+  let category = document.getElementById("category");
+  let selectedView = document.getElementById("view-select").value;
+  let selectedPeriod = document.getElementById("period-select").value;
+  let selectedOrder = document.getElementById("order-select").value;
+  let currentFeedsUrl =
+    "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
+  let categoryName = undefined;
+  let channelTitle = undefined;
+
+  if (
+    window.location.href.indexOf(CATEGORY_URL) > -1 &&
+    window.location.href.indexOf(CHANNEL_URL) == -1
+  ) {
+    categoryName = window.location.pathname.split("/").pop();
+    currentFeedsUrl = "/category";
+  } else if (window.location.href.indexOf(CHANNEL_URL) > -1) {
+    channelTitle = decodeURI(window.location.pathname.split("/").pop());
+    currentFeedsUrl = "/channel";
+  }
+  let postCategoryCommand = {
+    categoryCommand:{
+      name
+    },
+    currentPageCommand:{
+     currentFeedsUrl,
+      categoryName,
+      channelTitle,
+      selectedView,
+      selectedPeriod,
+      selectedOrder,
+    }
+  };
+
+  const listItemsContainer = document.getElementById("list-items-container");
+  const cardsContainer = document.getElementById("cards-container");
+
+  if (document.body.contains(cardsContainer)) {
+    post(DELETE_CATEGORY_URL, postCategoryCommand, cardsContainer);
+  } else {
+    post(DELETE_CATEGORY_URL, postCategoryCommand, listItemsContainer);
+  }
+
+});

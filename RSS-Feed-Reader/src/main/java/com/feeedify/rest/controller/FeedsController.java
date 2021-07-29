@@ -442,6 +442,7 @@ public class FeedsController {
                 .collect(Collectors.toList());
         model.addAttribute("numberOfUnreadFeeds", feedsService.findNumberOfUnreadFeeds(user));
         model.addAttribute("channelCommand", new ChannelCommand());
+        model.addAttribute("categoryCommand", new CategoryCommand());
         model.addAttribute("categoryCommands", categoryCommands);
         model.addAttribute("channelCommands", channelCommands);
 

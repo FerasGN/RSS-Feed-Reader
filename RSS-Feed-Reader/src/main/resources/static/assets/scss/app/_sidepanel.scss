@@ -130,7 +130,7 @@
 
   .submenu-arrow {
     position: absolute;
-    right: 1rem;
+    right: 0.7rem;
     color: $theme-text-color-light;
     cursor: pointer;
     svg {
@@ -185,7 +185,6 @@
     padding: 0.5rem 1rem;
     padding-left: 1rem;
     position: relative;
-    display: flex;
     margin-bottom: 0;
 
     &:before {
@@ -222,7 +221,7 @@
   .text-count-arrow {
     .count {
       position: absolute;
-      right: 2rem;
+      right: 1.7rem;
     }
   }
   .count {

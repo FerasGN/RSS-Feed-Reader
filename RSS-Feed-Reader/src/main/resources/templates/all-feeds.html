@@ -18,7 +18,7 @@
 				<div class="row g-3 mb-4 align-items-center justify-content-between">
 					<div class="col-auto">
 						<h1 class="app-page-title mb-0">All Feeds
-							<th:block th:if="${categoryName != null}">/ Category / <span
+							<th:block th:if="${categoryName != null}">/ Category / <span class="text-break"
 									th:utext="${#strings.capitalize(categoryName)}"></span>
 								<th:block th:if="${channelTitle != null}">/ Channel / <span
 										th:utext="${#strings.capitalize(channelTitle)}"></span>
@@ -45,9 +45,10 @@
 		</div>
 		<!--//app-content-->
 
-		<div id="subscribe-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscribe-modal-title"
-			aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
-			th:insert="layouts/subscribe-modal :: subscribe-modal"></div>
+		<div id="modals" th:insert="layouts/modals :: modals"></div>
+		<!--//modals-->
+
+
 	</div>
 	<!--//app-wrapper-->
 	<thymeleaf th:replace="layouts/scripts :: scripts" />

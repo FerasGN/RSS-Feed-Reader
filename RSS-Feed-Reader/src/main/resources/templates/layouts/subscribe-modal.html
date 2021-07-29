@@ -14,8 +14,7 @@
 						<img id="favicon-link" alt="" class="channel-image" th:src="${faviconLink}">
 
 					</div>
-					<form id="channel-form" action="#" th:method="POST" th:action="@{/save-channel}"
-						th:object="${channelCommand}">
+					<div id="channel-form" th:object="${channelCommand}">
 						<label>Which channel would you like to subscribe to?</label>
 						<p id="channel-info" class="channel-name m-2 text-danger" th:text="${channelInfo}">
 						</p>
@@ -29,7 +28,7 @@
 									onclick="searchChannel(); return false;">Search</button>
 							</div>
 						</div>
-					</form>
+					</div>
 
 				</div>
 

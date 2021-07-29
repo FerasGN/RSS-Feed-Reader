@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.feeedify.commands.CategoryCommand;
 import com.feeedify.commands.ChannelCommand;
+import com.feeedify.commands.CurrentPageCommand;
+import com.feeedify.commands.PostCategoryCommand;
 import com.feeedify.commands.PostChannelCommand;
 import com.feeedify.config.security.SecurityUser;
 import com.feeedify.database.entity.Channel;
@@ -86,6 +89,7 @@ public class ChannelController {
             @AuthenticationPrincipal SecurityUser securityUser) {
         String url = postChannelCommand.getChannelUrl();
         String categoryName = postChannelCommand.getCategory();
+        CurrentPageCommand currentPageCommand = postChannelCommand.getCurrentPageCommand();
         try {
             Optional<Channel> channel = channelService.subscribeToChannel(securityUser.getUser(), url, categoryName);
 
@@ -93,20 +97,20 @@ public class ChannelController {
 
         }
 
-        if (postChannelCommand.getCategoryUrl() != null)
-            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + postChannelCommand.getCurrentFeedsUrl()
-                    + "&category=" + postChannelCommand.getCategory() + "&view=" + postChannelCommand.getSelectedView()
-                    + "&period=" + postChannelCommand.getSelectedPeriod() + "&orderBy="
-                    + postChannelCommand.getSelectedOrder() + "&pageNumber=0");
-        else if (postChannelCommand.getChannelUrl() != null)
-            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + postChannelCommand.getCurrentFeedsUrl()
-                    + "&channelTitle=" + postChannelCommand.getChannelTitle() + "&view="
-                    + postChannelCommand.getSelectedView() + "&period=" + postChannelCommand.getSelectedPeriod()
-                    + "&orderBy=" + postChannelCommand.getSelectedOrder() + "&pageNumber=0");
+        if (currentPageCommand.getCategoryName() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl()
+                    + "&category=" + postChannelCommand.getCategory() + "&view=" + currentPageCommand.getSelectedView()
+                    + "&period=" + currentPageCommand.getSelectedPeriod() + "&orderBy="
+                    + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+        else if (currentPageCommand.getChannelTitle() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl()
+                    + "&channelTitle=" + currentPageCommand.getChannelTitle() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
         else
-            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + postChannelCommand.getCurrentFeedsUrl() + "&view="
-                    + postChannelCommand.getSelectedView() + "&period=" + postChannelCommand.getSelectedPeriod()
-                    + "&orderBy=" + postChannelCommand.getSelectedOrder() + "&pageNumber=0");
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
 
         return mav;
     }
@@ -127,4 +131,66 @@ public class ChannelController {
 
     }
 
+    @PostMapping(value = { "/edit-category" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public ModelAndView editCategory(ModelAndView mav, @RequestBody PostCategoryCommand postCategoryCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+        CategoryCommand categoryCommand = postCategoryCommand.getCategoryCommand();
+        String oldName = categoryCommand.getName();
+        String newName = postCategoryCommand.getNewCategoryName();
+        CurrentPageCommand currentPageCommand = postCategoryCommand.getCurrentPageCommand();
+        try {
+
+            channelService.changeCategoryName(securityUser.getUser(), oldName, newName);
+        } catch (Exception e) {
+
+        }
+
+        if (currentPageCommand.getCategoryName() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl()
+                    + "&category=" + currentPageCommand.getCategoryName() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+        else if (currentPageCommand.getChannelTitle() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl()
+                    + "&channelTitle=" + currentPageCommand.getChannelTitle() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+        else
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+
+        return mav;
+    }
+
+    @PostMapping(value = { "/delete-category" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public ModelAndView deleteCategory(ModelAndView mav, @RequestBody PostCategoryCommand postCategoryCommand,
+            @AuthenticationPrincipal SecurityUser securityUser) {
+        CategoryCommand categoryCommand = postCategoryCommand.getCategoryCommand();
+        String categoryName = categoryCommand.getName();
+        CurrentPageCommand currentPageCommand = postCategoryCommand.getCurrentPageCommand();
+        try {
+
+            channelService.deleteCategory(securityUser.getUser(), categoryName);
+        } catch (Exception e) {
+
+        }
+
+        if (currentPageCommand.getCategoryName() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl()
+                    + "&category=" + currentPageCommand.getCategoryName() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+        else if (currentPageCommand.getChannelTitle() != null)
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl()
+                    + "&channelTitle=" + currentPageCommand.getChannelTitle() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+        else
+            mav.setViewName("redirect:/feeds-page?currentFeedsUrl=" + currentPageCommand.getCurrentFeedsUrl() + "&view="
+                    + currentPageCommand.getSelectedView() + "&period=" + currentPageCommand.getSelectedPeriod()
+                    + "&orderBy=" + currentPageCommand.getSelectedOrder() + "&pageNumber=0");
+
+        return mav;
+    }
 }

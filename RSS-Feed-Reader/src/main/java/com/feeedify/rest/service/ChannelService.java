@@ -12,11 +12,14 @@ import static com.feeedify.constants.SseNotificationMessages.*;
 import com.feeedify.database.MaterializedViewManager;
 import com.feeedify.database.entity.*;
 import com.feeedify.database.entity.Sse.SseNotification;
+import com.feeedify.database.entity.compositeIds.FeedItemUserId;
 import com.feeedify.database.repository.CategoryRepository;
+import com.feeedify.database.repository.ChannelFeedItemUserRepository;
 import com.feeedify.database.repository.ChannelRepository;
 import com.feeedify.database.repository.ChannelUserRepository;
 import com.feeedify.database.repository.FeedItemRepository;
 import com.feeedify.database.repository.FeedItemUserRepository;
+import com.feeedify.database.repository.UserRepository;
 import com.feeedify.exceptions.ChannelAlreadyExistException;
 import com.feeedify.exceptions.NotValidURLException;
 import imageresolver.MainImageResolver;
@@ -43,6 +46,8 @@ import java.util.Optional;
 public class ChannelService {
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private ChannelRepository channelRepository;
     @Autowired
     private CategoryRepository categoryRepository;
@@ -50,6 +55,8 @@ public class ChannelService {
     private FeedItemRepository feedItemRepository;
     @Autowired
     private FeedItemUserRepository feedItemUserRepository;
+    @Autowired
+    private ChannelFeedItemUserRepository channelFeedItemUserRepository;
     @Autowired
     private ChannelUserRepository channelUserRepository;
     @Autowired
@@ -75,12 +82,63 @@ public class ChannelService {
     /**
      * Finds the names of all channel categories which belong to to the given user.
      * 
+     * TODO: delete a category if it was not used anywhere.
+     * 
      * @param user
      * @return List<String> names of categories
      */
     public List<String> findAllChannelsCategoriesByUser(User user) {
         List<String> allCategories = categoryRepository.findAllChannelsCategoriesByUser(user.getId());
         return allCategories;
+    }
+
+    public void changeCategoryName(User user, String oldName, String newName) {
+        Optional<Category> optionalFirstCategory = categoryRepository.findByName(oldName.toLowerCase());
+        Optional<Category> optionalSecondCategory = categoryRepository.findByName(newName.toLowerCase());
+
+        if (optionalFirstCategory.isPresent()) {
+            Category category = null;
+
+            if (optionalSecondCategory.isPresent())
+                category = optionalSecondCategory.get();
+            else
+                category = new Category(newName.toLowerCase());
+
+            List<ChannelUser> channelsWithCategory = channelUserRepository.findAllByUserAndCategory_Name(user,
+                    oldName.toLowerCase());
+
+            for (ChannelUser cu : channelsWithCategory) {
+                cu.addCategory(category);
+                categoryRepository.save(category);
+            }
+
+        }
+
+    }
+
+    public void deleteCategory(User user, String categoryName) {
+        // Optional<Category> optionalCategory = categoryRepository.findByName(categoryName.toLowerCase());
+        // if (optionalCategory.isPresent()) {
+        //     Category category = optionalCategory.get();
+        //     List<ChannelUser> channelsWithCategory = channelUserRepository.findAllByUserAndCategory_Name(user,
+        //             categoryName.toLowerCase());
+
+        //     List<FeedItemUser> feedItemsUser = channelFeedItemUserRepository.findByUserAndFeedItem_Channel_Title(user,
+        //             categoryName.toLowerCase());
+
+        //     for (ChannelUser cu : channelsWithCategory) {
+        //         category.removeChannelUser(cu);
+        //         categoryRepository.save(category);
+        //         for (FeedItemUser fu : feedItemsUser) {
+        //             new FeedItemUserId(fu.getFeedItem().getId(), user.getId());
+        //             user.getFeedItemUsers().remove(fu);
+        //             userRepository.save(user);
+        //             feedItemUserRepository.save(fu);
+        //             feedItemUserRepository.deleteById(new FeedItemUserId(fu.getFeedItem().getId(), user.getId()));
+        //         }
+        //         channelUserRepository.delete(cu);
+        //     }
+        // }
     }
 
     /**
@@ -91,8 +149,11 @@ public class ChannelService {
      * @return Category
      */
     public Category findChannelCategory(User user, Channel channel) {
-        ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user, channel);
-        return channelUser.getCategory();
+        if (channel != null) {
+            ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user, channel);
+            return channelUser.getCategory();
+        }
+        return new Category();
     }
 
     /**
@@ -131,6 +192,7 @@ public class ChannelService {
      * @throws IOException
      * @throws Exception
      */
+    @Transactional
     public Optional<Channel> subscribeToChannel(User user, String url, String categoryName)
             throws ChannelAlreadyExistException, NotValidURLException, IOException, Exception {
         try {
@@ -144,7 +206,16 @@ public class ChannelService {
             if (channelOptional.isPresent())
                 channel = channelOptional.get();
             else
-                channel = createChannel(user, feed, url);
+                channel = createChannel(feed, url);
+
+            // extract feed items of channel
+            saveFeedItems(user, channel, feed.getEntries());
+
+            // set the language of the channel
+            channel = channelRepository.findById(channel.getId()).get();
+            String languageOfChannel = detectLanguageOfChannel(channel);
+            channel.setLanguage(languageOfChannel.toLowerCase());
+            channel = channelRepository.save(channel);
 
             ChannelUser channelUser = createChannelUser(user, channel, categoryName);
 
@@ -154,19 +225,19 @@ public class ChannelService {
             return Optional.of(channelUser.getChannel());
 
         } catch (MalformedURLException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             log.error(e.getMessage());
             throw new NotValidURLException(NOT_VALID_URL);
         } catch (FeedException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             log.error(e.getMessage());
             throw new FeedException(FEED_PARSING_ERROR);
         } catch (IOException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             log.error(e.getMessage());
             throw new IOException(IOEXCEPTION_WHILE_SUBSCRIBING);
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             log.error(e.getMessage());
             throw new Exception(ERROR_SUBSCRIBING_CHANNEL);
         }
@@ -185,8 +256,7 @@ public class ChannelService {
      * @throws FeedException
      * @throws IOException
      */
-    @Transactional
-    private Channel createChannel(User user, SyndFeed feed, String url) throws FeedException, IOException {
+    private Channel createChannel(SyndFeed feed, String url) throws FeedException, IOException {
         Channel channel = new Channel();
         log.debug("Start creating a channel.. -> ");
         if (feed.getTitle() != null)
@@ -207,14 +277,6 @@ public class ChannelService {
 
         channel = channelRepository.save(channel);
 
-        saveFeedItems(user, channel, feed.getEntries());
-
-        // set the language of the channel
-        channel = channelRepository.findById(channel.getId()).get();
-        String languageOfChannel = detectLanguageOfChannel(channel);
-        channel.setLanguage(languageOfChannel.toLowerCase());
-        channel = channelRepository.save(channel);
-
         return channel;
     }
 
@@ -233,7 +295,7 @@ public class ChannelService {
         channelUser.setFavorite(false);
         channelUser = channelUserRepository.save(channelUser);
         channelUser = setCategory(categoryName, channelUser);
-       
+
         return channelUser;
     }
 
@@ -421,12 +483,12 @@ public class ChannelService {
         List<SyndCategory> SyndCategories = syndEntry.getCategories();
         List<Category> categories = new ArrayList<>();
         for (SyndCategory category : SyndCategories) {
-            Optional<Category> checkCategory = categoryRepository.findByName(category.getName());
+            Optional<Category> checkCategory = categoryRepository.findByName(category.getName().toLowerCase());
             if (checkCategory.isPresent()) {
                 categories.add(checkCategory.get());
             } else {
                 Category newCategory = new Category();
-                newCategory.setName(category.getName());
+                newCategory.setName(category.getName().toLowerCase());
                 categories.add(newCategory);
             }
         }

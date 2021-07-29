@@ -30,9 +30,9 @@
         </div>
         <!--//app-content-->
 
-        <div id="subscribe-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscribe-modal-title"
-            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
-            th:insert="layouts/subscribe-modal :: subscribe-modal"></div>
+        <div id="modals" th:insert="layouts/modals :: modals"></div>
+        <!--//modals-->
+
     </div>
     <!--//app-wrapper-->
     <thymeleaf th:replace="layouts/scripts :: scripts" />

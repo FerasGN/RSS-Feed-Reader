@@ -1,0 +1,19 @@
+<thymeleaf xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="modals"
+    th:remove="tag">
+
+    <div id="subscribe-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscribe-modal-title"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+        th:insert="layouts/subscribe-modal :: subscribe-modal"></div>
+
+    <div id="rename-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="rename-modal"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+        th:insert="layouts/rename-modal :: rename-modal">
+    </div>
+
+    <div id="delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delete-modal-title"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+        th:insert="layouts/delete-modal :: delete-modal">
+    </div>
+
+
+</thymeleaf>

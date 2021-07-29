@@ -1,5 +1,6 @@
 package com.feeedify.database.repository;
 
+import com.feeedify.database.entity.Category;
 import com.feeedify.database.entity.Channel;
 import com.feeedify.database.entity.User;
 
@@ -17,11 +18,15 @@ import java.util.Optional;
 @Repository
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, ChannelUserId> {
 
+    Long countByCategory(Category category);
+
     ChannelUser findByUserAndChannel(User user, Channel channel);
 
     List<ChannelUser> findAllByUserOrderByCategory_Name(User user);
 
     List<ChannelUser> findAllByUserAndChannel_channelUrlOrderByCategory_Name(User user, String channelUrl);
+
+    List<ChannelUser> findAllByUserAndCategory_Name(User user, String category);
 
     List<ChannelUser> findAllByUserAndCategory_NameOrderByCategory_Name(User user, String category);
 

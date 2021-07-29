@@ -38,6 +38,11 @@ public class Category extends BaseEntity {
                 this.channelUsers.add(cu);
         }
 
+        public void removeChannelUser(ChannelUser cu) {
+                cu.setCategory(null);
+                this.channelUsers.remove(cu);
+        }
+
         public void addFeedItem(FeedItem feedItem) {
                 feedItem.addCategory(this);
                 this.feedItems.add(feedItem);
