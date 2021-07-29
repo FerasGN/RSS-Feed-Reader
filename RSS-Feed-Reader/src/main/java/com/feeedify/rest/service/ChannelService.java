@@ -117,28 +117,22 @@ public class ChannelService {
     }
 
     public void deleteCategory(User user, String categoryName) {
-        // Optional<Category> optionalCategory = categoryRepository.findByName(categoryName.toLowerCase());
-        // if (optionalCategory.isPresent()) {
-        //     Category category = optionalCategory.get();
-        //     List<ChannelUser> channelsWithCategory = channelUserRepository.findAllByUserAndCategory_Name(user,
-        //             categoryName.toLowerCase());
+        Optional<Category> optionalCategory = categoryRepository.findByName(categoryName.toLowerCase());
+        if (optionalCategory.isPresent()) {
+            List<ChannelUser> channelsWithCategory = channelUserRepository.findAllByUserAndCategory_Name(user,
+                    categoryName.toLowerCase());
 
-        //     List<FeedItemUser> feedItemsUser = channelFeedItemUserRepository.findByUserAndFeedItem_Channel_Title(user,
-        //             categoryName.toLowerCase());
+            for (ChannelUser cu : channelsWithCategory) {
+                List<FeedItemUser> feedItemsUser = channelFeedItemUserRepository
+                        .findByUserAndFeedItem_Channel_Title(user, cu.getChannel().getTitle());
 
-        //     for (ChannelUser cu : channelsWithCategory) {
-        //         category.removeChannelUser(cu);
-        //         categoryRepository.save(category);
-        //         for (FeedItemUser fu : feedItemsUser) {
-        //             new FeedItemUserId(fu.getFeedItem().getId(), user.getId());
-        //             user.getFeedItemUsers().remove(fu);
-        //             userRepository.save(user);
-        //             feedItemUserRepository.save(fu);
-        //             feedItemUserRepository.deleteById(new FeedItemUserId(fu.getFeedItem().getId(), user.getId()));
-        //         }
-        //         channelUserRepository.delete(cu);
-        //     }
-        // }
+                for (FeedItemUser fu : feedItemsUser)
+                    feedItemUserRepository.delete(fu);
+
+                channelUserRepository.delete(cu);
+            }
+
+        }
     }
 
     /**
