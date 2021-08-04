@@ -88,13 +88,13 @@ public class AllFeedsSearchingService {
     private List<FeedItemUser> findFilteredAndOrderedSearchResults(String q, User user, LocalDate startDate,
             String order, Integer pageNumber) {
 
-        List<FeedItemUser> feedItemsUsers = searchAndFilterByPublishLocalDate(user.getId(), q, pageNumber, startDate);
+        List<FeedItemUser> feedItemsUser = searchAndFilterByPublishLocalDate(user.getId(), q, pageNumber, startDate);
 
         switch (order) {
             case ORDER_BY_LATEST: {
                 Comparator<FeedItemUser> compareByPublishDateDesc = Comparator.comparing(
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
-                Collections.sort(feedItemsUsers, compareByPublishDateDesc);
+                Collections.sort(feedItemsUser, compareByPublishDateDesc);
 
                 break;
             } // end case
@@ -102,7 +102,7 @@ public class AllFeedsSearchingService {
             case ORDER_BY_OLDEST: {
                 Comparator<FeedItemUser> compareByPublishDateAsc = Comparator.comparing(
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.naturalOrder()));
-                Collections.sort(feedItemsUsers, compareByPublishDateAsc);
+                Collections.sort(feedItemsUser, compareByPublishDateAsc);
 
                 break;
             } // end case
@@ -112,7 +112,7 @@ public class AllFeedsSearchingService {
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
                 Comparator<FeedItemUser> compareByUnreadAndPublishDate = compareByUnread
                         .thenComparing(compareByPublishDate);
-                Collections.sort(feedItemsUsers, compareByUnreadAndPublishDate);
+                Collections.sort(feedItemsUser, compareByUnreadAndPublishDate);
                 break;
             } // end case
 
@@ -123,24 +123,24 @@ public class AllFeedsSearchingService {
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
                 Comparator<FeedItemUser> compareByChannelTitleAndPublishDate = compareByChannelTitle
                         .thenComparing(compareByPublishDate);
-                Collections.sort(feedItemsUsers, compareByChannelTitleAndPublishDate);
+                Collections.sort(feedItemsUser, compareByChannelTitleAndPublishDate);
                 break;
             } // end case
 
             case ORDER_BY_ALL_CATEGORIES: {
-                feedItemsUsers = findFeedItemUsersOrderedByCategoryName(user, pageNumber, feedItemsUsers);
+                feedItemsUser = findFeedItemUsersOrderedByCategoryName(user, pageNumber, feedItemsUser);
                 break;
             } // end case
 
             case ORDER_BY_MOST_RELEVANT: {
-                return feedItemsUsers;
+                return feedItemsUser;
             } // end case
 
             default:
-                return feedItemsUsers;
+                return feedItemsUser;
         }// end switch
 
-        return feedItemsUsers;
+        return feedItemsUser;
     }
 
     /**
@@ -152,32 +152,32 @@ public class AllFeedsSearchingService {
      */
     private List<FeedItemUser> searchAndFilterByPublishLocalDate(Long userId, String q, Integer pageNumber,
             LocalDate startDate) {
-        List<FeedItemUser> feedItemsUsers = search(userId, q, pageNumber);
+        List<FeedItemUser> feedItemsUser = search(userId, q, pageNumber);
         if (startDate == null)
-            return feedItemsUsers;
+            return feedItemsUser;
         else {
-            feedItemsUsers = feedItemsUsers.stream().filter(f -> {
+            feedItemsUser = feedItemsUser.stream().filter(f -> {
                 if (f.getFeedItem().getPublishLocalDate() != null)
                     return f.getFeedItem().getPublishLocalDate().isAfter(startDate)
                             || f.getFeedItem().getPublishLocalDate().isEqual(startDate);
                 return false;
             }).collect(Collectors.toList());
         }
-        return feedItemsUsers;
+        return feedItemsUser;
     }
 
     /**
      * @param user
      * @param pageNumber
-     * @param feedItemsUsers
+     * @param feedItemsUser
      * @return List<FeedItemUser>
      */
     private List<FeedItemUser> findFeedItemUsersOrderedByCategoryName(User user, Integer pageNumber,
-            List<FeedItemUser> feedItemsUsers) {
+            List<FeedItemUser> feedItemsUser) {
 
         Map<String, List<FeedItemUser>> feedItemUsersOfCategoryMap = new HashMap<String, List<FeedItemUser>>();
 
-        feedItemsUsers.forEach(fu -> {
+        feedItemsUser.forEach(fu -> {
             Channel channel = fu.getFeedItem().getChannel();
             ChannelUser channelUser = channelUserRepository.findByUserAndChannel(user, channel);
             String categoryNameOfFeedItemUser = channelUser.getCategory().getName();

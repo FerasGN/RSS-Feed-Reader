@@ -29,7 +29,7 @@ async function getAllFeeds(url, container) {
     if (this.status >= 200 && this.status < 400) {
       // Success!
       const preloader = document.getElementById("loader");
-      preloader.style.cssText = "display:none !important";
+      preloader.classList.add("d-none");
 
       let resp = this.response;
       container.innerHTML = request.responseText;
@@ -43,7 +43,7 @@ async function getAllFeeds(url, container) {
     // There was a connection error of some sort
   };
 
-  // await showPreloader();
+  await showPreloader();
   request.send();
 }
 
@@ -54,9 +54,6 @@ function getFeedsPage(url, container) {
   request.onload = function () {
     if (this.status >= 200 && this.status < 400) {
       // Success!
-      const preloader = document.getElementById("loader");
-      preloader.style.cssText = "display:none !important";
-
       let resp = this.response;
       if (resp !== "") {
         container.innerHTML += request.responseText;
@@ -70,11 +67,10 @@ function getFeedsPage(url, container) {
     // There was a connection error of some sort
   };
 
-  // await showPreloader();
   request.send();
 }
 
-function getSearchResults(url, container) {
+async function getSearchResults(url, container) {
   let request = new XMLHttpRequest();
   request.open("GET", url, true);
 
@@ -82,7 +78,7 @@ function getSearchResults(url, container) {
     if (this.status >= 200 && this.status < 400) {
       // Success!
       const preloader = document.getElementById("loader");
-      preloader.style.cssText = "display:none !important";
+      preloader.classList.add("d-none");
       let resp = this.response;
       if (resp !== "") {
         container.innerHTML = request.responseText;
@@ -96,7 +92,7 @@ function getSearchResults(url, container) {
     // There was a connection error of some sort
   };
 
-  // await showPreloader();
+  await showPreloader();
   request.send();
 }
 

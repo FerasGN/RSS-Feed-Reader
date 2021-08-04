@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.feeedify.database.entity.ChannelUser;
+import com.feeedify.database.entity.FeedItemUser;
+import com.feeedify.database.entity.User;
+import com.feeedify.database.repository.AllFeedItemUserRepository;
+import com.feeedify.database.repository.ChannelUserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.feeedify.database.entity.ChannelUser;
-
-import com.feeedify.database.entity.FeedItemUser;
-import com.feeedify.database.entity.User;
-import com.feeedify.database.repository.AllFeedItemUserRepository;
-import com.feeedify.database.repository.ChannelUserRepository;
 
 @Service
 public class AllFeedsSortAndFilterService {
@@ -27,6 +26,8 @@ public class AllFeedsSortAndFilterService {
     private ChannelUserRepository channelUserRepository;
     @Autowired
     private AllFeedItemUserRepository allFeedItemUserRepository;
+    @Autowired
+    private RelevantFeedsService relevantFeedsService;
     @Autowired
     private CustomPagination customPagination;
 
@@ -87,7 +88,7 @@ public class AllFeedsSortAndFilterService {
     private List<FeedItemUser> findFilteredAndOrderedFeedItemsUser(User user, LocalDate startDate, String order,
             Integer pageNumber) {
 
-        List<FeedItemUser> feedItemsUsers = Collections.emptyList();
+        List<FeedItemUser> feedItemsUser = Collections.emptyList();
         Pageable pageable = null;
         Page<FeedItemUser> page = null;
 
@@ -103,7 +104,7 @@ public class AllFeedsSortAndFilterService {
                             .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(user,
                                     startDate, pageable);
 
-                feedItemsUsers = page.getContent();
+                feedItemsUser = page.getContent();
                 break;
             } // end case
 
@@ -117,7 +118,7 @@ public class AllFeedsSortAndFilterService {
                             .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateAsc(user,
                                     startDate, pageable);
 
-                feedItemsUsers = page.getContent();
+                feedItemsUser = page.getContent();
                 break;
             } // end case
             case ORDER_BY_UNREAD: {
@@ -130,7 +131,7 @@ public class AllFeedsSortAndFilterService {
                             .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
                                     user, startDate, pageable);
 
-                feedItemsUsers = page.getContent();
+                feedItemsUser = page.getContent();
                 break;
             } // end case
 
@@ -145,28 +146,37 @@ public class AllFeedsSortAndFilterService {
                             .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_Channel_TitleAscFeedItem_PublishDateDesc(
                                     user, startDate, pageable);
 
-                feedItemsUsers = page.getContent();
+                feedItemsUser = page.getContent();
                 break;
             } // end case
 
             case ORDER_BY_ALL_CATEGORIES: {
                 // order by specific category or all categories is complex -> we implement the
                 // paging for it ourselves
-                feedItemsUsers = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, startDate);
-                feedItemsUsers = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUsers);
+                feedItemsUser = findFeedItemUsersOrderedByCategoryNameAndPublishLocalDate(user, startDate);
+                feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
                 break;
             } // end case
 
             case ORDER_BY_MOST_RELEVANT: {
+                List<FeedItemUser> allFeeds = null;
+                if (startDate == null)
+                    allFeeds = allFeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user);
+                else
+                    allFeeds = allFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, startDate);
 
+                feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, allFeeds);
+                feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
                 break;
             } // end case
 
             default:
-                return feedItemsUsers;
+                return feedItemsUser;
         }// end switch
 
-        return feedItemsUsers;
+        return feedItemsUser;
     }
 
     /**

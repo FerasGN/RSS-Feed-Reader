@@ -164,18 +164,18 @@ public class ReadLaterFeedsSearchingService {
 
     private List<FeedItemUser> searchAndFilterByPublishLocalDate(Long userId, String q, Integer pageNumber,
             LocalDate startDate) {
-        List<FeedItemUser> feedItemsUsers = search(userId, q, pageNumber);
+        List<FeedItemUser> feedItemsUser = search(userId, q, pageNumber);
         if (startDate == null)
-            return feedItemsUsers;
+            return feedItemsUser;
         else {
-            feedItemsUsers = feedItemsUsers.stream().filter(f -> {
+            feedItemsUser = feedItemsUser.stream().filter(f -> {
                 if (f.getFeedItem().getPublishLocalDate() != null)
                     return f.getFeedItem().getPublishLocalDate().isAfter(startDate)
                             || f.getFeedItem().getPublishLocalDate().isEqual(startDate);
                 return false;
             }).collect(Collectors.toList());
         }
-        return feedItemsUsers;
+        return feedItemsUser;
     }
 
     private List<FeedItemUser> search(Long userId, String query, Integer pageNumber) {

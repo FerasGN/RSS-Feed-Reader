@@ -13,9 +13,13 @@ import com.feeedify.database.entity.compositeIds.FeedItemUserId;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Repository
 public interface AllFeedItemUserRepository extends JpaRepository<FeedItemUser, FeedItemUserId> {
+
+        List<FeedItemUser> findByUserOrderByFeedItem_PublishDateDesc(User user);
+
+        List<FeedItemUser> findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                        User user, LocalDate startDate);
 
         Page<FeedItemUser> findByUserOrderByFeedItem_PublishDateDesc(User user, Pageable pageable);
 

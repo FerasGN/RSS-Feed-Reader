@@ -67,21 +67,21 @@ public class CategoryFeedsSortAndFilterService {
     private List<FeedItemUser> findFilteredAndOrderedFeedItemsUser(User user, String categoryName, LocalDate startDate,
             String order, Integer pageNumber) {
 
-        List<FeedItemUser> feedItemsUsers = findFeedItemUsersByCategoryNameOrderedyCategoryNameAndPublishLocalDate(user,
+        List<FeedItemUser> feedItemsUser = findFeedItemUsersByCategoryNameOrderedyCategoryNameAndPublishLocalDate(user,
                 categoryName, startDate);
 
         switch (order) {
             case ORDER_BY_LATEST: {
                 Comparator<FeedItemUser> compareByPublishDateDesc = Comparator.comparing(
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
-                Collections.sort(feedItemsUsers, compareByPublishDateDesc);
+                Collections.sort(feedItemsUser, compareByPublishDateDesc);
                 break;
             } // end case
 
             case ORDER_BY_OLDEST: {
                 Comparator<FeedItemUser> compareByPublishDateAsc = Comparator.comparing(
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.naturalOrder()));
-                Collections.sort(feedItemsUsers, compareByPublishDateAsc);
+                Collections.sort(feedItemsUser, compareByPublishDateAsc);
                 break;
             } // end case
 
@@ -91,7 +91,7 @@ public class CategoryFeedsSortAndFilterService {
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
                 Comparator<FeedItemUser> compareByUnreadAndPublishDate = compareByUnread
                         .thenComparing(compareByPublishDate);
-                Collections.sort(feedItemsUsers, compareByUnreadAndPublishDate);
+                Collections.sort(feedItemsUser, compareByUnreadAndPublishDate);
                 break;
             } // end case
 
@@ -102,7 +102,7 @@ public class CategoryFeedsSortAndFilterService {
                         f -> f.getFeedItem().getPublishDate(), Comparator.nullsLast(Comparator.reverseOrder()));
                 Comparator<FeedItemUser> compareByChannelTitleAndPublishDate = compareByChannelTitle
                         .thenComparing(compareByPublishDate);
-                Collections.sort(feedItemsUsers, compareByChannelTitleAndPublishDate);
+                Collections.sort(feedItemsUser, compareByChannelTitleAndPublishDate);
                 break;
             } // end case
 
@@ -115,8 +115,7 @@ public class CategoryFeedsSortAndFilterService {
                 break;
         }// end switch
 
-        List<FeedItemUser> feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE,
-                feedItemsUsers);
+        feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
 
         return feedItemsUser;
     }

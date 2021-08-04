@@ -18,7 +18,10 @@ public class Constants {
     public final static String ORDER_BY_OLDEST = "oldest";
     public final static String ORDER_BY_MOST_RELEVANT = "most-relevant";
 
-    public static final int PAGE_SIZE = 12;
+    public final static int PAGE_SIZE = 12;
+
+    public final static String ENGLISH_STOPWORDS = "/recommender/stopwords/stopwords-en.txt";
+    public final static String GERMAN_STOPWORDS = "/recommender/stopwords/stopwords-de.txt";
 
     /**
      * User agent header to be used by the Jsoup connection
