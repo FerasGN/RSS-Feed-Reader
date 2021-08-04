@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.feeedify.commands.PasswordCommand;
 import com.feeedify.commands.UserProfileUpdateCommand;
@@ -79,7 +80,7 @@ public class AccountController {
 
     @PostMapping(value = { CHANGE_PASSWORD_URL })
     public ModelAndView changePassowrd(ModelAndView mav, @Valid PasswordCommand passwordCommand,
-            @AuthenticationPrincipal SecurityUser securityUser, BindingResult bindingResult) {
+            @AuthenticationPrincipal SecurityUser securityUser, BindingResult bindingResult, RedirectAttributes redAttrs) {
 
         // Check for any validation errors
         if (bindingResult.hasErrors()) {
@@ -90,30 +91,33 @@ public class AccountController {
         }
         passwordCommand.setUsername(securityUser.getUsername());
         accountService.changePassword(passwordCommand);
+        redAttrs.addFlashAttribute("passwordChanged", true);
         mav.setViewName("redirect:/account");
         return mav;
 
     }
 
     @GetMapping("/delete/{username}")
-    public String deleteUser(HttpServletRequest request, HttpServletResponse response, @PathVariable("username") String username, Model model,  @AuthenticationPrincipal SecurityUser securityUser) {
+    public String deleteUser(HttpServletRequest request, HttpServletResponse response,
+            @PathVariable("username") String username, Model model,
+            @AuthenticationPrincipal SecurityUser securityUser) {
 
         Optional<User> optionalUser = accountService.findUser(username);
-        if(optionalUser.isPresent() && securityUser.getUsername().equals(username) ){
-         accountService.delete(optionalUser.get());
-         HttpSession session = request.getSession(false);
-         SecurityContextHolder.clearContext();
-   
-         session = request.getSession(false);
-         if(session != null) {
-             session.invalidate();
-         }
-   
-         for(Cookie cookie : request.getCookies()) {
-             cookie.setMaxAge(0);
-         }
-   
-         return "redirect:/login?logout";
+        if (optionalUser.isPresent() && securityUser.getUsername().equals(username)) {
+            accountService.delete(optionalUser.get());
+            HttpSession session = request.getSession(false);
+            SecurityContextHolder.clearContext();
+
+            session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+
+            for (Cookie cookie : request.getCookies()) {
+                cookie.setMaxAge(0);
+            }
+
+            return "redirect:/login?logout";
         }
 
         return "redirect:/account";

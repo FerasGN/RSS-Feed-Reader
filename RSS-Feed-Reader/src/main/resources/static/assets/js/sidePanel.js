@@ -168,7 +168,7 @@ function post(url, data, container) {
       // We reached our target server, but it returned an error
     }
   };
- 
+
   request.send(JSON.stringify(data));
 }
 
@@ -273,18 +273,17 @@ function addSubscribeButton() {
       currentFeedsUrl = "/channel";
     }
 
-
     let postChannelCommand = {
       channelUrl: channelUrl.value,
       category: category.value,
-      currentPageCommand:{
-       currentFeedsUrl,
+      currentPageCommand: {
+        currentFeedsUrl,
         categoryName,
         channelTitle,
         selectedView,
         selectedPeriod,
         selectedOrder,
-      }
+      },
     };
 
     const listItemsContainer = document.getElementById("list-items-container");
@@ -341,14 +340,21 @@ function addSubscribeButton() {
 }
 
 /* ===== hide bootstrap modal ====== */
-function hideModals(){
+function hideModals() {
   hideSubscribeModal();
   hideRenameModal();
   hideDeleteModal();
 }
 function hideSubscribeModal() {
+  // to enable scroll
+  document.querySelector("body").style.overflow = "visible";
+
   let subscribeModal = document.getElementById("subscribe-modal");
-  if(typeof subscribeModal != "undefined" && subscribeModal != null && subscribeModal.classList.contains("show")){
+  if (
+    typeof subscribeModal != "undefined" &&
+    subscribeModal != null &&
+    subscribeModal.classList.contains("show")
+  ) {
     let modal = bootstrap.Modal.getInstance(subscribeModal);
     modal.hide();
 
@@ -364,7 +370,9 @@ function hideSubscribeModal() {
     const channelInfo = document.getElementById("channel-info");
     const channelUrl = document.getElementById("channel-url");
     const categoryContainer = document.getElementById("category-container");
-    const searchChannelButton = document.getElementById("search-channel-button");
+    const searchChannelButton = document.getElementById(
+      "search-channel-button"
+    );
     const saveChannelButton = document.getElementById("save-channel-button");
 
     channelInfo.innerText = "";
@@ -378,46 +386,65 @@ function hideSubscribeModal() {
     searchChannelButton.innerHTML = "Search";
     if (typeof saveChannelButton != "undefined" && saveChannelButton != null)
       saveChannelButton.parentNode.removeChild(saveChannelButton);
-
   }
 }
 
 function hideRenameModal() {
+  // to enable scroll
+  document.querySelector("body").style.overflow = "visible";
+
   let renameModal = document.getElementById("rename-modal");
-  if(typeof renameModal != "undefined" && renameModal != null && renameModal.classList.contains("show")){
+  if (
+    typeof renameModal != "undefined" &&
+    renameModal != null &&
+    renameModal.classList.contains("show")
+  ) {
     let modal = bootstrap.Modal.getInstance(renameModal);
     modal.hide();
 
-    const currentCategoryName = document.querySelector("#rename-modal #current-category-name");
-    const newCategoryName = document.querySelector("#rename-modal #new-category-name");
+    const currentCategoryName = document.querySelector(
+      "#rename-modal #current-category-name"
+    );
+    const newCategoryName = document.querySelector(
+      "#rename-modal #new-category-name"
+    );
     currentCategoryName.value = "";
     newCategoryName.value = "";
 
     const dismissModal = document.getElementById("dismiss-modal");
     dismissModal.setAttribute("data-bs-dismiss", "modal");
     dismissModal.href = "#";
-
   }
 }
 
 function hideDeleteModal() {
+  // to enable scroll
+  document.querySelector("body").style.overflow = "visible";
+
   let deleteModal = document.getElementById("delete-modal");
-  if(typeof deleteModal != "undefined" && deleteModal != null && deleteModal.classList.contains("show")){
+
+  if (
+    typeof deleteModal != "undefined" &&
+    deleteModal != null &&
+    deleteModal.classList.contains("show")
+  ) {
     let modal = bootstrap.Modal.getInstance(deleteModal);
     modal.hide();
 
-    const currentCategoryName = document.querySelector("#rename-modal #current-category-name");
-    const newCategoryName = document.querySelector("#rename-modal #new-category-name");
+    const currentCategoryName = document.querySelector(
+      "#rename-modal #current-category-name"
+    );
+    const newCategoryName = document.querySelector(
+      "#rename-modal #new-category-name"
+    );
     currentCategoryName.value = "";
     newCategoryName.value = "";
 
     const dismissModal = document.getElementById("dismiss-modal");
     dismissModal.setAttribute("data-bs-dismiss", "modal");
     dismissModal.href = "#";
-
   }
 }
-
 
 /* ===== reset bootstrap modal on hide ====== */
 let subscribeModal = document.getElementById("subscribe-modal");
@@ -429,19 +456,33 @@ renameModal.addEventListener("hidden.bs.modal", hideRenameModal);
 let deleteModal = document.getElementById("delete-modal");
 deleteModal.addEventListener("hidden.bs.modal", hideDeleteModal);
 
-renameModal.addEventListener('show.bs.modal', function (event) {
-  let currentCategoryName = document.querySelector("#current-category-name");
-  currentCategoryName.value =  event.relatedTarget.getAttribute('data-old-category-name');
-})
+/* ===== bootstrap modals on show ====== */
+subscribeModal.addEventListener("show.bs.modal", function (event) {
+  // to prevent scroll
+  document.querySelector("body").style.overflow = "hidden";
+});
 
-deleteModal.addEventListener('show.bs.modal', function (event) {
+renameModal.addEventListener("show.bs.modal", function (event) {
+  // to prevent scroll
+  document.querySelector("body").style.overflow = "hidden";
+
+  let currentCategoryName = document.querySelector("#current-category-name");
+  currentCategoryName.value = event.relatedTarget.getAttribute(
+    "data-old-category-name"
+  );
+});
+
+deleteModal.addEventListener("show.bs.modal", function (event) {
+  // to prevent scroll
+  document.querySelector("body").style.overflow = "hidden";
+
   let categoryNameToDelete = document.querySelector("#category-name-to-delete");
-  categoryNameToDelete.value =  event.relatedTarget.getAttribute('data-category-name');
-})
+  categoryNameToDelete.value =
+    event.relatedTarget.getAttribute("data-category-name");
+});
 /* ===== Edit category name ====== */
 let renameCategoryBtn = document.querySelector("#rename-category-btn");
 renameCategoryBtn.addEventListener("click", (event) => {
-
   let oldCategoryName = document.querySelector("#current-category-name").value;
   let newCategoryName = document.querySelector("#new-category-name").value;
 
@@ -466,18 +507,18 @@ renameCategoryBtn.addEventListener("click", (event) => {
     currentFeedsUrl = "/channel";
   }
   let postCategoryCommand = {
-    categoryCommand:{
-      name:oldCategoryName
+    categoryCommand: {
+      name: oldCategoryName,
     },
     newCategoryName,
-    currentPageCommand:{
-     currentFeedsUrl,
+    currentPageCommand: {
+      currentFeedsUrl,
       categoryName,
       channelTitle,
       selectedView,
       selectedPeriod,
       selectedOrder,
-    }
+    },
   };
 
   const listItemsContainer = document.getElementById("list-items-container");
@@ -490,10 +531,8 @@ renameCategoryBtn.addEventListener("click", (event) => {
   }
 });
 
-
 let deleteCategoryBtn = document.querySelector("#delete-category-btn");
 deleteCategoryBtn.addEventListener("click", (event) => {
-
   let name = document.querySelector("#category-name-to-delete").value;
 
   let channelUrl = document.getElementById("channel-url");
@@ -517,17 +556,17 @@ deleteCategoryBtn.addEventListener("click", (event) => {
     currentFeedsUrl = "/channel";
   }
   let postCategoryCommand = {
-    categoryCommand:{
-      name
+    categoryCommand: {
+      name,
     },
-    currentPageCommand:{
-     currentFeedsUrl,
+    currentPageCommand: {
+      currentFeedsUrl,
       categoryName,
       channelTitle,
       selectedView,
       selectedPeriod,
       selectedOrder,
-    }
+    },
   };
 
   const listItemsContainer = document.getElementById("list-items-container");
@@ -538,5 +577,4 @@ deleteCategoryBtn.addEventListener("click", (event) => {
   } else {
     post(DELETE_CATEGORY_URL, postCategoryCommand, listItemsContainer);
   }
-
 });

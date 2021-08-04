@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -88,6 +89,7 @@ public class AccountService {
      * @param interests
      */
     public void saveUserInterests(User user, List<String> interests) {
+        interests = interests.stream().map(String::toLowerCase).collect(Collectors.toList());
         user.setUserInterests(interests);
         userRepository.save(user);
     }

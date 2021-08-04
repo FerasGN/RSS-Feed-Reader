@@ -8,7 +8,7 @@
                     th:classappend="${categoryUrl} == '/category/' + ${categoryCommand.name}  ? active : ''">
 
                     <div class="dropdown d-inline">
-                        <i class="far fa-edit mt-1 me-1" href="#" role="button"
+                        <i class="far fa-edit mt-1 me-1" role="button"
                             th:id="'categoryDropdownMenu-' + ${categoryCommand.name}" data-bs-toggle="dropdown"
                             aria-expanded="false"></i>
 
@@ -16,10 +16,10 @@
                             th:attr="aria-labelledby='categoryDropdownMenu-' + ${categoryCommand.name}">
                             <li data-bs-toggle="modal" data-bs-target="#rename-modal"
                                 th:attr="data-old-category-name= ${categoryCommand.name}"><a
-                                    class="dropdown-item rename" href="#">Rename</a></li>
+                                    class="dropdown-item pointer rename">Rename</a></li>
                             <li data-bs-toggle="modal" data-bs-target="#delete-modal"
-                                th:attr="data-category-name= ${categoryCommand.name}"><a class="dropdown-item delete"
-                                    href="#">Delete</a></li>
+                                th:attr="data-category-name= ${categoryCommand.name}"><a
+                                    class="dropdown-item pointer delete">Delete</a></li>
                         </ul>
                     </div>
                     <!--//dropdown-->
