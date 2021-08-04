@@ -2,11 +2,8 @@ package com.feeedify.recommender;
 
 import java.util.Map.Entry;
 
-import org.springframework.stereotype.Service;
-
 import java.util.*;
 
-@Service
 public class TF_IDF {
 
     private List<List<String>> docs; // documents as bags of words, with stopwords removed

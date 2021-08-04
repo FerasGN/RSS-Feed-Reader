@@ -35,11 +35,16 @@ public class RelevantFeedsService {
         // main query.
         feedsToSort.stream().forEach(e -> {
             if (e.getLastReadingDate() == null) {
+
                 String language = e.getFeedItem().getLanguage();
                 String title = e.getFeedItem().getTitle();
                 String description = e.getFeedItem().getDescription();
-                // a document consists of the title and the description of a feed item
-                String doc = title + " " + description;
+                String tags = e.getFeedItem().getCategories().stream().map(c -> c.getName()).reduce("",
+                        (a, b) -> a + " " + b + " ");
+
+                // a document consists of the title, the description, and tags of
+                // a feed item
+                String doc = title + " " + description + " " + tags;
                 List<String> cleanedDocument = RecommenderUtil.cleanDocument(doc, language);
                 docs.add(cleanedDocument);
                 // initialize the similarity of feedItemsUser to the main query with 0.
@@ -68,17 +73,28 @@ public class RelevantFeedsService {
 
     private List<String> createSortingByRelevanceQuery(User user) {
         // create a query of the 100 recently read feeds.
+        List<String> query = new ArrayList<>();
+
         List<FeedItemUser> top100RecentlyReadFeeds = recentlyReadFeedItemUserRepository
                 .findTop100ByUserAndLastReadingDateNotNullOrderByLastReadingDateDesc(user);
-        List<List<String>> bagsOfWords = top100RecentlyReadFeeds.stream().map(e -> {
-            String language = e.getFeedItem().getLanguage();
-            String currentQuery = e.getFeedItem().getTitle() + " " + e.getFeedItem().getDescription();
-            List<String> wordList = RecommenderUtil.cleanDocument(currentQuery, language);
-            return wordList;
-        }).collect(Collectors.toList());
 
-        List<String> query = new ArrayList<>();
-        bagsOfWords.forEach(query::addAll);
+        if (top100RecentlyReadFeeds.isEmpty()) {
+            query = user.getUserInterests();
+
+        } else {
+            List<List<String>> bagsOfWords = top100RecentlyReadFeeds.stream().map(e -> {
+                String language = e.getFeedItem().getLanguage();
+                String tags = e.getFeedItem().getCategories().stream().map(c -> c.getName()).reduce("",
+                        (a, b) -> a + " " + b + " ");
+                String userInterests = user.getUserInterests().stream().reduce("", (a, b) -> a + " " + b + " ");
+                String currentQuery = e.getFeedItem().getTitle() + " " + e.getFeedItem().getDescription() + " " + " "
+                        + tags + " " + userInterests;
+                List<String> wordList = RecommenderUtil.cleanDocument(currentQuery, language);
+                return wordList;
+            }).collect(Collectors.toList());
+
+            bagsOfWords.forEach(query::addAll);
+        }
 
         return query;
     }
