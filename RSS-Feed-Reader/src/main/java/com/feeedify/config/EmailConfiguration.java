@@ -39,14 +39,14 @@ public class EmailConfiguration {
 
 	@Bean
 	public JavaMailSender getJavaMailSender() {
+		if (env.getProperty("EMAIL") == null || env.getProperty("EMAIL_PASSWORD") == null)
+			return null;
+
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
 		mailServerUsername = env.getProperty("EMAIL");
 		mailServerPassword = env.getProperty("EMAIL_PASSWORD");
 		
-		if (mailServerUsername.equals("NOT_FOUND") || mailServerPassword.equals("NOT_FOUND"))
-			return null;
-		
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-
 		mailSender.setHost(mailServerHost);
 		mailSender.setPort(mailServerPort);
 
@@ -57,7 +57,7 @@ public class EmailConfiguration {
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.smtp.auth", mailServerAuth);
 		props.put("mail.smtp.starttls.enable", mailServerStartTls);
-		
+
 		mailSender.setJavaMailProperties(props);
 
 		return mailSender;

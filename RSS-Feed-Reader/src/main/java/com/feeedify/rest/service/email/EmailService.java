@@ -27,7 +27,7 @@ public class EmailService {
 	@Autowired
 	private ConfirmationTokenService confirmationTokenService;
 	
-	@Autowired
+	@Autowired(required = false) 
 	private JavaMailSender emailSender;
 
 	public boolean sendConfirmationEmail(User reciever) {
