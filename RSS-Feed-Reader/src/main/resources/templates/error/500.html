@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <thymeleaf th:replace="layouts/head :: head" />
+</head>
+
+<body class="app pt-0">
+
+    <div class="centered">
+        <i class="fas fa-bug fa-3x"></i>
+        <h1>500 Server Error</h1>
+        <div class="container text-center">
+            <span class="message" id="js-whoops"></span> <span class="message" id="js-appears"></span> <span
+                class="message" id="js-error"></span> <span class="message" id="js-apology"></span>
+            <div><span class="hidden" id="js-hidden">Message Here</span></div>
+        </div>
+        <div class="text-center">
+            <a th:href="@{/all-feeds}" class="btn app-btn-primary btn-block theme-btn mx-auto">Go
+                back</a>
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript" th:src="@{/assets/js/500.js}"></script>
+</body>
+
+</html>

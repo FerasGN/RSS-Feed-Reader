@@ -321,3 +321,29 @@
 .loader {
   @include loader($size: 20px, $gap: 6px, $align: middle);
 }
+
+// error page
+.centered {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.message {
+  display: inline-block;
+  line-height: 1.2;
+  transition: line-height 0.2s, width 0.2s;
+  overflow: hidden;
+}
+
+.message,
+.hidden {
+  font-family: "Roboto Slab", serif;
+  font-size: 18px;
+}
+
+.hidden {
+  color: #fff;
+}
