@@ -35,8 +35,9 @@ public class ConfirmationTokenService {
 		confirmationTokenRepository.removeUserOfConfirmationToken(userId);
 	}
 
-	public void deleteByUserId(Long userId) {
-		confirmationTokenRepository.deleteByUser_Id(userId);
+	@Transactional
+	public void deleteByUser(User user) {
+		confirmationTokenRepository.deleteByUser(user);
 	}
 
 	/**

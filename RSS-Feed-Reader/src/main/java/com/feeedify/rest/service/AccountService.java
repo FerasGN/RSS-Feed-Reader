@@ -7,6 +7,8 @@ import com.feeedify.converters.UserToUserProfileUpdateCommand;
 import com.feeedify.database.entity.User;
 import com.feeedify.database.repository.UserRepository;
 import com.feeedify.exceptions.UserNotFoundException;
+import com.feeedify.rest.service.email.ConfirmationTokenService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class AccountService {
     private ChannelService channelService;
     @Autowired
     private FeedsService feedsService;
+    @Autowired
+    private ConfirmationTokenService confirmationTokenService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -45,9 +49,9 @@ public class AccountService {
         Optional<User> user = userRepository.findByEmailIgnoreCase(email);
         return user;
     }
-    
+
     public User saveUser(User user) {
-    	 user = userRepository.save(user);
+        user = userRepository.save(user);
         return user;
     }
 
@@ -105,6 +109,7 @@ public class AccountService {
     }
 
     public void delete(User user) {
+        confirmationTokenService.deleteByUser(user);
         feedsService.deleteAllFeeItemUserByUser(user);
         channelService.deleteAllChannelUserByUser(user);
         userRepository.delete(user);

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.feeedify.database.entity.ConfirmationToken;
+import com.feeedify.database.entity.User;
 
 @Repository
 public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
@@ -19,5 +20,5 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
 	@Transactional
 	void removeUserOfConfirmationToken(Long userId);
 
-	void deleteByUser_Id(Long userId);
+	 void deleteByUser(User user);
 }
