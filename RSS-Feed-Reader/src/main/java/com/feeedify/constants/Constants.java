@@ -1,8 +1,6 @@
 package com.feeedify.constants;
 
 public class Constants {
-
-	 public final static String HOST_NAME = " http://localhost:8080/";
 	  
     public final static String VIEW_CARDS = "cards";
     public final static String VIEW_TITLE_ONLY = "title-only";
@@ -25,7 +23,7 @@ public class Constants {
     public final static String ENGLISH_STOPWORDS = "/recommender/stopwords/stopwords-en.txt";
     public final static String GERMAN_STOPWORDS = "/recommender/stopwords/stopwords-de.txt";
 
-    public final static String CONFIRMATION_MESSAGE = "To confirm your account by Feeedify, please click here: " + HOST_NAME + "confirm-account?confirmationToken=";
+    public final static String CONFIRMATION_MESSAGE = "To confirm your account by Feeedify, please click here: " + Endpoints.HOST_NAME + "confirm-account?confirmationToken=";
 
     /**
      * User agent header to be used by the Jsoup connection

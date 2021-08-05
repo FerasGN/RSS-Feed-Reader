@@ -64,7 +64,7 @@ public class FeedsController {
      * @param model
      * @return String view name
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = {HOST_NAME}, allowedHeaders = "*")
     @GetMapping(ALL_FEEDS_URL)
     public String showAllFeeds(@RequestParam(value = "view", required = false) String view,
             @RequestParam(value = "period", required = false) String period,
@@ -101,7 +101,7 @@ public class FeedsController {
      * @param securityUser
      * @return String
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = {HOST_NAME}, allowedHeaders = "*")
     @GetMapping(REFRESH_HEADER_URL)
     public String refreshSidePanel(Model model, @AuthenticationPrincipal SecurityUser securityUser) {
         model = initSidePanelFeedsInfo(model, securityUser);
@@ -113,7 +113,7 @@ public class FeedsController {
      * 
      * @return String
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins ={HOST_NAME}, allowedHeaders = "*")
     @GetMapping(FEEDS_PAGE_URL)
     public String getFeedPage(@RequestParam(value = "currentFeedsUrl", required = false) String currentFeedsUrl,
             @RequestParam(value = "category", required = false) String category,
@@ -347,7 +347,7 @@ public class FeedsController {
     /**
      * Like a feed item.
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = {HOST_NAME}, allowedHeaders = "*")
     @PostMapping(value = { LIKE_URL }, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public @ResponseBody void like(@RequestBody LikeCommand likeCommand,
             @AuthenticationPrincipal SecurityUser securityUser) {
@@ -379,7 +379,7 @@ public class FeedsController {
     /**
      * Mark feed item as already read.
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = {HOST_NAME}, allowedHeaders = "*")
     @PostMapping(value = { MARK_AS_READ_URL }, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public @ResponseBody void markAsRead(@RequestBody ReadCommand readCommand,
             @AuthenticationPrincipal SecurityUser securityUser) {

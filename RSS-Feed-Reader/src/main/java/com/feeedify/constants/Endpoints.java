@@ -2,6 +2,8 @@ package com.feeedify.constants;
 
 public class Endpoints {
 
+	public final static String HOST_NAME = "http://localhost:8080/";
+	
     public final static String ROOT_URL = "/";
     public final static String SIGN_UP_URL = "/signup";
     public final static String LOGIN_URL = "/login";

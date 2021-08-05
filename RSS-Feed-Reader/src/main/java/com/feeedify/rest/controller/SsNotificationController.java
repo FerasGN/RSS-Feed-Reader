@@ -26,7 +26,7 @@ public class SsNotificationController {
      * @param securityUser
      * @return SseEmitter
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = {HOST_NAME}, allowedHeaders = "*")
     @GetMapping(SSE_NOTIFICATIONS_URL)
     public SseEmitter getSseNotification(@AuthenticationPrincipal SecurityUser securityUser) {
         SseEmitter emitter = new SseEmitter();

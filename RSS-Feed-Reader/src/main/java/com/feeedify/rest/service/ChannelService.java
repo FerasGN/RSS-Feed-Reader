@@ -513,24 +513,24 @@ public class ChannelService {
     }
 
     /**
-     * Reload channel content every hour.
+     * Reload channels content every hour.
      */
     @Scheduled(fixedRateString = "PT1H")
     @Transactional
-    public void reloadChannel() {
+    public void reloadChannels() {
         channelUserRepository.findAll().stream().forEach(cu -> {
             try {
                 User user = cu.getUser();
                 boolean loaded = loadFeedItems(user, cu.getChannel());
                 // notify user that a new feed has been added
                 if (loaded) {
-                    this.eventPublisher.publishEvent(new SseNotification(user.getUsername(), NEW_FEED_MESSAGE));
                     materializedViewManager.refreshFeedItem();
+                    this.eventPublisher.publishEvent(new SseNotification(user.getUsername(), NEW_FEED_MESSAGE));
                 }
             } catch (UnknownHostException e) {
                 log.error("Your Internet connection may have been interrupted");
             } catch (IllegalArgumentException | FeedException | IOException e) {
-                log.error("Cannot reload channel");
+                log.error("Cannot reload channel: " + e.getMessage());
             }
         });
     }

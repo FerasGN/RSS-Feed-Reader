@@ -1,6 +1,5 @@
 "use strict";
 /* ===== Variables ====== */
-var HOST = "http://localhost:8080/";
 var ALL_FEEDS_URL = "/all-feeds";
 var READ_LATER_URL = "/read-later";
 var LIKED_FEEDS_URL = "/liked-feeds";
@@ -12,9 +11,9 @@ var LIKE_URL = "/like";
 var MARK_AS_READ_LATER = "/mark-as-read-later";
 var MARK_AS_READ = "/mark-as-read";
 var LAST_READING_TIME = "/last-reading-date";
-var FEEDS_PAGE_URL = HOST + "feeds-page";
-var SEARCH_URL = HOST + "search";
-var SSE_NOTIFICATIONS_URL = HOST + "sse-notifications";
+var FEEDS_PAGE_URL = "/feeds-page";
+var SEARCH_URL = "/search";
+var SSE_NOTIFICATIONS_URL = "/sse-notifications";
 var currentFeedsUrl =
   "/" + window.location.pathname.replace(/^\/([^\/]*).*$/, "$1");
 
@@ -636,6 +635,8 @@ eventSource.onmessage = function (e) {
     let selectedView = document.getElementById("view-select").value.trim();
     let selectedPeriod = document.getElementById("period-select").value.trim();
     let selectedOrder = document.getElementById("order-select").value.trim();
+    let headerContainer = document.getElementById("header-container");
+    refreshHeader(REFRESH_HEADER_URL, headerContainer);
     handleSelect(selectedView, selectedPeriod, selectedOrder);
   }
 };
