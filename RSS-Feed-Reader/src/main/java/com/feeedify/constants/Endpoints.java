@@ -10,6 +10,7 @@ public class Endpoints {
     public final static String COMPLETE_PROFILE_URL = "/complete-profile";
     public final static String SAVE_PROFILE_URL = "/save-profile";
     public final static String CHANGE_PASSWORD_URL = "/change-password";
+    public final static String CONFIRM_ACCOUNT_URL= "/confirm-account";
 
     public final static String ALL_FEEDS_URL = "/all-feeds";
     public final static String READ_LATER_URL = "/read-later";

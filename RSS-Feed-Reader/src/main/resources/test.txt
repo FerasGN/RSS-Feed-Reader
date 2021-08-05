@@ -1,0 +1,11 @@
+1) https://rss.dw.com/xml/rss-de-sport
+
+2) http://newsfeed.zeit.de/sport/index
+
+3) https://www.n-tv.de/rss
+
+4) https://www.spiegel.de/sport/index.rss
+
+5) https://www.faz.net/rss/aktuell/sport/fussball/
+
+6) https://www.stern.de/feed/standard/sport/

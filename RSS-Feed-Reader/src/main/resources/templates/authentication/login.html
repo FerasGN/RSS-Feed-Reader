@@ -14,7 +14,19 @@
 								class="logo-icon mr-2" src="assets/images/logo.svg" alt="logo"></a></div>
 					<h2 class="auth-heading text-center mb-5">Log in to feedify</h2>
 					<div class="auth-form-container text-start">
-						<div th:if="${signedUp}" class="alert alert-success">Successfully signed up</div>
+						<div th:if="${confirmed}" class="alert alert-success alert-dismissible fade show" role="alert">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+								class="bi bi-check2" viewBox="0 0 16 16">
+								<path
+									d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+							</svg>
+
+							Your account has been verified. You can now sign in.
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+						<!--//account-confirmed-->
+						<div th:if="${signedUp}" class="alert alert-success">Successfully signed up, please verify your
+							email address</div>
 						<!--//successfully-signed-up-->
 						<div th:if="${loginError}" class="alert alert-danger">* Incorrect username or password</div>
 						<!--//auth-errors-->
@@ -81,6 +93,8 @@
 
 	</div>
 	<!--//row-->
+
+	<thymeleaf th:replace="layouts/scripts :: scripts" />
 	<script>
 		const toggleIcon = document.querySelector('#toggle-icon');
 		const password = document.querySelector("input[type='password']");

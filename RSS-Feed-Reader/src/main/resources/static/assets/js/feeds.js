@@ -617,7 +617,7 @@ function search() {
 let searchTerm = document.getElementById("q");
 searchTerm.addEventListener("input", (e) => {
   pageNumber = 1;
-  document.getElementById("order-select").value = "most-relevant";
+  // document.getElementById("order-select").value = "most-relevant";
   let searchTermValue = document.getElementById("q").value.trim();
   if (searchTermValue === "") {
     pageNumber = 0;

@@ -4,10 +4,13 @@ import static com.feeedify.constants.Endpoints.*;
 
 import com.feeedify.commands.UserCommand;
 import com.feeedify.config.security.SecurityUser;
-import com.feeedify.database.MaterializedViewManager;
+import com.feeedify.database.entity.ConfirmationToken;
 import com.feeedify.exceptions.EmailAlreadyExistException;
+import com.feeedify.exceptions.UserCouldNotBeSavedException;
 import com.feeedify.exceptions.UsernameAlreadyExistException;
+import com.feeedify.rest.service.AccountService;
 import com.feeedify.rest.service.AuthenticationService;
+import com.feeedify.rest.service.email.ConfirmationTokenService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,20 +28,19 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthenticationController {
 
-    private AuthenticationService authenticationService;
-
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
-
+	
     @Autowired
-    MaterializedViewManager materializedViewManager;
+    private AuthenticationService authenticationService;
+    
+    @Autowired
+    private ConfirmationTokenService confirmationTokenService;
 
     /**
      * @param model
@@ -176,7 +178,18 @@ public class AuthenticationController {
      * @return String
      */
     @GetMapping(value = { RESOTRE_PASSWORD_URL })
-    public String restorePassword() {
+    public String restorePasswordPage(Model model) {
+
+        return "authentication/restore-password";
+    }
+
+    /**
+     * @return String
+     * @throws UserCouldNotBeSavedException
+     */
+    @PostMapping(value = { RESOTRE_PASSWORD_URL })
+    public String restorePassword(@RequestParam String email) throws UserCouldNotBeSavedException {
+        authenticationService.restorePassword(email);
         return "authentication/restore-password";
     }
 
@@ -187,4 +200,21 @@ public class AuthenticationController {
     public String completeProfile() {
         return "complete-profile";
     }
+    
+    
+	@GetMapping(value = CONFIRM_ACCOUNT_URL)
+	public String confirmUserAccount(ModelAndView modelAndView, @RequestParam String confirmationToken,
+			final RedirectAttributes redirectAttributes) {
+		ConfirmationToken token = confirmationTokenService.findByConfirmationToken(confirmationToken);
+		if (token != null) {
+			confirmationTokenService.updateConfirmationToken(token);
+			redirectAttributes.addFlashAttribute("confirmed", "Your account has been verfied. You can now sign in.");
+			return "redirect:/login";
+		} else {
+			modelAndView.addObject("message", "The link is invalid or broken!");
+			return "error/404";
+		}
+	}
+
+	
 }

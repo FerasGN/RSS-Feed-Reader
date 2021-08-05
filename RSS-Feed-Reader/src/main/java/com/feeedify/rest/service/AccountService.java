@@ -41,6 +41,16 @@ public class AccountService {
         return user;
     }
 
+    public Optional<User> findUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmailIgnoreCase(email);
+        return user;
+    }
+    
+    public User saveUser(User user) {
+    	 user = userRepository.save(user);
+        return user;
+    }
+
     /**
      *
      * @param userProfileUpdateCommand

@@ -7,6 +7,7 @@ import com.feeedify.database.repository.UserRepository;
 import com.feeedify.exceptions.EmailAlreadyExistException;
 import com.feeedify.exceptions.UserCouldNotBeSavedException;
 import com.feeedify.exceptions.UsernameAlreadyExistException;
+import com.feeedify.rest.service.email.EmailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class AuthenticationService {
     private UserRepository userRepository;
     @Autowired
     private UserCommandToUser userCommandToUser;
+    @Autowired
+    private EmailService emailService;
 
     /**
      * Creates new account.
@@ -46,6 +49,8 @@ public class AuthenticationService {
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
         userRepository.save(user);
+        
+//        emailService.sendConfirmationEmail(user);
 
         return user;
     }
@@ -68,16 +73,9 @@ public class AuthenticationService {
         return user.isPresent();
     }
 
-    /**
-     * @param user
-     * @param password
-     */
-    public void restorePassword(User user, String password) throws UserCouldNotBeSavedException {
-        try {
-            user.setPassword(password);
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new UserCouldNotBeSavedException(USER_NOT_SAVED);
-        }
+    public void restorePassword(String email) throws UserCouldNotBeSavedException {
+       
     }
+
+    
 }
