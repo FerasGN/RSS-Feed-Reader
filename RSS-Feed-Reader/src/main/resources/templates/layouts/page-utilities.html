@@ -31,7 +31,8 @@
             <div class="col-auto">
                 <select id="order-select" class="form-select w-auto">
                     <option selected value="latest">Latest</option>
-                    <option value="most-relevant">Most Relevant</option>
+                    <option value="most-relevant" th:if="${ #request.requestURI != '/recently-read'}">Most Relevant
+                    </option>
                     <option value="oldest">Oldest</option>
                     <option value="unread" th:if="${ #request.requestURI != '/recently-read'}">Unread</option>
                     <option value="channel" th:if="${orderSelectUrl} != '/channel'">Sort By Channel</option>

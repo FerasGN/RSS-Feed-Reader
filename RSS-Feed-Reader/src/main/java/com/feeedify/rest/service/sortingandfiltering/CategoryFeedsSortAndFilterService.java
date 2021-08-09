@@ -26,6 +26,8 @@ public class CategoryFeedsSortAndFilterService {
     private AllFeedItemUserRepository allFeedItemUserRepository;
     @Autowired
     private CustomPagination customPagination;
+    @Autowired
+    private RelevantFeedsService relevantFeedsService;
 
     public List<FeedItemUser> findFeedItemsUser(User user, String categoryName, String period, String order,
             Integer pageNumber) {
@@ -107,12 +109,13 @@ public class CategoryFeedsSortAndFilterService {
             } // end case
 
             case ORDER_BY_MOST_RELEVANT: {
-
+                feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, feedItemsUser);
                 break;
             } // end case
 
             default:
-                break;
+                return feedItemsUser;
+
         }// end switch
 
         feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);

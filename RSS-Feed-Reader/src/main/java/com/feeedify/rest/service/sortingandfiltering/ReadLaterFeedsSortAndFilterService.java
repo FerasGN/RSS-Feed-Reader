@@ -28,6 +28,8 @@ public class ReadLaterFeedsSortAndFilterService {
     private ReadLaterFeedItemUserRepository readLaterfeedItemUserRepository;
     @Autowired
     private CustomPagination customPagination;
+    @Autowired
+    private RelevantFeedsService relevantFeedsService;
 
     /**
      * @param user
@@ -157,7 +159,16 @@ public class ReadLaterFeedsSortAndFilterService {
             } // end case
 
             case ORDER_BY_MOST_RELEVANT: {
+                List<FeedItemUser> readLaterFeeds = null;
+                if (startDate == null)
+                    readLaterFeeds = readLaterfeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user);
+                else
+                    readLaterFeeds = readLaterfeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, startDate);
 
+                feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, readLaterFeeds);
+                feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
                 break;
             } // end case
 

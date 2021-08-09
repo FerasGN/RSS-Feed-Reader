@@ -47,4 +47,9 @@ public interface ReadLaterFeedItemUserRepository extends JpaRepository<FeedItemU
 
         Page<FeedItemUser> findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
                 User user, boolean b, LocalDate startDate, Pageable pageable);
+
+        List<FeedItemUser> findByUserOrderByFeedItem_PublishDateDesc(User user);
+
+        List<FeedItemUser> findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                User user, LocalDate startDate);
 }

@@ -46,4 +46,9 @@ public interface ChannelFeedItemUserRepository extends JpaRepository<FeedItemUse
         Page<FeedItemUser> findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
                         User user, String channelTitle, LocalDate startDate, Pageable pageable);
 
+        List<FeedItemUser> findByUserOrderByFeedItem_PublishDateDesc(User user);
+
+        List<FeedItemUser> findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                User user, LocalDate startDate);
+
 }

@@ -29,6 +29,8 @@ public class LikedFeedsSortAndFilterService {
     private LikedFeedItemUserRepository likedFeedItemUserRepository;
     @Autowired
     private CustomPagination customPagination;
+    @Autowired
+    private RelevantFeedsService relevantFeedsService;
 
     /**
      * @param user
@@ -158,7 +160,16 @@ public class LikedFeedsSortAndFilterService {
             } // end case
 
             case ORDER_BY_MOST_RELEVANT: {
+                List<FeedItemUser> likedFeeds = null;
+                if (startDate == null)
+                    likedFeeds = likedFeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user);
+                else
+                    likedFeeds = likedFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, startDate);
 
+                feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, likedFeeds);
+                feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
                 break;
             } // end case
 

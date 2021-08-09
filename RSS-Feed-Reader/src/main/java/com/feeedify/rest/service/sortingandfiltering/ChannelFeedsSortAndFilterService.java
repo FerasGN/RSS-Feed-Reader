@@ -22,6 +22,10 @@ public class ChannelFeedsSortAndFilterService {
 
     @Autowired
     private ChannelFeedItemUserRepository channelFeedItemUserRepository;
+    @Autowired
+    private CustomPagination customPagination;
+    @Autowired
+    private RelevantFeedsService relevantFeedsService;
 
     /**
      * @param user
@@ -59,7 +63,6 @@ public class ChannelFeedsSortAndFilterService {
                 break;
 
             default: {
-                // find all read later feeds with the given page number
                 feedItemsUser = findFilteredAndOrderedFeedItemsUser(user, channelTitle, null, order, pageNumber);
                 break;
             }
@@ -133,7 +136,16 @@ public class ChannelFeedsSortAndFilterService {
             } // end case
 
             case ORDER_BY_MOST_RELEVANT: {
+                List<FeedItemUser> feedsOfChannel = null;
+                if (startDate == null)
+                    feedsOfChannel = channelFeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user);
+                else
+                    feedsOfChannel = channelFeedItemUserRepository
+                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                                    user, startDate);
 
+                feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, feedsOfChannel);
+                feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);
                 break;
             } // end case
 
