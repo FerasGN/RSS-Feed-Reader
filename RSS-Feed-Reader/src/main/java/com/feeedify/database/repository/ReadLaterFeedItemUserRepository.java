@@ -43,13 +43,13 @@ public interface ReadLaterFeedItemUserRepository extends JpaRepository<FeedItemU
         Optional<FeedItemUser> findByIdAndReadLater(FeedItemUserId feedItemUserId, boolean readLater);
 
         Page<FeedItemUser> findByUserAndReadLaterOrderByReadAscFeedItem_PublishDateDesc(User user, boolean b,
-                Pageable pageable);
+                        Pageable pageable);
 
         Page<FeedItemUser> findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
-                User user, boolean b, LocalDate startDate, Pageable pageable);
+                        User user, boolean b, LocalDate startDate, Pageable pageable);
 
-        List<FeedItemUser> findByUserOrderByFeedItem_PublishDateDesc(User user);
+        List<FeedItemUser> findByUserAndReadLaterOrderByFeedItem_PublishDateDesc(User user, boolean b);
 
-        List<FeedItemUser> findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
-                User user, LocalDate startDate);
+        List<FeedItemUser> findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
+                        User user, boolean b, LocalDate startDate);
 }

@@ -12,7 +12,6 @@ import static com.feeedify.constants.SseNotificationMessages.*;
 import com.feeedify.database.MaterializedViewManager;
 import com.feeedify.database.entity.*;
 import com.feeedify.database.entity.Sse.SseNotification;
-import com.feeedify.database.entity.compositeIds.FeedItemUserId;
 import com.feeedify.database.repository.CategoryRepository;
 import com.feeedify.database.repository.ChannelFeedItemUserRepository;
 import com.feeedify.database.repository.ChannelRepository;
@@ -24,6 +23,7 @@ import com.feeedify.exceptions.ChannelAlreadyExistException;
 import com.feeedify.exceptions.NotValidURLException;
 import imageresolver.MainImageResolver;
 
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -446,13 +447,18 @@ public class ChannelService {
         // set channel
         feedItem.setChannel(channel);
         // set title
-        if (syndEntry.getTitle() != null)
-            feedItem.setTitle(syndEntry.getTitle());
-        else
+        if (syndEntry.getTitle() != null) {
+            Jsoup.parse(syndEntry.getTitle()).text();
+            String escaped = Jsoup.parse(syndEntry.getTitle()).text();
+            feedItem.setTitle(escaped);
+        } else
             feedItem.setTitle("No title");
         // set description
-        if (syndEntry.getDescription() != null)
-            feedItem.setDescription(syndEntry.getDescription().getValue());
+        if (syndEntry.getDescription() != null) {
+            Jsoup.parse(syndEntry.getDescription().getValue()).text();
+            String escaped = Jsoup.parse(syndEntry.getDescription().getValue()).text();
+            feedItem.setDescription(escaped);
+        }
         // set language
         String language = languageIdentifierService.searchLanguage(feedItem.getTitle());
         feedItem.setLanguage(language);

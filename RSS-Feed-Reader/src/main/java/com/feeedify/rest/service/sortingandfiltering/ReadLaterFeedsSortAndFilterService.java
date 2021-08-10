@@ -161,11 +161,12 @@ public class ReadLaterFeedsSortAndFilterService {
             case ORDER_BY_MOST_RELEVANT: {
                 List<FeedItemUser> readLaterFeeds = null;
                 if (startDate == null)
-                    readLaterFeeds = readLaterfeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user);
+                    readLaterFeeds = readLaterfeedItemUserRepository
+                            .findByUserAndReadLaterOrderByFeedItem_PublishDateDesc(user, true);
                 else
                     readLaterFeeds = readLaterfeedItemUserRepository
-                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
-                                    user, startDate);
+                            .findByUserAndReadLaterAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
+                                    user, true, startDate);
 
                 feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, readLaterFeeds);
                 feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);

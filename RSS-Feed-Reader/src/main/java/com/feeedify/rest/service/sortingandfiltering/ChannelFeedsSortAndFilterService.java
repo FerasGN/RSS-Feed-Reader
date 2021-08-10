@@ -127,7 +127,7 @@ public class ChannelFeedsSortAndFilterService {
                                     channelTitle, pageable);
                 else
                     page = channelFeedItemUserRepository
-                            .findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
+                            .findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateAsc(
                                     user, channelTitle, startDate, pageable);
 
                 feedItemsUser = page.getContent();
@@ -138,11 +138,12 @@ public class ChannelFeedsSortAndFilterService {
             case ORDER_BY_MOST_RELEVANT: {
                 List<FeedItemUser> feedsOfChannel = null;
                 if (startDate == null)
-                    feedsOfChannel = channelFeedItemUserRepository.findByUserOrderByFeedItem_PublishDateDesc(user);
+                    feedsOfChannel = channelFeedItemUserRepository
+                            .findByUserAndFeedItem_Channel_TitleOrderByFeedItem_PublishDateDesc(user, channelTitle);
                 else
                     feedsOfChannel = channelFeedItemUserRepository
-                            .findByUserAndFeedItem_publishLocalDateGreaterThanEqualOrderByReadAscFeedItem_PublishDateDesc(
-                                    user, startDate);
+                            .findByUserAndFeedItem_Channel_TitleAndFeedItem_publishLocalDateGreaterThanEqualOrderByFeedItem_PublishDateDesc(
+                                    user, channelTitle, startDate);
 
                 feedItemsUser = relevantFeedsService.findFeedItemsUserOrderedByRelevance(user, feedsOfChannel);
                 feedItemsUser = customPagination.getNextPageOfFeedItems(pageNumber, PAGE_SIZE, feedItemsUser);

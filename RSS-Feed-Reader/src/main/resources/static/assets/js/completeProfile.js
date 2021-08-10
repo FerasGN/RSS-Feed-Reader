@@ -27,6 +27,7 @@ function postInterests(url, interests) {
 let saveInterestsBtn = document.getElementById("save-interests");
 saveInterestsBtn.addEventListener("click", function (e) {
   e.preventDefault;
+  e.target.disabled = true;
   let allTags = document.getElementsByClassName("tag");
   let tags = new Array();
   for (let i = 0; i < allTags.length; i++) tags[i] = allTags[i].firstChild.data;
